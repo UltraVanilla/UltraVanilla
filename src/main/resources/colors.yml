@@ -1,5 +1,5 @@
 ranks:
-  mod: DARK_PURPLE
-  admin: DARK_RED
-  owner: GOLD
-  donater: LIGHT_PURPLE
+  mod: LIGHT_PURPLE
+  admin: GOLD
+  owner: DARK_RED
+  donator: DARK_PURPLE

@@ -20,17 +20,17 @@ public final class Ultravanilla extends JavaPlugin {
     public Ultravanilla instance;
     private YamlConfiguration nicknames;
     private YamlConfiguration colors;
-    private YamlConfiguration bible;
+    private YamlConfiguration swears;
     private Permission permissions;
-    private List<String> swears;
+    private List<String> swearsRegex;
     private List<String> swearsRaw;
 
     public List<String> getSwearsRaw() {
         return swearsRaw;
     }
 
-    public YamlConfiguration getBible() {
-        return bible;
+    public YamlConfiguration getSwears() {
+        return swears;
     }
 
     public YamlConfiguration getNicknames() {
@@ -45,8 +45,8 @@ public final class Ultravanilla extends JavaPlugin {
         return permissions;
     }
 
-    public List<String> getSwears() {
-        return swears;
+    public List<String> getSwearsRegex() {
+        return swearsRegex;
     }
 
     @Override
@@ -75,18 +75,18 @@ public final class Ultravanilla extends JavaPlugin {
         getConfig("config.yml");
         nicknames = getConfig("nicknames.yml");
         colors = getConfig("colors.yml");
-        bible = getConfig("swears.yml");
+        swears = getConfig("swears.yml");
 
         swearsRaw = new ArrayList<>();
-        swearsRaw.addAll(bible.getKeys(false));
+        swearsRaw.addAll(swears.getKeys(false));
 
-        swears = new ArrayList<>();
-        for (String string : bible.getKeys(false)) {
+        swearsRegex = new ArrayList<>();
+        for (String string : swears.getKeys(false)) {
             String regex = "";
             for (char c : string.toCharArray()) {
                 regex = regex + "(" + c + "|\\*).?";
             }
-            swears.add(regex.substring(0, regex.length() - 2));
+            swearsRegex.add(regex.substring(0, regex.length() - 2));
         }
     }
 

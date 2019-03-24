@@ -74,11 +74,11 @@ public class EventListener implements Listener {
         if (plugin.getConfig().getBoolean("enable-chat-filter")) {
             String newMessage = "";
             for (String word : message.split(" ")) {
-                for (String swear : plugin.getSwears()) {
+                for (String swear : plugin.getSwearsRegex()) {
                     Pattern p = Pattern.compile(swear);
                     Matcher m = p.matcher(word.toLowerCase());
                     if (m.find()) {
-                        List<String> replacements = plugin.getBible().getStringList(plugin.getSwearsRaw().get(plugin.getSwears().indexOf(swear)));
+                        List<String> replacements = plugin.getSwears().getStringList(plugin.getSwearsRaw().get(plugin.getSwearsRegex().indexOf(swear)));
                         int i = (int) Math.round(Math.random() * (replacements.size() - 1));
                         word = word.toLowerCase().replace(m.group(0), replacements.get(i));
                     }
