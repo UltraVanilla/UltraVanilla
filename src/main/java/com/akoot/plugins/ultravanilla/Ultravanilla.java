@@ -1,9 +1,6 @@
 package com.akoot.plugins.ultravanilla;
 
-import com.akoot.plugins.ultravanilla.commands.MakeCommand;
-import com.akoot.plugins.ultravanilla.commands.NickCommand;
-import com.akoot.plugins.ultravanilla.commands.ReloadCommand;
-import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
+import com.akoot.plugins.ultravanilla.commands.*;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -65,6 +62,21 @@ public final class Ultravanilla extends JavaPlugin {
         getDataFolder().mkdir();
         loadConfigs();
 
+        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
+
+        getCommand("nick").setExecutor(new NickCommand(instance));
+        getCommand("suicide").setExecutor(new SuicideCommand(instance));
+        getCommand("make").setExecutor(new MakeCommand(instance));
+        getCommand("gamemode").setExecutor(new GamemodeCommand(instance));
+        getCommand("title").setExecutor(new TitleCommand(instance));
+    }
+
+    public void loadConfigs() {
+        getConfig("config.yml");
+        nicknames = getConfig("nicknames.yml");
+        colors = getConfig("colors.yml");
+        bible = getConfig("swears.yml");
+
         swearsRaw = new ArrayList<>();
         swearsRaw.addAll(bible.getKeys(false));
 
@@ -76,20 +88,6 @@ public final class Ultravanilla extends JavaPlugin {
             }
             swears.add(regex.substring(0, regex.length() - 2));
         }
-
-        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
-
-        getCommand("nick").setExecutor(new NickCommand(instance));
-        getCommand("suicide").setExecutor(new SuicideCommand(instance));
-        getCommand("make").setExecutor(new MakeCommand(instance));
-        getCommand("reload").setExecutor(new ReloadCommand(instance));
-    }
-
-    public void loadConfigs() {
-        getConfig("config.yml");
-        nicknames = getConfig("nicknames.yml");
-        colors = getConfig("colors.yml");
-        bible = getConfig("swears.yml");
     }
 
     private YamlConfiguration getConfig(String name) {
@@ -143,9 +141,5 @@ public final class Ultravanilla extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (File file : getDataFolder().listFiles()) {
-            file.delete();
-        }
-        getDataFolder().delete();
     }
 }

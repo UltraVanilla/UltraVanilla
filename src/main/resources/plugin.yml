@@ -23,10 +23,18 @@ commands:
     usage: /ultravanilla:reload
   make:
     description: Makes a player say or do something
-    aliases: [saydo]
     usage: |
       /make <player> say <message>
       /make <player> do <command>
+  gamemode:
+    description: Changes your gamemode
+    permission: minecraft.command.gamemode
+    aliases: [gm]
+    usage: /gm [gamemode] [player]
+  title:
+    description: Show a title
+    permission: minecraft.command.title
+    usage: /title <title> [-s subtitle]
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

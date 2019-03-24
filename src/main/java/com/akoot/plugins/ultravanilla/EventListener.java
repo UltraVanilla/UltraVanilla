@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -30,16 +31,35 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        if (player.hasPermission("ultravanilla.command.suicide")) {
+            if (event.getDeathMessage().equals(player.getName() + " died")) {
+                event.setDeathMessage(player.getName() + " committed suicide");
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
 
-        // Format
+        // Chat formatter
         String group = plugin.getPermissions().getPrimaryGroup(player);
         String color = ChatColor.valueOf(plugin.getColors().getString("ranks." + group, "RESET")) + "";
         String abbreviation = group.substring(0, 1).toUpperCase();
-        String format = Palette.translate(group.equals(plugin.getConfig().getString("default-rank")) ? plugin.getConfig().getString("unranked-format") : plugin.getConfig().getString("ranked-format"));
-        String formatted = format
+        String format;
+
+        // Decide which format to show as specified in config.yml
+        if (group.equals(plugin.getConfig().getString("default-rank"))) {
+            format = plugin.getConfig().getString("default-format");
+        } else {
+            format = plugin.getConfig().getString("ranked-format");
+        }
+
+        // Replace all of the placeholders
+        String formatted = Palette.translate(format)
                 .replace("{rank-color}", color)
                 .replace("{colored-rank}", color + group + ChatColor.RESET)
                 .replace("{colored-rank-abbreviation}", color + abbreviation + ChatColor.RESET)
@@ -51,20 +71,26 @@ public class EventListener implements Listener {
 
         // Chat filter
         String message = event.getMessage();
-        String newMessage = "";
-        for (String word : message.split(" ")) {
-            for (String swear : plugin.getSwears()) {
-                Pattern p = Pattern.compile(swear);
-                Matcher m = p.matcher(word.toLowerCase());
-                if (m.find()) {
-                    List<String> replacements = plugin.getBible().getStringList(plugin.getSwearsRaw().get(plugin.getSwears().indexOf(swear)));
-                    int i = (int) Math.round(Math.random() * (replacements.size() - 1));
-                    word = word.replace(m.group(0), replacements.get(i));
+        if (plugin.getConfig().getBoolean("enable-chat-filter")) {
+            String newMessage = "";
+            for (String word : message.split(" ")) {
+                for (String swear : plugin.getSwears()) {
+                    Pattern p = Pattern.compile(swear);
+                    Matcher m = p.matcher(word.toLowerCase());
+                    if (m.find()) {
+                        List<String> replacements = plugin.getBible().getStringList(plugin.getSwearsRaw().get(plugin.getSwears().indexOf(swear)));
+                        int i = (int) Math.round(Math.random() * (replacements.size() - 1));
+                        word = word.toLowerCase().replace(m.group(0), replacements.get(i));
+                    }
                 }
+                newMessage += word + " ";
             }
-            newMessage += word + " ";
+            message = newMessage;
         }
 
-        event.setMessage(newMessage);
+        if (player.hasPermission("ultravanilla.chat.color")) {
+            message = Palette.translate(message);
+        }
+        event.setMessage(message);
     }
 }
