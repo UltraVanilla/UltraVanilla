@@ -1,0 +1,3 @@
+default-format: "<{name}> {message}"
+ranked-format: "[{colored-rank}] <{name}> {message}"
+default-rank: default

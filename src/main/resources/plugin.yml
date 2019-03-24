@@ -1,0 +1,35 @@
+name: UltraVanilla
+version: ${project.version}
+main: com.akoot.plugins.ultravanilla.Ultravanilla
+api-version: 1.13
+prefix: UltraVanilla Plugin
+authors: [Akoot_, DAD_1996]
+description: Official plugin for UltraVanilla Minecraft server
+website: ultravanilla.cf
+commands:
+  suicide:
+    description: Kill yourself!
+    permission: ultravanilla.commands.suicide
+    usage: /suicide
+  nick:
+    description: Changes your displayname
+    permission: ultravanilla.commands.nick
+    usage: |
+      /nick <name>
+      /nick [player] <name>
+  reload:
+    description: Reload the configs
+    permission: ultravanilla.command.reload
+    usage: /ultravanilla:reload
+  make:
+    description: Makes a player say or do something
+    aliases: [saydo]
+    usage: |
+      /make <player> say <message>
+      /make <player> do <command>
+permissions:
+  ultravanilla.command.nick:
+    description: Gives access to /nick
+    children:
+      ultravanilla.command.nick.others:
+        description: Gives access to change other player's nicknames
