@@ -2,7 +2,7 @@ name: UltraVanilla
 version: ${project.version}
 main: com.akoot.plugins.ultravanilla.Ultravanilla
 api-version: 1.13
-prefix: UltraVanilla Plugin
+prefix: UltraVanilla
 authors: [Akoot_, DAD_1996]
 description: Official plugin for UltraVanilla Minecraft server
 website: ultravanilla.cf
