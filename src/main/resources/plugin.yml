@@ -17,7 +17,7 @@ commands:
     usage: |
       /nick <name>
       /nick [player] <name>
-  reload:
+  reloadconf:
     description: Reload the configs
     permission: ultravanilla.command.reload
     usage: /ultravanilla:reload
@@ -26,15 +26,24 @@ commands:
     usage: |
       /make <player> say <message>
       /make <player> do <command>
-  gamemode:
+  gm:
     description: Changes your gamemode
     permission: minecraft.command.gamemode
-    aliases: [gm]
     usage: /gm [gamemode] [player]
   title:
     description: Show a title
     permission: minecraft.command.title
     usage: /title <title> [-s subtitle]
+  reply:
+    description: Reply to a private message
+    permission: ultravanilla.chat.pm
+    aliases: [r]
+    usage: /r <message>
+  msg:
+    description: Send a private message
+    permission: ultravanilla.chat.pm
+    aliases: [pm, message]
+    usage: /msg <player> <message>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick
