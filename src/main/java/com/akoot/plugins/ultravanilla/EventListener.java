@@ -71,7 +71,7 @@ public class EventListener implements Listener {
 
         // Chat filter
         String message = event.getMessage();
-        if (plugin.getConfig().getBoolean("enable-chat-filter")) {
+        if (plugin.getConfig().getBoolean("enable-chat-filter") && !player.hasPermission("ultravanilla.chat.swearing")) {
             String newMessage = "";
             for (String word : message.split(" ")) {
                 for (String swear : plugin.getSwearsRegex()) {

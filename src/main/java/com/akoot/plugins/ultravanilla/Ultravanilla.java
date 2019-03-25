@@ -67,7 +67,7 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("nick").setExecutor(new NickCommand(instance));
         getCommand("suicide").setExecutor(new SuicideCommand(instance));
         getCommand("make").setExecutor(new MakeCommand(instance));
-        getCommand("gamemode").setExecutor(new GamemodeCommand(instance));
+        getCommand("gm").setExecutor(new GamemodeCommand(instance));
         getCommand("title").setExecutor(new TitleCommand(instance));
     }
 
