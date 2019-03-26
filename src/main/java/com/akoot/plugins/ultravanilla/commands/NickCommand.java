@@ -24,27 +24,37 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
         if (args.length > 0) {
             if (args.length == 1) {
                 if (sender instanceof Player) {
-                    String newName = Palette.translate(args[0]);
-                    sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
                     Player player = (Player) sender;
-                    player.setDisplayName(newName + ChatColor.RESET);
-                    player.setPlayerListName(newName);
-                    plugin.saveNickname(player.getUniqueId(), newName);
+                    if (args[0].equals(player.getName())) {
+                        plugin.saveNickname(player.getUniqueId(), null);
+                        player.setDisplayName(null);
+                        sender.sendMessage(format("Your nickname was cleared!"));
+                    } else {
+                        String newName = Palette.translate(args[0]);
+                        sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
+                        player.setDisplayName(newName + ChatColor.RESET);
+                        player.setPlayerListName(newName);
+                        plugin.saveNickname(player.getUniqueId(), newName);
+                    }
                 } else {
                     sender.sendMessage(playerOnly());
                 }
             } else if (args.length == 2) {
-                Player target = plugin.getServer().getPlayer(args[0]);
-                String newName = Palette.translate(args[1]);
-                if (target != null) {
-                    String username = target.getName();
-                    String possessive = username.endsWith("s") ? "'" : "'s";
-                    sender.sendMessage(format("Set %s%s nickname to %s", noun(username), color + possessive, reset(newName)));
-                    target.setDisplayName(newName + ChatColor.RESET);
-                    target.setPlayerListName(newName);
-                    plugin.saveNickname(target.getUniqueId(), newName);
+                if (sender.hasPermission("ultravanilla.command.nick.others")) {
+                    Player target = plugin.getServer().getPlayer(args[0]);
+                    String newName = Palette.translate(args[1]);
+                    if (target != null) {
+                        String username = target.getName();
+                        String possessive = username.endsWith("s") ? "'" : "'s";
+                        sender.sendMessage(format("Set %s%s nickname to %s", noun(username), color + possessive, reset(newName)));
+                        target.setDisplayName(newName + ChatColor.RESET);
+                        target.setPlayerListName(newName);
+                        plugin.saveNickname(target.getUniqueId(), newName);
+                    } else {
+                        sender.sendMessage(playerNotFound(args[0]));
+                    }
                 } else {
-                    sender.sendMessage(playerNotFound(args[0]));
+                    sender.sendMessage(wrong("You do not have permission to change other people's nicknames!"));
                 }
             }
             return true;

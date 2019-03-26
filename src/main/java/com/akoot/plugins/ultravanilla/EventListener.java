@@ -38,7 +38,7 @@ public class EventListener implements Listener {
             String message = event.getDeathMessage();
             if (message != null && message.endsWith(" died")) {
                 List<String> messages = plugin.getConfig().getStringList("suicide-message");
-                message = messages.get((int) Math.round(Math.random() * messages.size() - 1));
+                message = messages.get(plugin.getRandom().nextInt(messages.size()));
                 event.setDeathMessage(String.format(message, player.getName()));
             }
         }
@@ -83,8 +83,7 @@ public class EventListener implements Listener {
                     Matcher m = p.matcher(word.toLowerCase());
                     if (m.find()) {
                         List<String> replacements = plugin.getSwears().getStringList(plugin.getSwearsRaw().get(plugin.getSwearsRegex().indexOf(swear)));
-                        int i = (int) Math.round(Math.random() * (replacements.size() - 1));
-                        word = word.toLowerCase().replace(m.group(0), replacements.get(i));
+                        word = word.toLowerCase().replace(m.group(0), replacements.get(plugin.getRandom().nextInt(replacements.size())));
                     }
                 }
                 newMessage += word + " ";

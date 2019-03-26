@@ -36,19 +36,18 @@ public class Palette {
 
     public static String rainbow(String msg) {
         String rainbow = "";
-        int i = random.nextInt(rainbowseq.length - 1);
+        int i = random.nextInt(rainbowseq.length);
         for (char c : msg.toCharArray()) {
             if (i >= rainbowseq.length) {
                 i = 0;
             }
 
             String ch = String.valueOf(c);
-            if (!ch.equals(" ")) {
+            if (c != ' ') {
                 ch = "&" + rainbowseq[i] + ch;
+                i++;
             }
-
             rainbow += ch;
-            i++;
         }
         return rainbow;
     }

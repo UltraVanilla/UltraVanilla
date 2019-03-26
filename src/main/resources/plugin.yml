@@ -9,11 +9,11 @@ website: ultravanilla.cf
 commands:
   suicide:
     description: Kill yourself!
-    permission: ultravanilla.commands.suicide
+    permission: ultravanilla.command.suicide
     usage: /suicide
   nick:
     description: Changes your displayname
-    permission: ultravanilla.commands.nick
+    permission: ultravanilla.command.nick
     usage: |
       /nick <name>
       /nick [player] <name>
@@ -33,7 +33,7 @@ commands:
   title:
     description: Show a title
     permission: minecraft.command.title
-    usage: /title <title> [-s subtitle]
+    usage: /title <title> [-s <subtitle>]
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

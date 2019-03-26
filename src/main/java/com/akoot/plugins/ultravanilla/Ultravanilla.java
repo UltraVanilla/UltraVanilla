@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public final class Ultravanilla extends JavaPlugin {
@@ -23,6 +24,12 @@ public final class Ultravanilla extends JavaPlugin {
     private YamlConfiguration swears;
     private Permission permissions;
     private List<String> swearsRegex;
+
+    private Random random;
+
+    public Random getRandom() {
+        return random;
+    }
 
     public List<String> getSwearsRaw() {
         return swearsRaw;
@@ -60,6 +67,8 @@ public final class Ultravanilla extends JavaPlugin {
             getLogger().warning("Vault could not link to a permissions provider.");
         }
 
+        random = new Random();
+
         getDataFolder().mkdir();
         loadConfigs();
 
@@ -86,9 +95,9 @@ public final class Ultravanilla extends JavaPlugin {
         for (String string : swears.getKeys(false)) {
             String regex = "";
             for (char c : string.toCharArray()) {
-                regex = regex + "(" + c + "|\\*).?";
+                regex = regex + "(" + c + "|\\*)\\.?";
             }
-            swearsRegex.add(regex.substring(0, regex.length() - 2));
+            swearsRegex.add(regex.substring(0, regex.length() - 3));
         }
     }
 
