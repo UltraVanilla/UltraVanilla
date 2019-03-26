@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class Ultravanilla extends JavaPlugin {
 
@@ -21,17 +23,12 @@ public final class Ultravanilla extends JavaPlugin {
     private YamlConfiguration swears;
     private Permission permissions;
     private List<String> swearsRegex;
-    private List<String> swearsRaw;
-    public static final UUID CONSOLE_ID = UUID.randomUUID();
-    private Map<UUID, UUID> messages;
-
-    public Map<UUID, UUID> getMessages() {
-        return messages;
-    }
 
     public List<String> getSwearsRaw() {
         return swearsRaw;
     }
+
+    private List<String> swearsRaw;
 
     public YamlConfiguration getSwears() {
         return swears;
@@ -63,8 +60,6 @@ public final class Ultravanilla extends JavaPlugin {
             getLogger().warning("Vault could not link to a permissions provider.");
         }
 
-        messages = new HashMap<>();
-
         getDataFolder().mkdir();
         loadConfigs();
 
@@ -75,8 +70,6 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("make").setExecutor(new MakeCommand(instance));
         getCommand("gm").setExecutor(new GamemodeCommand(instance));
         getCommand("title").setExecutor(new TitleCommand(instance));
-        getCommand("reply").setExecutor(new ReplyCommand(instance));
-        getCommand("msg").setExecutor(new MessageCommand(instance));
         getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
     }
 

@@ -27,6 +27,7 @@ public class EventListener implements Listener {
         String nick = plugin.getNicknames().getString(player.getUniqueId().toString());
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);
+            player.setPlayerListName(nick);
         }
     }
 
@@ -34,8 +35,11 @@ public class EventListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         if (player.hasPermission("ultravanilla.command.suicide")) {
-            if (event.getDeathMessage().equals(player.getName() + " died")) {
-                event.setDeathMessage(player.getName() + " committed suicide");
+            String message = event.getDeathMessage();
+            if (message != null && message.endsWith(" died")) {
+                List<String> messages = plugin.getConfig().getStringList("suicide-message");
+                message = messages.get((int) Math.round(Math.random() * messages.size() - 1));
+                event.setDeathMessage(String.format(message, player.getName()));
             }
         }
     }

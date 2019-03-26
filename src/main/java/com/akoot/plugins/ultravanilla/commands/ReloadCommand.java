@@ -21,6 +21,7 @@ public class ReloadCommand extends UltraCommand implements CommandExecutor, TabE
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             plugin.loadConfigs();
+            plugin.reloadConfig();
             sender.sendMessage(color + "Reloaded configs.");
             return true;
         }

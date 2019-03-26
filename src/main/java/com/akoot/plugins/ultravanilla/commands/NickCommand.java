@@ -28,6 +28,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                     sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
                     Player player = (Player) sender;
                     player.setDisplayName(newName + ChatColor.RESET);
+                    player.setPlayerListName(newName);
                     plugin.saveNickname(player.getUniqueId(), newName);
                 } else {
                     sender.sendMessage(playerOnly());
@@ -40,6 +41,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                     String possessive = username.endsWith("s") ? "'" : "'s";
                     sender.sendMessage(format("Set %s%s nickname to %s", noun(username), color + possessive, reset(newName)));
                     target.setDisplayName(newName + ChatColor.RESET);
+                    target.setPlayerListName(newName);
                     plugin.saveNickname(target.getUniqueId(), newName);
                 } else {
                     sender.sendMessage(playerNotFound(args[0]));

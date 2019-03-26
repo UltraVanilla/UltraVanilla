@@ -2,5 +2,6 @@ default-format: "<{name}> {message}"
 ranked-format: "[{colored-rank}] <{name}> {message}"
 default-rank: default
 enable-chat-filter: true
-msg-format: "&7[&b{from}&6->&d{to}&7] &f{message}"
-msg-ping: true
+suicide-message:
+  - "%s committed suicide"
+  - "%s took their own life"
