@@ -80,6 +80,16 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("gm").setExecutor(new GamemodeCommand(instance));
         getCommand("title").setExecutor(new TitleCommand(instance));
         getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
+        getCommand("config").setExecutor(new ConfigCommand(instance));
+    }
+
+    public YamlConfiguration getEditableConfig(String name) {
+        if (name.equalsIgnoreCase("colors")) {
+            return colors;
+        } else if (name.equalsIgnoreCase("swears")) {
+            return swears;
+        }
+        return null;
     }
 
     public void loadConfigs() {

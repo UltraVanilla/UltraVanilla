@@ -23,6 +23,7 @@ commands:
     usage: /ultravanilla:reload
   make:
     description: Makes a player say or do something
+    permission: ultravanilla.command.make
     usage: |
       /make <player> say <message>
       /make <player> do <command>
@@ -30,6 +31,13 @@ commands:
     description: Changes your gamemode
     permission: minecraft.command.gamemode
     usage: /gm [gamemode] [player]
+  config:
+    description: Edit configurations
+    permission: ultravanilla.command.config
+    usage: |
+      /config [name] set <key> <value>
+      /config [name] add <key> <value>
+      /config [name] remove <key> <value>
   title:
     description: Show a title
     permission: minecraft.command.title

@@ -70,4 +70,15 @@ public class UltraCommand {
             }
         }
     }
+
+    protected String getArg(String[] args) {
+        String arg = String.join(" ", args);
+        return arg.substring(arg.lastIndexOf(" ")).trim();
+    }
+
+    protected String getArg(String[] args, int index) {
+        String at = args[index];
+        String arg = String.join(" ", args);
+        return arg.substring(arg.lastIndexOf(at)).trim();
+    }
 }
