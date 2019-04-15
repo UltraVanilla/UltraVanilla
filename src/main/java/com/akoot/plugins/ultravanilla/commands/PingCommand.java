@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PingCommand extends UltraCommand implements CommandExecutor, TabExecutor {
@@ -64,6 +65,10 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        if (args.length == 1) {
+            return null;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

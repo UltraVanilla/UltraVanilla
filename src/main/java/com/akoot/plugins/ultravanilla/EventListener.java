@@ -4,13 +4,16 @@ import com.akoot.plugins.ultravanilla.commands.PingCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +24,21 @@ public class EventListener implements Listener {
 
     public EventListener(Ultravanilla instance) {
         this.plugin = instance;
+    }
+
+    @EventHandler
+    public void onListPing(ServerListPingEvent event) {
+        InetAddress address = event.getAddress();
+        String name = "the new player";
+        for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
+            Player player = offlinePlayer.getPlayer();
+            if (player != null && player.getAddress() != null) {
+                if (player.getAddress().getAddress().equals(address)) {
+                    name = player.getName();
+                }
+            }
+        }
+        event.setMotd(Palette.translate(plugin.getConfig().getString("server-name")) + "\n" + ChatColor.RESET + plugin.getMOTD().replace("%player", name));
     }
 
     @EventHandler

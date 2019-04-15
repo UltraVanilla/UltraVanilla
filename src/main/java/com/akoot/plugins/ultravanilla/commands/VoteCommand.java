@@ -19,12 +19,10 @@ import java.util.List;
 public class VoteCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
     public static final ChatColor COLOR = ChatColor.GRAY;
-    private List<Poll> polls;
 
     public VoteCommand(Ultravanilla instance) {
         super(instance);
         color = COLOR;
-        polls = new ArrayList<>();
     }
 
     @Override
@@ -35,7 +33,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                 Player player = (Player) sender;
                 if (args[0].equalsIgnoreCase("list")) {
                     RawMessage message = new RawMessage();
-                    for (Poll poll : polls) {
+                    for (Poll poll : plugin.getPolls()) {
                         String name = poll.getName();
                         String title = poll.getTitle();
                         RawComponent text = new RawComponent();
@@ -63,7 +61,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                 if (poll != null) {
                     if (args[1].equalsIgnoreCase(poll.getName())) {
                         poll.cancel();
-                        polls.remove(poll);
+                        plugin.getPolls().remove(poll);
                         sender.sendMessage(format("Cancelled poll: %s", quote(object(poll.getName()))));
                     }
                 } else {
@@ -120,7 +118,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                     poll.getVotes().put(option, 0);
                 }
 
-                polls.add(poll);
+                plugin.getPolls().add(poll);
                 poll.init();
 
                 System.out.println(Arrays.asList(args));
@@ -139,7 +137,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
     }
 
     private Poll getPoll(String name) {
-        for (Poll poll : polls) {
+        for (Poll poll : plugin.getPolls()) {
             if (name.equalsIgnoreCase(poll.getName())) {
                 return poll;
             }
@@ -149,11 +147,36 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
 
     private void sendPollNotFound(CommandSender sender, String string) {
         sender.sendMessage(format("%s is not an ongoing poll. %s", wrong(string), ChatColor.GRAY + "Type /vote list to list ongoing polls"));
-
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        List<String> suggestions = new ArrayList<>();
+        boolean canCreate = sender.hasPermission("ultravanilla.command.poll.create");
+        if (args.length == 1) {
+            if (canCreate) {
+                suggestions.add("create");
+                suggestions.add("rename");
+            }
+            for (Poll poll : plugin.getPolls()) {
+                suggestions.add(poll.getName());
+            }
+        } else if (args.length == 2) {
+            Poll poll = getPoll(args[0]);
+            if (poll != null) {
+                suggestions.addAll(poll.getVotes().keySet());
+            }
+        } else if (args.length >= 4) {
+            if (canCreate) {
+                List<String> list = Arrays.asList(args);
+                if (!list.contains("-time")) {
+                    suggestions.add("-time");
+                }
+                if (!list.contains("-options")) {
+                    suggestions.add("-options");
+                }
+            }
+        }
+        return suggestions;
     }
 }

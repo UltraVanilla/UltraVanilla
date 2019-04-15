@@ -1,7 +1,9 @@
 package com.akoot.plugins.ultravanilla;
 
 import com.akoot.plugins.ultravanilla.commands.*;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.stuff.Poll;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -29,8 +31,28 @@ public final class Ultravanilla extends JavaPlugin {
     private Permission permissions;
     private List<String> swearsRegex;
 
+    private List<Poll> polls;
+    private List<String> motds;
+    private String motd;
+
+    public List<Poll> getPolls() {
+        return polls;
+    }
+
+    public List<String> getMotds() {
+        return motds;
+    }
     private Random random;
     private List<String> swearsRaw;
+
+    public Poll getPoll(String name) {
+        for (Poll poll : polls) {
+            if (poll.getName().equalsIgnoreCase(name)) {
+                return poll;
+            }
+        }
+        return null;
+    }
 
     public static Ultravanilla getInstance() {
         return instance;
@@ -54,6 +76,10 @@ public final class Ultravanilla extends JavaPlugin {
 
     public static void set(OfflinePlayer player, String key, Object value) {
         set(player.getUniqueId(), key, value);
+    }
+
+    public String getMOTD() {
+        return motd;
     }
 
     public static void set(UUID uid, String key, Object value) {
@@ -110,6 +136,10 @@ public final class Ultravanilla extends JavaPlugin {
         return swearsRegex;
     }
 
+    public void setMOTD(String motd) {
+        this.motd = Palette.translate(motd);
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -121,10 +151,14 @@ public final class Ultravanilla extends JavaPlugin {
         }
 
         random = new Random();
+        polls = new ArrayList<>();
 
         getDataFolder().mkdir();
         Users.DIR.mkdir();
         loadConfigs();
+
+        motds = getConfig().getStringList("motd");
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
 
         getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
 
@@ -138,6 +172,7 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("ping").setExecutor(new PingCommand(instance));
         getCommand("vote").setExecutor(new VoteCommand(instance));
         getCommand("raw").setExecutor(new RawCommand(instance));
+        getCommand("motd").setExecutor(new MotdCommand(instance));
 
     }
 
@@ -207,6 +242,10 @@ public final class Ultravanilla extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setRandomMOTD() {
+        setMOTD(motds.get(random.nextInt(motds.size())));
     }
 
     public void ping(Player player) {

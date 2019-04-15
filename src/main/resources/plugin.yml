@@ -59,9 +59,16 @@ commands:
     permission: ultravanilla.command.raw
     usage: |
       /raw <message>
+  motd:
+    description: Shows the current message of the day
+    usage: |
+      /motd
+      /motd <new MOTD>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick
     children:
       ultravanilla.command.nick.others:
         description: Gives access to change other player's nicknames
+  ultravanilla.command.motd.set:
+    description: Allows the setting of MOTD

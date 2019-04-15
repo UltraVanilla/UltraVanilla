@@ -70,6 +70,10 @@ public class UltraCommand {
         return format("Player %s is not online!", noun(name));
     }
 
+    protected String noPermission(String item) {
+        return format(Palette.WRONG + "You do not have permission to " + Palette.FALSE + item);
+    }
+
     protected void addDefaults(List<String> list, String arg, String... items) {
         for (String item : items) {
             if (item.startsWith(arg.toLowerCase())) {

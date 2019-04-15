@@ -1,3 +1,4 @@
+server-name: "&f&lUltra&4Vanilla"
 default-format: "<{name}> {message}"
 ranked-format: "[{colored-rank}] <{name}> {message}"
 default-rank: default
@@ -5,3 +6,13 @@ enable-chat-filter: true
 suicide-message:
   - "%s committed suicide"
   - "%s took their own life"
+motd:
+  - "A Minecraft Server?"
+  - "&eNow with a &bTRULY&f&e dedicated server!"
+  - "&bWhat did you expect?"
+  - "&duwu"
+  - "&oAh sh*t, here we go again..."
+  - "&oMoment of silence for &9%player&r&o... R.I.P."
+  - "&0Whatareyoulookingat"
+  - "&6*Slaps server* this baby can get slapped"
+  - "&oHello, epic department?"
