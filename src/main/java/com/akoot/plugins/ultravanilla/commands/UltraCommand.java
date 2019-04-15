@@ -1,15 +1,18 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
-import com.akoot.plugins.ultravanilla.util.Palette;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UltraCommand {
 
+    public ChatColor color = ChatColor.WHITE;
     protected Ultravanilla plugin;
-    protected ChatColor color = ChatColor.WHITE;
 
     public UltraCommand(Ultravanilla instance) {
         this.plugin = instance;
@@ -37,6 +40,10 @@ public class UltraCommand {
 
     protected String noun(String item) {
         return Palette.NOUN + item + color;
+    }
+
+    protected String posessiveNoun(String item) {
+        return noun(item + (item.endsWith("s") ? "'" : "'s"));
     }
 
     protected String number(String item) {
@@ -69,6 +76,27 @@ public class UltraCommand {
                 list.add(item);
             }
         }
+    }
+
+    protected String[] refinedArgs(String[] args) {
+        Pattern pattern = Pattern.compile("\"[^\"]+\"|[-\\w]+");
+        Matcher matcher = pattern.matcher(String.join(" ", args));
+        List<String> refined = new ArrayList<>();
+        while (matcher.find()) {
+            refined.add(matcher.group().replace("\"", ""));
+        }
+        return refined.toArray(new String[0]);
+    }
+
+    protected String getArgFor(String[] args, String arg) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(arg)) {
+                if (i + 1 < args.length) {
+                    return args[i + 1];
+                }
+            }
+        }
+        return null;
     }
 
     protected String getArg(String[] args) {

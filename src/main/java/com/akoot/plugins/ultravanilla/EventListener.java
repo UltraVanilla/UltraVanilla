@@ -1,6 +1,8 @@
 package com.akoot.plugins.ultravanilla;
 
-import com.akoot.plugins.ultravanilla.util.Palette;
+import com.akoot.plugins.ultravanilla.commands.PingCommand;
+import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +26,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String nick = plugin.getNicknames().getString(player.getUniqueId().toString());
+        String nick = Ultravanilla.getConfig(player.getUniqueId()).getString(Users.NICKNAME);
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);
             player.setPlayerListName(nick);
@@ -49,30 +51,6 @@ public class EventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        // Chat formatter
-        String group = plugin.getPermissions().getPrimaryGroup(player);
-        String color = ChatColor.valueOf(plugin.getColors().getString("ranks." + group, "RESET")) + "";
-        String abbreviation = group.substring(0, 1).toUpperCase();
-        String format;
-
-        // Decide which format to show as specified in config.yml
-        if (group.equals(plugin.getConfig().getString("default-rank"))) {
-            format = plugin.getConfig().getString("default-format");
-        } else {
-            format = plugin.getConfig().getString("ranked-format");
-        }
-
-        // Replace all of the placeholders
-        String formatted = Palette.translate(format)
-                .replace("{rank-color}", color)
-                .replace("{colored-rank}", color + group + ChatColor.RESET)
-                .replace("{colored-rank-abbreviation}", color + abbreviation + ChatColor.RESET)
-                .replace("{rank}", group)
-                .replace("{rank-abbreviation}", abbreviation)
-                .replace("{name}", "%1$s")
-                .replace("{message}", "%2$s");
-        event.setFormat(formatted);
-
         // Chat filter
         String message = event.getMessage();
         if (plugin.getConfig().getBoolean("enable-chat-filter") && !player.hasPermission("ultravanilla.chat.swearing")) {
@@ -91,9 +69,26 @@ public class EventListener implements Listener {
             message = newMessage;
         }
 
+        // Chat color
         if (player.hasPermission("ultravanilla.chat.color")) {
             message = Palette.translate(message);
         }
+
+        // Pings
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
+            String username = p.getName();
+            String name = ChatColor.stripColor(p.getDisplayName());
+            for (String word : message.split(" ")) {
+                if (username.toLowerCase().contains(word.toLowerCase()) || name.toLowerCase().contains(word.toLowerCase())) {
+                    if (Ultravanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
+                        String at = PingCommand.COLOR + word + ChatColor.RESET;
+                        plugin.ping(p);
+                        message = message.replace(word, at);
+                    }
+                }
+            }
+        }
+
         event.setMessage(message);
     }
 }

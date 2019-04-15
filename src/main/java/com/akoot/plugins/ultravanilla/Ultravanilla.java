@@ -1,9 +1,15 @@
 package com.akoot.plugins.ultravanilla;
 
 import com.akoot.plugins.ultravanilla.commands.*;
+import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,14 +24,71 @@ import java.util.UUID;
 
 public final class Ultravanilla extends JavaPlugin {
 
-    public Ultravanilla instance;
-    private YamlConfiguration nicknames;
-    private YamlConfiguration colors;
+    public static Ultravanilla instance;
     private YamlConfiguration swears;
     private Permission permissions;
     private List<String> swearsRegex;
 
     private Random random;
+    private List<String> swearsRaw;
+
+    public static Ultravanilla getInstance() {
+        return instance;
+    }
+
+    public static void tellRaw(RawMessage message, String name) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + name + " " + message.getJSON());
+    }
+
+    public static void tellRaw(RawMessage message, Player player) {
+        tellRaw(message, player.getName());
+    }
+
+    public static void tellRaw(RawMessage message) {
+        tellRaw(message, "@a");
+    }
+
+    public static void set(Player player, String key, Object value) {
+        set(player.getUniqueId(), key, value);
+    }
+
+    public static void set(OfflinePlayer player, String key, Object value) {
+        set(player.getUniqueId(), key, value);
+    }
+
+    public static void set(UUID uid, String key, Object value) {
+        YamlConfiguration config = getConfig(uid);
+        if (config != null) {
+            config.set(key, value);
+            try {
+                config.save(getUserFile(uid));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static File getUserFile(UUID uid) {
+        File userFile = new File(Users.DIR, uid.toString() + ".yml");
+        if (!userFile.exists()) {
+            try {
+                userFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return userFile;
+    }
+
+    public static YamlConfiguration getConfig(UUID uid) {
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(getUserFile(uid));
+        } catch (IOException | InvalidConfigurationException e) {
+            return null;
+        }
+        return config;
+    }
 
     public Random getRandom() {
         return random;
@@ -35,18 +98,8 @@ public final class Ultravanilla extends JavaPlugin {
         return swearsRaw;
     }
 
-    private List<String> swearsRaw;
-
     public YamlConfiguration getSwears() {
         return swears;
-    }
-
-    public YamlConfiguration getNicknames() {
-        return nicknames;
-    }
-
-    public YamlConfiguration getColors() {
-        return colors;
     }
 
     public Permission getPermissions() {
@@ -70,6 +123,7 @@ public final class Ultravanilla extends JavaPlugin {
         random = new Random();
 
         getDataFolder().mkdir();
+        Users.DIR.mkdir();
         loadConfigs();
 
         getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
@@ -81,12 +135,14 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("title").setExecutor(new TitleCommand(instance));
         getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
         getCommand("config").setExecutor(new ConfigCommand(instance));
+        getCommand("ping").setExecutor(new PingCommand(instance));
+        getCommand("vote").setExecutor(new VoteCommand(instance));
+        getCommand("raw").setExecutor(new RawCommand(instance));
+
     }
 
     public YamlConfiguration getEditableConfig(String name) {
-        if (name.equalsIgnoreCase("colors")) {
-            return colors;
-        } else if (name.equalsIgnoreCase("swears")) {
+        if (name.equalsIgnoreCase("swears")) {
             return swears;
         }
         return null;
@@ -94,8 +150,6 @@ public final class Ultravanilla extends JavaPlugin {
 
     public void loadConfigs() {
         getConfig("config.yml");
-        nicknames = getConfig("nicknames.yml");
-        colors = getConfig("colors.yml");
         swears = getConfig("swears.yml");
 
         swearsRaw = new ArrayList<>();
@@ -155,9 +209,8 @@ public final class Ultravanilla extends JavaPlugin {
         }
     }
 
-    public void saveNickname(UUID id, String nickname) {
-        nicknames.set(id.toString(), nickname);
-        saveConfig(nicknames, "nicknames.yml");
+    public void ping(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
     }
 
     @Override

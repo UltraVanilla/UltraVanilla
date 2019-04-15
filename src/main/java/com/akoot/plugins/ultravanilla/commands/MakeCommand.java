@@ -13,8 +13,11 @@ import java.util.List;
 
 public class MakeCommand extends UltraCommand implements CommandExecutor, TabCompleter {
 
+    public static final ChatColor COLOR = ChatColor.WHITE;
+
     public MakeCommand(Ultravanilla plugin) {
         super(plugin);
+        color = COLOR;
     }
 
     @Override

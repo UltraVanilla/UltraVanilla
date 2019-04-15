@@ -1,7 +1,8 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
-import com.akoot.plugins.ultravanilla.util.Palette;
+import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,9 +15,11 @@ import java.util.List;
 
 public class NickCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
+    public static final ChatColor COLOR = ChatColor.WHITE;
+
     public NickCommand(Ultravanilla instance) {
         super(instance);
-        this.color = ChatColor.GRAY;
+        color = COLOR;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (args[0].equals(player.getName())) {
-                        plugin.saveNickname(player.getUniqueId(), null);
+                        Ultravanilla.set(player, Users.NICKNAME, null);
                         player.setDisplayName(null);
                         sender.sendMessage(format("Your nickname was cleared!"));
                     } else {
@@ -34,7 +37,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                         sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
                         player.setDisplayName(newName + ChatColor.RESET);
                         player.setPlayerListName(newName);
-                        plugin.saveNickname(player.getUniqueId(), newName);
+                        Ultravanilla.set(player, Users.NICKNAME, newName);
                     }
                 } else {
                     sender.sendMessage(playerOnly());
@@ -45,11 +48,10 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                     String newName = Palette.translate(args[1]);
                     if (target != null) {
                         String username = target.getName();
-                        String possessive = username.endsWith("s") ? "'" : "'s";
-                        sender.sendMessage(format("Set %s%s nickname to %s", noun(username), color + possessive, reset(newName)));
+                        sender.sendMessage(format("Set %s nickname to %s", posessiveNoun(username), reset(newName)));
                         target.setDisplayName(newName + ChatColor.RESET);
                         target.setPlayerListName(newName);
-                        plugin.saveNickname(target.getUniqueId(), newName);
+                        Ultravanilla.set(target, Users.NICKNAME, newName);
                     } else {
                         sender.sendMessage(playerNotFound(args[0]));
                     }

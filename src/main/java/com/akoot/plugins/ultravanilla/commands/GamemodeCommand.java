@@ -14,16 +14,18 @@ import java.util.List;
 
 public class GamemodeCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
+    public static final ChatColor COLOR = ChatColor.WHITE;
+
     public GamemodeCommand(Ultravanilla plugin) {
         super(plugin);
-        this.color = ChatColor.GRAY;
+        color = COLOR;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player player = null;
-        GameMode gameMode = null;
+        GameMode gameMode;
         String playerName = "your";
         String s = "";
 

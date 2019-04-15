@@ -1,4 +1,4 @@
-package com.akoot.plugins.ultravanilla.util;
+package com.akoot.plugins.ultravanilla.reference;
 
 import org.bukkit.ChatColor;
 

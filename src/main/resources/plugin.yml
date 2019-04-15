@@ -42,6 +42,23 @@ commands:
     description: Show a title
     permission: minecraft.command.title
     usage: /title <title> [-s <subtitle>]
+  ping:
+    description: Ping a player
+    permission: ultravanilla.command.ping
+    usage: /ping <player>
+  vote:
+    description: Create and vote for polls
+    permission: ultravanilla.command.vote
+    usage: |
+      /vote list
+      /vote <name>
+      /vote <name> <option>
+      /vote create <name> [-time:<time>] <title>
+  raw:
+    description: Send a JSON message to everyone
+    permission: ultravanilla.command.raw
+    usage: |
+      /raw <message>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

@@ -12,9 +12,11 @@ import java.util.List;
 
 public class ReloadCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
+    public static final ChatColor COLOR = ChatColor.YELLOW;
+
     public ReloadCommand(Ultravanilla instance) {
         super(instance);
-        this.color = ChatColor.GOLD;
+        color = COLOR;
     }
 
     @Override

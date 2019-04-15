@@ -13,9 +13,11 @@ import java.util.List;
 
 public class SuicideCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
+    public static final ChatColor COLOR = ChatColor.RED;
+
     public SuicideCommand(Ultravanilla instance) {
         super(instance);
-        this.color = ChatColor.RED;
+        color = COLOR;
     }
 
     @Override

@@ -13,18 +13,15 @@ import java.util.List;
 
 public class ConfigCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
+    public static final ChatColor COLOR = ChatColor.WHITE;
+
     public ConfigCommand(Ultravanilla instance) {
         super(instance);
-        this.color = ChatColor.GREEN;
+        color = COLOR;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        /* TODO:
-        /config name set some.key value
-        /config name add some.key value
-        /config name remove some.key value
-         */
 
         if (args.length >= 3) {
 

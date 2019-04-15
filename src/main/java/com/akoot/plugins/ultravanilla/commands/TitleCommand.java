@@ -1,7 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
-import org.bukkit.ChatColor;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,6 @@ public class TitleCommand extends UltraCommand implements CommandExecutor, TabCo
 
     public TitleCommand(Ultravanilla plugin) {
         super(plugin);
-        this.color = ChatColor.DARK_RED;
     }
 
     @Override
@@ -41,8 +40,8 @@ public class TitleCommand extends UltraCommand implements CommandExecutor, TabCo
 
             }
 
-            title = ChatColor.translateAlternateColorCodes('&', title.trim());
-            subtitle = ChatColor.translateAlternateColorCodes('&', subtitle.trim());
+            title = Palette.translate(title.trim());
+            subtitle = Palette.translate(subtitle.trim());
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 player.sendTitle(title, subtitle);
             }
