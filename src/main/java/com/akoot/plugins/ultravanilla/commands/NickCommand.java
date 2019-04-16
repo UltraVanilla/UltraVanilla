@@ -29,9 +29,10 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (args[0].equals(player.getName())) {
-                        Ultravanilla.set(player, Users.NICKNAME, null);
                         player.setDisplayName(null);
+                        player.setPlayerListName(player.getName());
                         sender.sendMessage(format("Your nickname was cleared!"));
+                        Ultravanilla.set(player, Users.NICKNAME, null);
                     } else {
                         String newName = Palette.translate(args[0]);
                         sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));

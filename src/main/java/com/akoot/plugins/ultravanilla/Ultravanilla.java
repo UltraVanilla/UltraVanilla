@@ -140,40 +140,9 @@ public final class Ultravanilla extends JavaPlugin {
         this.motd = Palette.translate(motd);
     }
 
-    @Override
-    public void onEnable() {
-        instance = this;
-
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permissions = rsp.getProvider();
-        if (permissions == null) {
-            getLogger().warning("Vault could not link to a permissions provider.");
-        }
-
-        random = new Random();
-        polls = new ArrayList<>();
-
-        getDataFolder().mkdir();
-        Users.DIR.mkdir();
-        loadConfigs();
-
-        motds = getConfig().getStringList("motd");
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
-
-        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
-
-        getCommand("nick").setExecutor(new NickCommand(instance));
-        getCommand("suicide").setExecutor(new SuicideCommand(instance));
-        getCommand("make").setExecutor(new MakeCommand(instance));
-        getCommand("gm").setExecutor(new GamemodeCommand(instance));
-        getCommand("title").setExecutor(new TitleCommand(instance));
-        getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
-        getCommand("config").setExecutor(new ConfigCommand(instance));
-        getCommand("ping").setExecutor(new PingCommand(instance));
-        getCommand("vote").setExecutor(new VoteCommand(instance));
-        getCommand("raw").setExecutor(new RawCommand(instance));
-        getCommand("motd").setExecutor(new MotdCommand(instance));
-
+    public static boolean isIgnored(Player player, Player target) {
+        List<String> ignored = getConfig(player.getUniqueId()).getStringList(Users.IGNORED);
+        return ignored.contains(target.getUniqueId().toString());
     }
 
     public YamlConfiguration getEditableConfig(String name) {
@@ -242,6 +211,55 @@ public final class Ultravanilla extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void add(UUID uid, String key, String value) {
+        List<String> list = getConfig(uid).getStringList(key);
+        list.add(value);
+        set(uid, key, list);
+    }
+
+    public static void remove(UUID uid, String key, String value) {
+        List<String> list = getConfig(uid).getStringList(key);
+        list.remove(value);
+        set(uid, key, list);
+    }
+
+    @Override
+    public void onEnable() {
+        instance = this;
+
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        permissions = rsp.getProvider();
+        if (permissions == null) {
+            getLogger().warning("Vault could not link to a permissions provider.");
+        }
+
+        random = new Random();
+        polls = new ArrayList<>();
+
+        getDataFolder().mkdir();
+        Users.DIR.mkdir();
+        loadConfigs();
+
+        motds = getConfig().getStringList("motd");
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
+
+        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
+
+        getCommand("nick").setExecutor(new NickCommand(instance));
+        getCommand("suicide").setExecutor(new SuicideCommand(instance));
+        getCommand("make").setExecutor(new MakeCommand(instance));
+        getCommand("gm").setExecutor(new GamemodeCommand(instance));
+        getCommand("title").setExecutor(new TitleCommand(instance));
+        getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
+        getCommand("config").setExecutor(new ConfigCommand(instance));
+        getCommand("ping").setExecutor(new PingCommand(instance));
+        getCommand("vote").setExecutor(new VoteCommand(instance));
+        getCommand("raw").setExecutor(new RawCommand(instance));
+        getCommand("motd").setExecutor(new MotdCommand(instance));
+        getCommand("ignore").setExecutor(new IgnoreCommand(instance));
+
     }
 
     private void setRandomMOTD() {

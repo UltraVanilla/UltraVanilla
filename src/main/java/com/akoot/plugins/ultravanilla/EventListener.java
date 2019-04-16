@@ -30,14 +30,10 @@ public class EventListener implements Listener {
     public void onListPing(ServerListPingEvent event) {
         InetAddress address = event.getAddress();
         String name = "the new player";
-        for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
-            Player player = offlinePlayer.getPlayer();
-            if (player != null && player.getAddress() != null) {
-                if (player.getAddress().getAddress().equals(address)) {
-                    name = player.getName();
-                }
-            }
-        }
+        OfflinePlayer[] offlinePlayers = plugin.getServer().getOfflinePlayers();
+        OfflinePlayer offlinePlayer = offlinePlayers[plugin.getRandom().nextInt(offlinePlayers.length)];
+        assert offlinePlayer.getName() != null;
+        name = offlinePlayer.getName();
         event.setMotd(Palette.translate(plugin.getConfig().getString("server-name")) + "\n" + ChatColor.RESET + plugin.getMOTD().replace("%player", name));
     }
 
@@ -94,16 +90,25 @@ public class EventListener implements Listener {
 
         // Pings
         for (Player p : plugin.getServer().getOnlinePlayers()) {
-            String username = p.getName();
-            String name = ChatColor.stripColor(p.getDisplayName());
+            String username = p.getName().toLowerCase();
+            String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
             for (String word : message.split(" ")) {
-                if (username.toLowerCase().contains(word.toLowerCase()) || name.toLowerCase().contains(word.toLowerCase())) {
-                    if (Ultravanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
-                        String at = PingCommand.COLOR + word + ChatColor.RESET;
-                        plugin.ping(p);
-                        message = message.replace(word, at);
+                if (word.length() >= 3) {
+                    if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
+                        if (Ultravanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || Ultravanilla.isIgnored(player, p)) {
+                            String at = PingCommand.COLOR + word + ChatColor.RESET;
+                            plugin.ping(p);
+                            message = message.replace(word, at);
+                        }
                     }
                 }
+            }
+        }
+
+        //ignored
+        for (Player p : event.getRecipients()) {
+            if (Ultravanilla.isIgnored(p, player)) {
+                event.getRecipients().remove(p);
             }
         }
 

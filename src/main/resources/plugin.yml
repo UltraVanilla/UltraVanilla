@@ -58,12 +58,16 @@ commands:
     description: Send a JSON message to everyone
     permission: ultravanilla.command.raw
     usage: |
-      /raw <message>
+      /raw "<message>" [-suggest "<command>" | -command "<command>" | -link "<url>"] [-hover "<hover message>"]
+      combine with +
   motd:
     description: Shows the current message of the day
     usage: |
       /motd
       /motd <new MOTD>
+  ignore:
+    description: Ignore someone
+    usage: /ignore <player>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

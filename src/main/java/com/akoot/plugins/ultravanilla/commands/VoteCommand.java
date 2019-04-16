@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.stuff.Poll;
 import com.akoot.plugins.ultravanilla.util.RawComponent;
@@ -33,15 +34,23 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                 Player player = (Player) sender;
                 if (args[0].equalsIgnoreCase("list")) {
                     RawMessage message = new RawMessage();
-                    for (Poll poll : plugin.getPolls()) {
-                        String name = poll.getName();
-                        String title = poll.getTitle();
-                        RawComponent text = new RawComponent();
-                        text.setContent(ChatColor.GRAY + "- " + color + name);
-                        text.setHoverText(ChatColor.LIGHT_PURPLE + title + "\\n" + ChatColor.AQUA + "Click for more info...");
-                        message.addComponent(text);
+                    if (plugin.getPolls().size() > 0) {
+                        RawComponent t = new RawComponent();
+                        t.setContent(color + "Ongoing polls: " + Palette.NUMBER + plugin.getPolls().size());
+                        message.addComponent(t);
+                        for (Poll poll : plugin.getPolls()) {
+                            String name = poll.getName();
+                            String title = poll.getTitle();
+                            RawComponent text = new RawComponent();
+                            text.setContent("\\n" + color + "Poll: " + noun(name));
+                            text.setHoverText(object(title) + "\\n" + ChatColor.AQUA + "Click for more info...");
+                            text.setCommand("/vote \\\"" + name + "\\\"");
+                            message.addComponent(text);
+                        }
+                        Ultravanilla.tellRaw(message, player);
+                    } else {
+                        sender.sendMessage(format("There are no ongoing polls"));
                     }
-                    player.sendRawMessage(message.getJSON());
                 } else {
                     Poll poll = getPoll(args[0]);
                     if (poll != null) {
@@ -67,6 +76,12 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                 } else {
                     sendPollNotFound(sender, args[1]);
                 }
+            } else if (args[0].equalsIgnoreCase("finalize")) {
+                if (sender.hasPermission("daemons.command.vote.create")) {
+                    Poll poll = getPoll(args[1]);
+                    poll.runTask(plugin);
+                    poll.cancel();
+                }
             } else {
                 if (sender instanceof Player) {
                     Poll poll = getPoll(args[0]);
@@ -74,15 +89,16 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                     if (poll != null) {
                         String name = poll.getName();
                         if (args[0].equalsIgnoreCase(name)) {
-                            if (!Ultravanilla.getConfig(player.getUniqueId()).getList(Users.VOTE_LIST, new ArrayList<>()).contains(name)) {
+                            if (!Ultravanilla.getConfig(player.getUniqueId()).getStringList(Users.VOTE_LIST).contains(name)) {
                                 for (String key : poll.getVotes().keySet()) {
                                     if (args[1].equalsIgnoreCase(key)) {
                                         sender.sendMessage(format("You voted %s for poll %s", object(key), quote(noun(poll.getName()))));
                                         poll.vote(key);
-                                    } else {
-                                        sender.sendMessage(format("%s is not an option for this poll", wrong(args[1])));
+                                        Ultravanilla.add(player.getUniqueId(), Users.VOTE_LIST, name);
+                                        return true;
                                     }
                                 }
+                                sender.sendMessage(format("%s is not an option for this poll", wrong(args[1])));
                             } else {
                                 sender.sendMessage(format("You already voted for this poll"));
                             }
@@ -154,6 +170,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
         List<String> suggestions = new ArrayList<>();
         boolean canCreate = sender.hasPermission("ultravanilla.command.poll.create");
         if (args.length == 1) {
+            suggestions.add("list");
             if (canCreate) {
                 suggestions.add("create");
                 suggestions.add("rename");

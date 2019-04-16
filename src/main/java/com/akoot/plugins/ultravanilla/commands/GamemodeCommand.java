@@ -58,8 +58,12 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
                 }
             }
         }
-        player.setGameMode(gameMode);
-        sender.sendMessage(color + String.format("Set %s gamemode to %s", noun(playerName + s), number(gameMode.name().toLowerCase())));
+        if (gameMode != null) {
+            player.setGameMode(gameMode);
+            sender.sendMessage(color + String.format("Set %s gamemode to %s", noun(playerName + s), number(gameMode.name().toLowerCase())));
+        } else {
+            return false;
+        }
         return true;
     }
 

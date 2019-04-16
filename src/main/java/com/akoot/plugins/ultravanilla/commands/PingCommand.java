@@ -52,10 +52,14 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
                 }
             } else {
                 Player player = plugin.getServer().getPlayer(args[0]);
-                if (player != null) {
-                    player.sendMessage(format("%s pinged you!", noun(sender.getName())));
-                    sender.sendMessage(format("You pinged %s!", noun(player.getName())));
-                    plugin.ping(player);
+                if (player != null && Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
+                    if (!(sender instanceof Player) || Ultravanilla.isIgnored(player, (Player) sender)) {
+                        player.sendMessage(format("%s pinged you!", noun(sender.getName())));
+                        sender.sendMessage(format("You pinged %s!", noun(player.getName())));
+                        plugin.ping(player);
+                    } else {
+                        sender.sendMessage(IgnoreCommand.ignoredMessage(player));
+                    }
                     return true;
                 }
             }

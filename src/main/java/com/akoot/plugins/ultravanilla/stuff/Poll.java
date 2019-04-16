@@ -3,10 +3,10 @@ package com.akoot.plugins.ultravanilla.stuff;
 import com.akoot.plugins.ultravanilla.Ultravanilla;
 import com.akoot.plugins.ultravanilla.commands.VoteCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.util.RawComponent;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -76,29 +76,29 @@ public class Poll extends BukkitRunnable {
         RawMessage message = new RawMessage();
         for (String key : votes.keySet()) {
             RawComponent text = new RawComponent();
-            text.setContent(VoteCommand.COLOR + "- " + Palette.OBJECT + key + "\\n");
+            text.setContent(Palette.OBJECT + key + "\\n");
             text.setCommand("/vote " + name + " \\\"" + key + "\\\"");
             text.setHoverText(Palette.NOUN + "Click to vote \\\"" + key + "\\\"");
             message.addComponent(text);
         }
         RawComponent t = new RawComponent();
-        t.setContent(VoteCommand.COLOR + "" + ChatColor.ITALIC + "Time: " + Palette.NUMBER + getHumanTime(time));
+        t.setContent(VoteCommand.COLOR + "Time: " + Palette.NUMBER + getHumanTime(time));
         message.addComponent(t);
-        System.out.println(message.getJSON());
         Ultravanilla.tellRaw(message);
     }
 
     public void show(Player player) {
-        player.sendMessage(VoteCommand.COLOR + "Poll: " + Palette.NOUN + title);
+        player.sendMessage(VoteCommand.COLOR + "Poll Info: " + Palette.NOUN + title);
         RawMessage message = new RawMessage();
         for (String key : votes.keySet()) {
             RawComponent text = new RawComponent();
-            text.setContent(VoteCommand.COLOR + key + "\\n");
-            text.setHoverText(Palette.NUMBER + "" + votes.get(key) + " votes");
+            text.setContent(Palette.OBJECT + key + "\\n");
+            text.setCommand("/vote " + name + " \\\"" + key + "\\\"");
+            text.setHoverText(Palette.NOUN + "" + votes.get(key) + VoteCommand.COLOR + " votes");
             message.addComponent(text);
         }
         Ultravanilla.tellRaw(message, player);
-        player.sendMessage(VoteCommand.COLOR + "" + "Time: " + Palette.NUMBER + getHumanTime(getTimeRemaining()));
+        player.sendMessage(VoteCommand.COLOR + "" + "Time left: " + Palette.NUMBER + getHumanTime(getTimeRemaining()));
     }
 
     public void init() {
@@ -116,11 +116,21 @@ public class Poll extends BukkitRunnable {
 
     @Override
     public void run() {
-        Bukkit.getServer().broadcastMessage(VoteCommand.COLOR + "Poll: " + Palette.NOUN + title + Palette.NUMBER + " (" + getTotalVotes() + " votes)");
+        Bukkit.getServer().broadcastMessage(VoteCommand.COLOR + "Poll results: " + Palette.NOUN + title + Palette.NUMBER + " (" + getTotalVotes() + " votes)");
+        RawMessage message = new RawMessage();
         for (String key : votes.keySet()) {
             int value = votes.get(key);
-            String percent = (getTotalVotes() > 0 ? (value / getTotalVotes()) : 0) + "%";
-            Bukkit.getServer().broadcastMessage(Palette.OBJECT + key + ": " + Palette.NUMBER + value + " (" + percent + ")");
+            String percent = (int) Math.round((getTotalVotes() > 0 ? ((double) (value) / (double) (getTotalVotes())) * 100.0 : 0.0)) + "%";
+            RawComponent component = new RawComponent();
+            component.setContent(Palette.OBJECT + key + ": " + Palette.NUMBER + percent + "\\n");
+            component.setHoverText(Palette.NOUN + "" + value + VoteCommand.COLOR + " votes");
+            message.addComponent(component);
+        }
+        Ultravanilla.tellRaw(message);
+        Ultravanilla.getInstance().getPolls().remove(this);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Ultravanilla.remove(player.getUniqueId(), Users.VOTE_LIST, name);
         }
     }
 
@@ -133,7 +143,7 @@ public class Poll extends BukkitRunnable {
     }
 
     private long getTimeRemaining() {
-        return time - (System.currentTimeMillis() - start);
+        return time - (((System.currentTimeMillis() - start) / 1000L) * 20L);
     }
 
     public String getHumanTime(long t) {
