@@ -259,6 +259,9 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("raw").setExecutor(new RawCommand(instance));
         getCommand("motd").setExecutor(new MotdCommand(instance));
         getCommand("ignore").setExecutor(new IgnoreCommand(instance));
+        getCommand("home").setExecutor(new HomeCommand(instance));
+        getCommand("seen").setExecutor(new SeenCommand(instance));
+        getCommand("spawn").setExecutor(new SpawnCommand(instance));
 
     }
 

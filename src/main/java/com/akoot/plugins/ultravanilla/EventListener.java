@@ -13,7 +13,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import java.net.InetAddress;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,12 +27,10 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onListPing(ServerListPingEvent event) {
-        InetAddress address = event.getAddress();
-        String name = "the new player";
         OfflinePlayer[] offlinePlayers = plugin.getServer().getOfflinePlayers();
         OfflinePlayer offlinePlayer = offlinePlayers[plugin.getRandom().nextInt(offlinePlayers.length)];
         assert offlinePlayer.getName() != null;
-        name = offlinePlayer.getName();
+        String name = offlinePlayer.getName();
         event.setMotd(Palette.translate(plugin.getConfig().getString("server-name")) + "\n" + ChatColor.RESET + plugin.getMOTD().replace("%player", name));
     }
 
@@ -44,6 +41,10 @@ public class EventListener implements Listener {
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);
             player.setPlayerListName(nick);
+        }
+        Ultravanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
+        if (!player.hasPlayedBefore()) {
+            Ultravanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
         }
     }
 
@@ -93,12 +94,13 @@ public class EventListener implements Listener {
             String username = p.getName().toLowerCase();
             String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
             for (String word : message.split(" ")) {
-                if (word.length() >= 3) {
+                if (word.length() >= 3 && word.startsWith("@")) {
+                    word = word.substring(1);
                     if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
                         if (Ultravanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || Ultravanilla.isIgnored(player, p)) {
                             String at = PingCommand.COLOR + word + ChatColor.RESET;
                             plugin.ping(p);
-                            message = message.replace(word, at);
+                            message = message.replace("@" + word, at);
                         }
                     }
                 }

@@ -50,6 +50,7 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
                 } else {
                     sender.sendMessage(playerOnly());
                 }
+                return true;
             } else {
                 Player player = plugin.getServer().getPlayer(args[0]);
                 if (player != null && Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {

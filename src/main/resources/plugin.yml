@@ -68,6 +68,20 @@ commands:
   ignore:
     description: Ignore someone
     usage: /ignore <player>
+  home:
+    description: Set and teleport to your home(s)
+    usage: |
+      /home
+      /home set <name>
+      /home remove <name>
+  seen:
+    description: Check when someone was last seen
+    usage: |
+      /seen <player>
+      /seen <player> first
+  spawn:
+    description: Teleport to spawn
+    usage: /spawn
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick
