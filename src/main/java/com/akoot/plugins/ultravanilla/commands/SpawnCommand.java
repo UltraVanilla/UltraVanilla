@@ -22,8 +22,10 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length == 0) {
-                Position spawn = (Position) plugin.getConfig().get("spawn", new Position(player.getWorld().getSpawnLocation()));
-                assert spawn != null;
+                Position spawn = (Position) plugin.getConfig().get("spawn");
+                if (spawn == null) {
+                    spawn = new Position(player.getWorld().getSpawnLocation());
+                }
                 player.teleport(spawn.getLocation());
             } else if (args.length == 1 && player.hasPermission("ultravanilla.command.spawn.set")) {
                 sender.sendMessage(format("Spawn was set to your location"));

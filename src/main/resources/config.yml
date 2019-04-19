@@ -1,4 +1,4 @@
-server-name: "&f&lUltra&4Vanilla"
+server-name: "&6&lUltra&fVanilla"
 default-format: "<{name}> {message}"
 ranked-format: "[{colored-rank}] <{name}> {message}"
 default-rank: default
@@ -11,7 +11,7 @@ motd:
   - "&eNow with a &bTRULY&f&e dedicated server!"
   - "&bWhat did you expect?"
   - "&duwu"
-  - "&Congradulations to &9%player&r&o...! R.I.P."
+  - "&oCongradulations to &9%player&r&o...! R.I.P."
   - "&0Whatareyoulookingat"
   - "&6*Slaps server* this baby can get slapped"
   - "&oHello, epic department?"

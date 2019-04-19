@@ -3,6 +3,8 @@ package com.akoot.plugins.ultravanilla;
 import com.akoot.plugins.ultravanilla.commands.*;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.serializable.Position;
+import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.stuff.Poll;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
@@ -11,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -237,6 +240,9 @@ public final class Ultravanilla extends JavaPlugin {
 
         random = new Random();
         polls = new ArrayList<>();
+
+        ConfigurationSerialization.registerClass(Position.class);
+        ConfigurationSerialization.registerClass(Powertool.class);
 
         getDataFolder().mkdir();
         Users.DIR.mkdir();

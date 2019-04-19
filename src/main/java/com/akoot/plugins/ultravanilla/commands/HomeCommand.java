@@ -283,7 +283,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 // /home set <name>
                 if (args[0].equalsIgnoreCase("set")) {
 
-                    if (!player.hasPermission("daemons.command.home.unlimited")) {
+                    if (homes.size() > 0 && !player.hasPermission("ultravanilla.command.home.unlimited")) {
+                        sender.sendMessage(format("You can only set up to 1 home"));
+                        return true;
                     }
 
                     // Use the static method as it's easier
