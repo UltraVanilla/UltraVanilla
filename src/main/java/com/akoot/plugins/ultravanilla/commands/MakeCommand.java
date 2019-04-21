@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +26,6 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
 
         if (args.length >= 3) {
 
-            String playerName = args[0];
             String subCommand = args[1];
             String message = "";
 
@@ -34,24 +34,25 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
             }
             message = message.trim();
 
-            Player player = plugin.getServer().getPlayer(playerName);
-
-            if (player != null) {
-                if (subCommand.equalsIgnoreCase("say")) {
-                    player.chat(message);
-                    message = quote(message);
-                } else if (subCommand.equalsIgnoreCase("do")) {
-                    player.performCommand(message);
-                    message = "/" + message;
-                } else {
-                    sender.sendMessage(String.format("Can't make %s \"%s\" anything.", noun(playerName), ChatColor.ITALIC + number(subCommand)));
-                    return false;
+            List<Player> players = getPlayers(args[0]);
+            if (!players.isEmpty()) {
+                for (Player player : getPlayers(args[0])) {
+                    if (subCommand.equalsIgnoreCase("say")) {
+                        player.chat(message);
+                        message = quote(message);
+                    } else if (subCommand.equalsIgnoreCase("do")) {
+                        player.performCommand(message);
+                        message = "/" + message;
+                    } else {
+                        sender.sendMessage(String.format("Can't make anyone %s anything.", Palette.VERB + object(subCommand)));
+                        return false;
+                    }
                 }
-                sender.sendMessage(color + String.format("Made %s %s %s", noun(player.getName()), number(subCommand), reset(message)));
-                return true;
+                sender.sendMessage(color + String.format("Made %s %s %s", noun(playerList(players)), number(subCommand), reset(message)));
             } else {
                 sender.sendMessage(playerNotFound(args[1]));
             }
+            return true;
         }
         return false;
     }

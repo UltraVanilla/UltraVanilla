@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.Ultravanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,5 +113,57 @@ public class UltraCommand {
         String at = args[index];
         String arg = String.join(" ", args);
         return arg.substring(arg.lastIndexOf(at)).trim();
+    }
+
+    protected List<String> suggestPlayers() {
+        List<String> suggestions = new ArrayList<>();
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            suggestions.add(player.getName());
+        }
+        suggestions.add("@a");
+        suggestions.add("@r");
+        return suggestions;
+    }
+
+    protected String playerList(List<Player> players) {
+        String list = "";
+        if (players.size() == 1) {
+            return players.get(0).getName();
+        }
+        for (int i = 0; i < players.size(); i++) {
+            if (i == players.size() - 1) {
+                list += "and " + players.get(i);
+            } else {
+                list += players.get(i) + ", ";
+            }
+        }
+        return list;
+    }
+
+    protected List<Player> getPlayers(String arg) {
+        List<Player> players = new ArrayList<>();
+        if (arg.equals("@a")) {
+            players.addAll(plugin.getServer().getOnlinePlayers());
+        } else if (arg.equalsIgnoreCase("@r")) {
+            players.addAll(plugin.getServer().getOnlinePlayers());
+            if (players.size() > 0) {
+                Player player = players.get(plugin.getRandom().nextInt(players.size()));
+                players = new ArrayList<>();
+                players.add(player);
+            }
+        } else if (arg.contains(",")) {
+            for (String name : arg.split(",")) {
+                Player player = plugin.getServer().getPlayer(name);
+                if (player != null) {
+                    players.add(player);
+                }
+            }
+        } else {
+            Player player = plugin.getServer().getPlayer(arg);
+            if (player != null) {
+                players.add(player);
+            }
+        }
+        return players;
     }
 }

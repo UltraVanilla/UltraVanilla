@@ -24,15 +24,13 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        Player player = null;
         GameMode gameMode;
-        String playerName = "your";
-        String s = "";
 
         if (args.length == 0) {
             if (sender instanceof Player) {
-                player = (Player) sender;
+                Player player = (Player) sender;
                 gameMode = player.getGameMode() == GameMode.CREATIVE ? GameMode.SURVIVAL : GameMode.CREATIVE;
+                setGameMode(sender, player, gameMode);
             } else {
                 sender.sendMessage(playerOnly());
                 return false;
@@ -41,30 +39,31 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
             gameMode = getGameMode(args[0]);
             if (args.length == 1) {
                 if (sender instanceof Player) {
-                    player = (Player) sender;
+                    setGameMode(sender, (Player) sender, gameMode);
                 } else {
                     sender.sendMessage(playerOnly());
-                    return false;
                 }
             } else if (args.length == 2) {
-                playerName = args[1];
-                s = "'s";
-                player = plugin.getServer().getPlayer(playerName);
-                if (player == null) {
-                    sender.sendMessage(playerNotFound(playerName));
-                    return true;
-                } else {
-                    playerName = player.getName();
+                for (Player player : getPlayers(args[1])) {
+                    if (player == null) {
+                        sender.sendMessage(playerNotFound(args[1]));
+                        return true;
+                    } else {
+                        setGameMode(sender, player, gameMode);
+                    }
                 }
             }
         }
+        return true;
+    }
+
+    private void setGameMode(CommandSender sender, Player player, GameMode gameMode) {
         if (gameMode != null) {
             player.setGameMode(gameMode);
-            sender.sendMessage(color + String.format("Set %s gamemode to %s", noun(playerName + s), number(gameMode.name().toLowerCase())));
+            sender.sendMessage(color + String.format("Set %s gamemode to %s", posessiveNoun(player.getName()), number(gameMode.name().toLowerCase())));
         } else {
-            return false;
+            sender.sendMessage(wrong("Invalid gamemode specified"));
         }
-        return true;
     }
 
     private GameMode getGameMode(String gameModeString) {
@@ -88,23 +87,12 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
         List<String> list = new ArrayList<>();
 
         if (args.length == 1) {
-            if (args[0].length() < 1) {
-                for (GameMode gameMode : GameMode.values()) {
-                    String name = gameMode.name().toLowerCase();
-                    list.add(name.substring(0, 1));
-                    list.add(name);
-                }
-            } else {
-                for (GameMode gameMode : GameMode.values()) {
-                    String name = gameMode.name().toLowerCase();
-                    if (name.startsWith(args[0])) {
-                        list.add(name.substring(0, 1));
-                        list.add(name);
-                    }
-                }
+            for (GameMode gameMode : GameMode.values()) {
+                String name = gameMode.name().toLowerCase();
+                list.add(name.substring(0, 1));
             }
         } else if (args.length == 2) {
-            return null;
+            list = suggestPlayers();
         }
         return list;
     }

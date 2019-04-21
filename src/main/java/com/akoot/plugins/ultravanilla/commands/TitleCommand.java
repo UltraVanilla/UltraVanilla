@@ -42,7 +42,18 @@ public class TitleCommand extends UltraCommand implements CommandExecutor, TabCo
 
             title = Palette.translate(title.trim());
             subtitle = Palette.translate(subtitle.trim());
-            for (Player player : plugin.getServer().getOnlinePlayers()) {
+
+            String playersString = getArgFor(args, "-to");
+            List<Player> players = new ArrayList<>(plugin.getServer().getOnlinePlayers());
+            if (playersString != null) {
+                players = getPlayers(playersString);
+                if (title.contains("-to")) {
+                    title = title.substring(0, title.indexOf("-to"));
+                } else if (subtitle.contains("-to")) {
+                    subtitle = subtitle.substring(0, subtitle.indexOf("-to"));
+                }
+            }
+            for (Player player : players) {
                 player.sendTitle(title, subtitle);
             }
             return true;
@@ -56,8 +67,12 @@ public class TitleCommand extends UltraCommand implements CommandExecutor, TabCo
         // Initialize the list as empty
         List<String> list = new ArrayList<>();
         if (args.length > 1) {
-            if (!Arrays.asList(args).contains("-s")) {
+            List<String> params = Arrays.asList(args);
+            if (!params.contains("-s")) {
                 list.add("-s");
+            }
+            if (!params.contains("-to")) {
+                list.add("-to");
             }
         }
 

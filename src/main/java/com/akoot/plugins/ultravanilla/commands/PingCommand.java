@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PingCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.LIGHT_PURPLE;
+    public static final ChatColor COLOR = ChatColor.GRAY;
 
     public PingCommand(Ultravanilla instance) {
         super(instance);
@@ -52,16 +52,19 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
                 }
                 return true;
             } else {
-                Player player = plugin.getServer().getPlayer(args[0]);
-                if (player != null && Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
-                    if (!(sender instanceof Player) || Ultravanilla.isIgnored(player, (Player) sender)) {
-                        player.sendMessage(format("%s pinged you!", noun(sender.getName())));
-                        sender.sendMessage(format("You pinged %s!", noun(player.getName())));
-                        plugin.ping(player);
+                for (Player player : getPlayers(args[0])) {
+                    if (Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
+                        if (!(sender instanceof Player) || !Ultravanilla.isIgnored(player, (Player) sender)) {
+                            player.sendMessage(format("%s pinged you!", noun(sender.getName())));
+                            sender.sendMessage(format("You pinged %s!", noun(player.getName())));
+                            plugin.ping(player);
+                        } else {
+                            sender.sendMessage(IgnoreCommand.ignoredMessage(player));
+                        }
+                        return true;
                     } else {
-                        sender.sendMessage(IgnoreCommand.ignoredMessage(player));
+                        sender.sendMessage(format("%s has ping disabled", noun(player.getName())));
                     }
-                    return true;
                 }
             }
         }

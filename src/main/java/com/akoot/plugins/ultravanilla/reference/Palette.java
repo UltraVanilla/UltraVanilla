@@ -11,6 +11,7 @@ public class Palette {
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
 
     public static final ChatColor NOUN = ChatColor.LIGHT_PURPLE;
+    public static final ChatColor VERB = ChatColor.ITALIC;
     public static final ChatColor NUMBER = ChatColor.GOLD;
     public static final ChatColor OBJECT = ChatColor.AQUA;
     public static final ChatColor WRONG = ChatColor.RED;
