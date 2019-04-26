@@ -1,6 +1,6 @@
 server-name: "&6&lUltra&fVanilla"
-default-format: "<{name}> {message}"
-ranked-format: "[{colored-rank}] <{name}> {message}"
+default-format: "&r<{name-color}{name}&r> {text-color}{message}"
+ranked-format: "&7[{colored-rank-abbreviation}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}"
 default-rank: default
 enable-chat-filter: true
 suicide-message:
@@ -8,10 +8,18 @@ suicide-message:
   - "%s took their own life"
 motd:
   - "A Minecraft Server?"
-  - "&eNow with a &bTRULY&f&e dedicated server!"
   - "&bWhat did you expect?"
   - "&duwu"
   - "&oCongradulations to &9%player&r&o...! R.I.P."
   - "&0Whatareyoulookingat"
   - "&6*Slaps server* this baby can get slapped"
   - "&oHello, epic department?"
+color:
+  rank:
+    member: YELLOW
+    loyalist: GREEN
+    donator: LIGHT_PURPLE
+    helper: GRAY
+    moderator: BLUE
+    admin: RED
+    owner: AQUA

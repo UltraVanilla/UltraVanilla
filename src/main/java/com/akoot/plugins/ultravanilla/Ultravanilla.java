@@ -268,6 +268,9 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("home").setExecutor(new HomeCommand(instance));
         getCommand("seen").setExecutor(new SeenCommand(instance));
         getCommand("spawn").setExecutor(new SpawnCommand(instance));
+        getCommand("print").setExecutor(new PrintCommand(instance));
+        getCommand("user").setExecutor(new UserCommand(instance));
+        getCommand("do").setExecutor(new DoCommand(instance));
 
     }
 

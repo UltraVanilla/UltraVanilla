@@ -82,6 +82,19 @@ commands:
   spawn:
     description: Teleport to spawn
     usage: /spawn
+  print:
+    description: Print a message
+    usage: /print <message> [\n<new line]
+  user:
+    description: Configure a user
+    permission: ultravanilla.command.user
+    usage: |
+      /user <name>
+      /user <name> get|clear <key>
+      /user <name> set <key> [value]
+  do:
+    description: Run multiple commands
+    usage: /do "<command> [subcommand]"...
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

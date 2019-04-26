@@ -66,6 +66,34 @@ public class EventListener implements Listener {
 
         Player player = event.getPlayer();
 
+        // Chat formatter
+        String nameColor = ChatColor.valueOf(Ultravanilla.getConfig(player.getUniqueId()).getString("name-color", "RESET")) + "";
+        String textColor = ChatColor.valueOf(Ultravanilla.getConfig(player.getUniqueId()).getString("text-color", "RESET")) + "";
+        String group = plugin.getPermissions().getPrimaryGroup(player);
+        String color = ChatColor.valueOf(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
+        String abbreviation = group.substring(0, 1).toUpperCase();
+        String format;
+
+        // Decide which format to show as specified in config.yml
+        if (group.equals(plugin.getConfig().getString("default-rank"))) {
+            format = plugin.getConfig().getString("default-format");
+        } else {
+            format = plugin.getConfig().getString("ranked-format");
+        }
+
+        // Replace all of the placeholders
+        String formatted = Palette.translate(format)
+                .replace("{name-color}", nameColor)
+                .replace("{text-color}", textColor)
+                .replace("{rank-color}", color)
+                .replace("{colored-rank}", color + group + ChatColor.RESET)
+                .replace("{colored-rank-abbreviation}", color + abbreviation + ChatColor.RESET)
+                .replace("{rank}", group + ChatColor.RESET)
+                .replace("{rank-abbreviation}", abbreviation + ChatColor.RESET)
+                .replace("{name}", "%1$s")
+                .replace("{message}", "%2$s");
+        event.setFormat(formatted);
+
         // Chat filter
         String message = event.getMessage();
         if (plugin.getConfig().getBoolean("enable-chat-filter") && !player.hasPermission("ultravanilla.chat.swearing")) {

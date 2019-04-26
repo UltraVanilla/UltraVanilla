@@ -43,6 +43,7 @@ public class ConfigCommand extends UltraCommand implements CommandExecutor, TabE
                 if (action.equalsIgnoreCase("set")) {
                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
                         config.set(key, Boolean.parseBoolean(value));
+                        plugin.saveConfig();
                     }
                     config.set(key, value);
                     sender.sendMessage(format("Set %s to %s in %s!", object(key), object(value), noun(configName)));
@@ -50,11 +51,13 @@ public class ConfigCommand extends UltraCommand implements CommandExecutor, TabE
                     List<String> list = config.getStringList(key);
                     list.add(value);
                     config.set(key, list);
+                    plugin.saveConfig();
                     sender.sendMessage(format("Added %s to %s in %s!", object(value), object(key), noun(configName)));
                 } else if (action.equalsIgnoreCase("remove-from")) {
                     List<String> list = config.getStringList(key);
                     list.remove(value);
                     config.set(key, list);
+                    plugin.saveConfig();
                     sender.sendMessage(format("Removed %s from %s in %s!", object(value), object(key), noun(configName)));
                 } else {
                     sender.sendMessage(format("%s is not a valid action!", wrong(action)));
@@ -80,8 +83,6 @@ public class ConfigCommand extends UltraCommand implements CommandExecutor, TabE
             suggestions.add("set");
             suggestions.add("add-to");
             suggestions.add("remove-from");
-            suggestions.add("colors");
-            suggestions.add("swears");
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add-to") || args[0].equalsIgnoreCase("remove-from")) {
                 YamlConfiguration config = (YamlConfiguration) plugin.getConfig();

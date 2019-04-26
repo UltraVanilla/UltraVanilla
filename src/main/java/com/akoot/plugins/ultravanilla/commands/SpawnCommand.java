@@ -24,7 +24,6 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
             if (args.length == 0) {
                 Position spawn = (Position) plugin.getConfig().get("spawn");
                 if (spawn != null) {
-                    sender.sendMessage(spawn.serialize().toString());
                     player.teleport(spawn.getLocation());
                 } else {
                     sender.sendMessage(wrong("Spawn is not set"));
