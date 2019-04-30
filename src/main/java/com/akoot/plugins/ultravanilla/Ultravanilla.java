@@ -30,9 +30,9 @@ import java.util.UUID;
 public final class Ultravanilla extends JavaPlugin {
 
     public static Ultravanilla instance;
-    private YamlConfiguration swears;
     private Permission permissions;
-    private List<String> swearsRegex;
+
+    private YamlConfiguration changelog;
 
     private List<Poll> polls;
     private List<String> motds;
@@ -46,16 +46,6 @@ public final class Ultravanilla extends JavaPlugin {
         return motds;
     }
     private Random random;
-    private List<String> swearsRaw;
-
-    public Poll getPoll(String name) {
-        for (Poll poll : polls) {
-            if (poll.getName().equalsIgnoreCase(name)) {
-                return poll;
-            }
-        }
-        return null;
-    }
 
     public static Ultravanilla getInstance() {
         return instance;
@@ -83,6 +73,10 @@ public final class Ultravanilla extends JavaPlugin {
 
     public String getMOTD() {
         return motd;
+    }
+
+    public YamlConfiguration getChangelog() {
+        return changelog;
     }
 
     public static void set(UUID uid, String key, Object value) {
@@ -123,20 +117,8 @@ public final class Ultravanilla extends JavaPlugin {
         return random;
     }
 
-    public List<String> getSwearsRaw() {
-        return swearsRaw;
-    }
-
-    public YamlConfiguration getSwears() {
-        return swears;
-    }
-
     public Permission getPermissions() {
         return permissions;
-    }
-
-    public List<String> getSwearsRegex() {
-        return swearsRegex;
     }
 
     public void setMOTD(String motd) {
@@ -148,40 +130,21 @@ public final class Ultravanilla extends JavaPlugin {
         return ignored.contains(target.getUniqueId().toString());
     }
 
-    public YamlConfiguration getEditableConfig(String name) {
-        if (name.equalsIgnoreCase("swears")) {
-            return swears;
-        }
-        return null;
-    }
-
     public void loadConfigs() {
-        getConfig("config.yml");
-        swears = getConfig("swears.yml");
-
-        swearsRaw = new ArrayList<>();
-        swearsRaw.addAll(swears.getKeys(false));
-
-        swearsRegex = new ArrayList<>();
-        for (String string : swears.getKeys(false)) {
-            String regex = "";
-            for (char c : string.toCharArray()) {
-                regex = regex + "(" + c + "|\\*)\\.?";
-            }
-            swearsRegex.add(regex.substring(0, regex.length() - 3));
-        }
+        getConfig("config.yml", false);
+        changelog = getConfig("changelog.yml", true);
     }
 
-    private YamlConfiguration getConfig(String name) {
+    private YamlConfiguration getConfig(String name, boolean overwrite) {
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File(this.getDataFolder(), name);
-        if (!configFile.exists()) {
+        if (!configFile.exists() || overwrite) {
             InputStream fis = getClass().getResourceAsStream("/" + name);
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(configFile);
                 byte[] buf = new byte[1024];
-                int i = 0;
+                int i;
                 while ((i = fis.read(buf)) != -1) {
                     fos.write(buf, 0, i);
                 }
@@ -233,9 +196,10 @@ public final class Ultravanilla extends JavaPlugin {
         instance = this;
 
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permissions = rsp.getProvider();
-        if (permissions == null) {
+        if (rsp == null) {
             getLogger().warning("Vault could not link to a permissions provider.");
+        } else {
+            permissions = rsp.getProvider();
         }
 
         random = new Random();
@@ -259,7 +223,6 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("gm").setExecutor(new GamemodeCommand(instance));
         getCommand("title").setExecutor(new TitleCommand(instance));
         getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
-        getCommand("config").setExecutor(new ConfigCommand(instance));
         getCommand("ping").setExecutor(new PingCommand(instance));
         getCommand("vote").setExecutor(new VoteCommand(instance));
         getCommand("raw").setExecutor(new RawCommand(instance));
@@ -274,6 +237,7 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("afk").setExecutor(new AfkCommand(instance));
         getCommand("msg").setExecutor(new MsgCommand(instance));
         getCommand("reply").setExecutor(new ReplyCommand(instance));
+        getCommand("changelog").setExecutor(new ChangelogCommand(instance));
     }
 
     private void setRandomMOTD() {

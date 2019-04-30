@@ -1,0 +1,12 @@
+player:
+  added:
+    - /changelog command
+  removed:
+    - Chat filter
+  fixed: []
+staff:
+  added: []
+  removed:
+    - /config command
+  fixed:
+    - Chat format giving console errors

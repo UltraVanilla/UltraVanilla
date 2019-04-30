@@ -1,29 +1,9 @@
-default-rank: default
+default-group: default
 format:
-  unranked: '&r<{name-color}{name}&r> {text-color}{message}'
-  ranked: '&7[{rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
+  default: '&r<{name-color}{name}&r> {text-color}{message}'
+  prefixed: '&7[{rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 
-# Chat Filter
-enable-chat-filter: false
-swears:
-  fuck: [heck, frick]
-  shit: [crap, crud, barnacles]
-  nigger: [homie, noodle]
-  bitch: [bunny, basket]
-  faggot: [friend, buddy]
-  dick: [richard]
-  cock: [rooster]
-  cunt: [cantaloupe]
-  asshole: [silly goose, silly]
-  pussy: [kitten]
-  piss: [peepee]
-  arsehole: [..lol]
-  whore: [broad]
-  god: [g*d]
-  kike: [kite]
-  nigga: [nibba]
-
-# Suicide
+# Strings
 strings:
   suicide-message:
     - '%s committed suicide'

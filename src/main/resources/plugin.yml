@@ -31,13 +31,6 @@ commands:
     description: Changes your gamemode
     permission: minecraft.command.gamemode
     usage: /gm [gamemode] [player]
-  config:
-    description: Edit configurations
-    permission: ultravanilla.command.config
-    usage: |
-      /config [name] set <key> <value>
-      /config [name] add <key> <value>
-      /config [name] remove <key> <value>
   title:
     description: Show a title
     permission: minecraft.command.title
@@ -49,6 +42,7 @@ commands:
   vote:
     description: Create and vote for polls
     permission: ultravanilla.command.vote
+    aliases: [vote]
     usage: |
       /vote list
       /vote <name>
@@ -105,6 +99,9 @@ commands:
     aliases: [r]
     description: Reply to the person you last /msg'd
     usage: /reply <message>
+  changelog:
+    description: Shows the changelog
+    usage: /changelog
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick
