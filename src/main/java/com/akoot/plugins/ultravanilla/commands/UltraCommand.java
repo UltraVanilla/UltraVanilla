@@ -68,7 +68,7 @@ public class UltraCommand {
     }
 
     protected String playerNotFound(String name) {
-        return format("Player %s is not online!", noun(name));
+        return format("%s is not online!", noun(name));
     }
 
     protected String noPermission(String item) {
@@ -106,7 +106,7 @@ public class UltraCommand {
 
     protected String getArg(String[] args) {
         String arg = String.join(" ", args);
-        return arg.substring(arg.lastIndexOf(" ")).trim();
+        return arg.trim();
     }
 
     protected String getArg(String[] args, int index) {

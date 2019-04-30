@@ -84,7 +84,7 @@ commands:
     usage: /spawn
   print:
     description: Print a message
-    usage: /print <message> [\n<new line]
+    usage: /print <message> [\n<new line>]
   user:
     description: Configure a user
     permission: ultravanilla.command.user
@@ -95,6 +95,16 @@ commands:
   do:
     description: Run multiple commands
     usage: /do "<command> [subcommand]"...
+  afk:
+    description: Toggles AFK mode
+    usage: /afk
+  msg:
+    description: Send a private message
+    usage: /msg <player> <message>
+  reply:
+    aliases: [r]
+    description: Reply to the person you last /msg'd
+    usage: /reply <message>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

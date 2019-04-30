@@ -248,7 +248,7 @@ public final class Ultravanilla extends JavaPlugin {
         Users.DIR.mkdir();
         loadConfigs();
 
-        motds = getConfig().getStringList("motd");
+        motds = getConfig().getStringList("motd.strings");
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
 
         getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
@@ -271,7 +271,9 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("print").setExecutor(new PrintCommand(instance));
         getCommand("user").setExecutor(new UserCommand(instance));
         getCommand("do").setExecutor(new DoCommand(instance));
-
+        getCommand("afk").setExecutor(new AfkCommand(instance));
+        getCommand("msg").setExecutor(new MsgCommand(instance));
+        getCommand("reply").setExecutor(new ReplyCommand(instance));
     }
 
     private void setRandomMOTD() {

@@ -2,6 +2,7 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.Ultravanilla;
 import com.akoot.plugins.ultravanilla.serializable.Position;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,9 +16,11 @@ import java.util.List;
 public class HomeCommand extends UltraCommand implements CommandExecutor, TabCompleter {
 
     public static final String HOME_PATH = "data.homes";
+    public static final ChatColor COLOR = ChatColor.GRAY;
 
     public HomeCommand(Ultravanilla plugin) {
         super(plugin);
+        this.color = COLOR;
     }
 
     /**
@@ -244,6 +247,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                         // Print out all of the home names
                         sender.sendMessage(format("Homes:"));
+                        if (((Player) sender).getBedSpawnLocation() != null) {
+                            sender.sendMessage(format("- %s", object("bed")));
+                        }
                         for (Position home : homes) {
                             sender.sendMessage(format("- %s", object(home.getName())));
                         }
@@ -258,6 +264,15 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                     // Set the home name
                     String homeName = args[0];
+
+                    if (homeName.equals("bed")) {
+                        Location bed = player.getBedSpawnLocation();
+                        if (bed != null) {
+                            player.teleport(bed);
+                            sender.sendMessage(format("Teleporting to %s...", object("your bed")));
+                            return true;
+                        }
+                    }
 
                     // Loop through all of the homes
                     for (Position home : homes) {
@@ -349,6 +364,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             if (home.getName().startsWith(args[0])) {
                                 list.add(home.getName());
                             }
+                        }
+                        if (player.getBedSpawnLocation() != null) {
+                            list.add("bed");
                         }
                         addDefaults(list, args[0], "list", "remove", "remove-all", "set");
                     }
