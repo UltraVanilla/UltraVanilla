@@ -42,7 +42,7 @@ commands:
   vote:
     description: Create and vote for polls
     permission: ultravanilla.command.vote
-    aliases: [vote]
+    aliases: [poll]
     usage: |
       /vote list
       /vote <name>
@@ -66,6 +66,7 @@ commands:
     description: Set and teleport to your home(s)
     usage: |
       /home
+      /home list
       /home set <name>
       /home remove <name>
   seen:
@@ -102,6 +103,10 @@ commands:
   changelog:
     description: Shows the changelog
     usage: /changelog
+  inventory:
+    aliases: [inv]
+    description: Opens a player's inventory
+    usage: /inventory <player>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

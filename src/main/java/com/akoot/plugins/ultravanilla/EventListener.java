@@ -41,9 +41,12 @@ public class EventListener implements Listener {
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         OfflinePlayer[] offlinePlayers = plugin.getServer().getOfflinePlayers();
-        OfflinePlayer offlinePlayer = offlinePlayers[plugin.getRandom().nextInt(offlinePlayers.length)];
-        assert offlinePlayer.getName() != null;
-        String name = offlinePlayer.getName();
+        OfflinePlayer offlinePlayer;
+        String name = "Nobody";
+        if (offlinePlayers.length > 0) {
+            offlinePlayer = offlinePlayers[plugin.getRandom().nextInt(offlinePlayers.length)];
+            name = offlinePlayer.getName();
+        }
         String version = plugin.getServer().getVersion();
         version = version.substring(version.indexOf("MC: ") + 4, version.length() - 1);
         event.setMotd(Palette.translate(plugin.getConfig().getString("motd.server-name")) +

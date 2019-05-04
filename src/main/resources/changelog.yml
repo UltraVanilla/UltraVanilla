@@ -1,12 +1,10 @@
 player:
-  added:
-    - /changelog command
-  removed:
-    - Chat filter
+  added: []
+  removed: []
   fixed: []
 staff:
-  added: []
-  removed:
-    - /config command
+  added:
+    - /inventory
+  removed: []
   fixed:
-    - Chat format giving console errors
+    - Error on list ping with 0 offline players

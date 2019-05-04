@@ -238,6 +238,7 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("msg").setExecutor(new MsgCommand(instance));
         getCommand("reply").setExecutor(new ReplyCommand(instance));
         getCommand("changelog").setExecutor(new ChangelogCommand(instance));
+        getCommand("inventory").setExecutor(new InventoryCommand(instance));
     }
 
     private void setRandomMOTD() {
