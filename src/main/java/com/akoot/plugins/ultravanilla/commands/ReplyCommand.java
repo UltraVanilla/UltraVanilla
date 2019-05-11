@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ public class ReplyCommand extends UltraCommand implements CommandExecutor, TabEx
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public ReplyCommand(Ultravanilla instance) {
+    public ReplyCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
@@ -31,7 +31,7 @@ public class ReplyCommand extends UltraCommand implements CommandExecutor, TabEx
             } else {
                 Player player = plugin.getServer().getPlayer(to);
                 if (player == null) {
-                    sender.sendMessage(playerNotFound(to));
+                    sender.sendMessage(playerNotOnline(to));
                 } else {
                     MsgCommand.msg(sender, player, getArg(args));
                 }

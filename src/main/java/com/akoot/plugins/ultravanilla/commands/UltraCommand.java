@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 public class UltraCommand {
 
     public ChatColor color = ChatColor.WHITE;
-    protected Ultravanilla plugin;
+    protected UltraVanilla plugin;
 
-    public UltraCommand(Ultravanilla instance) {
+    public UltraCommand(UltraVanilla instance) {
         this.plugin = instance;
     }
 
@@ -67,9 +67,18 @@ public class UltraCommand {
         return (bool ? Palette.TRUE : Palette.FALSE) + "" + bool + color;
     }
 
-    protected String playerNotFound(String name) {
+    protected String title(String item) {
+        return color + "------ " + reset(item) + color + " ------";
+    }
+
+    protected String playerNotOnline(String name) {
         return format("%s is not online!", noun(name));
     }
+
+    protected String playerNotFound(String name) {
+        return format("%s has never joined!", noun(name));
+    }
+
 
     protected String noPermission(String item) {
         return format(Palette.WRONG + "You do not have permission to " + Palette.FALSE + item);

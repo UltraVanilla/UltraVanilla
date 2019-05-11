@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.stuff;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.commands.VoteCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
@@ -84,7 +84,7 @@ public class Poll extends BukkitRunnable {
         RawComponent t = new RawComponent();
         t.setContent(VoteCommand.COLOR + "Time: " + Palette.NUMBER + getHumanTime(time));
         message.addComponent(t);
-        Ultravanilla.tellRaw(message);
+        UltraVanilla.tellRaw(message);
     }
 
     public void show(Player player) {
@@ -97,13 +97,13 @@ public class Poll extends BukkitRunnable {
             text.setHoverText(Palette.NOUN + "" + votes.get(key) + VoteCommand.COLOR + " votes");
             message.addComponent(text);
         }
-        Ultravanilla.tellRaw(message, player);
+        UltraVanilla.tellRaw(message, player);
         player.sendMessage(VoteCommand.COLOR + "" + "Time left: " + Palette.NUMBER + getHumanTime(getTimeRemaining()));
     }
 
     public void init() {
         poll();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Ultravanilla.getInstance(), this, time);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(UltraVanilla.getInstance(), this, time);
         start = System.currentTimeMillis();
     }
 
@@ -126,11 +126,11 @@ public class Poll extends BukkitRunnable {
             component.setHoverText(Palette.NOUN + "" + value + VoteCommand.COLOR + " votes");
             message.addComponent(component);
         }
-        Ultravanilla.tellRaw(message);
-        Ultravanilla.getInstance().getPolls().remove(this);
+        UltraVanilla.tellRaw(message);
+        UltraVanilla.getInstance().getPolls().remove(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Ultravanilla.remove(player.getUniqueId(), Users.VOTE_LIST, name);
+            UltraVanilla.remove(player.getUniqueId(), Users.VOTE_LIST, name);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -16,7 +16,7 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public GamemodeCommand(Ultravanilla plugin) {
+    public GamemodeCommand(UltraVanilla plugin) {
         super(plugin);
         color = COLOR;
     }
@@ -46,7 +46,7 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
             } else if (args.length == 2) {
                 for (Player player : getPlayers(args[1])) {
                     if (player == null) {
-                        sender.sendMessage(playerNotFound(args[1]));
+                        sender.sendMessage(playerNotOnline(args[1]));
                         return true;
                     } else {
                         setGameMode(sender, player, gameMode);

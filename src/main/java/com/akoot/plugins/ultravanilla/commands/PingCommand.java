@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
 
     public static final ChatColor COLOR = ChatColor.GRAY;
 
-    public PingCommand(Ultravanilla instance) {
+    public PingCommand(UltraVanilla instance) {
         super(instance);
         color = COLOR;
     }
@@ -28,13 +28,13 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
             if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    boolean pingEnabled = Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true);
+                    boolean pingEnabled = UltraVanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true);
                     switch (args[0]) {
                         case "on":
                             if (pingEnabled) {
                                 sender.sendMessage(format("Ping already enabled!"));
                             } else {
-                                Ultravanilla.set(player.getUniqueId(), Users.PING_ENABLED, true);
+                                UltraVanilla.set(player.getUniqueId(), Users.PING_ENABLED, true);
                                 sender.sendMessage(format("%s ping", Palette.TRUE + "Enabled" + color));
                             }
                             break;
@@ -42,7 +42,7 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
                             if (!pingEnabled) {
                                 sender.sendMessage(format("Ping already disabled!"));
                             } else {
-                                Ultravanilla.set(player.getUniqueId(), Users.PING_ENABLED, false);
+                                UltraVanilla.set(player.getUniqueId(), Users.PING_ENABLED, false);
                                 sender.sendMessage(format("%s ping", Palette.FALSE + "Disabled" + color));
                             }
                             break;
@@ -53,8 +53,8 @@ public class PingCommand extends UltraCommand implements CommandExecutor, TabExe
                 return true;
             } else {
                 for (Player player : getPlayers(args[0])) {
-                    if (Ultravanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
-                        if (!(sender instanceof Player) || !Ultravanilla.isIgnored(player, (Player) sender)) {
+                    if (UltraVanilla.getConfig(player.getUniqueId()).getBoolean(Users.PING_ENABLED, true)) {
+                        if (!(sender instanceof Player) || !UltraVanilla.isIgnored(player, (Player) sender)) {
                             player.sendMessage(format("%s pinged you!", noun(sender.getName())));
                             sender.sendMessage(format("You pinged %s!", noun(player.getName())));
                             plugin.ping(player);

@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +14,7 @@ public class ReloadCommand extends UltraCommand implements CommandExecutor, TabE
 
     public static final ChatColor COLOR = ChatColor.YELLOW;
 
-    public ReloadCommand(Ultravanilla instance) {
+    public ReloadCommand(UltraVanilla instance) {
         super(instance);
         color = COLOR;
     }

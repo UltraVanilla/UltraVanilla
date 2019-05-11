@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TitleCommand extends UltraCommand implements CommandExecutor, TabCompleter {
 
-    public TitleCommand(Ultravanilla plugin) {
+    public TitleCommand(UltraVanilla plugin) {
         super(plugin);
     }
 

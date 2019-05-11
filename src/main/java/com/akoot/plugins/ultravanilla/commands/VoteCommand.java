@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.stuff.Poll;
@@ -21,7 +21,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
 
     public static final ChatColor COLOR = ChatColor.GRAY;
 
-    public VoteCommand(Ultravanilla instance) {
+    public VoteCommand(UltraVanilla instance) {
         super(instance);
         color = COLOR;
     }
@@ -47,7 +47,7 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                             text.setCommand("/vote \\\"" + name + "\\\"");
                             message.addComponent(text);
                         }
-                        Ultravanilla.tellRaw(message, player);
+                        UltraVanilla.tellRaw(message, player);
                     } else {
                         sender.sendMessage(format("There are no ongoing polls"));
                     }
@@ -89,12 +89,12 @@ public class VoteCommand extends UltraCommand implements CommandExecutor, TabExe
                     if (poll != null) {
                         String name = poll.getName();
                         if (args[0].equalsIgnoreCase(name)) {
-                            if (!Ultravanilla.getConfig(player.getUniqueId()).getStringList(Users.VOTE_LIST).contains(name)) {
+                            if (!UltraVanilla.getConfig(player.getUniqueId()).getStringList(Users.VOTE_LIST).contains(name)) {
                                 for (String key : poll.getVotes().keySet()) {
                                     if (args[1].equalsIgnoreCase(key)) {
                                         sender.sendMessage(format("You voted %s for poll %s", object(key), quote(noun(poll.getName()))));
                                         poll.vote(key);
-                                        Ultravanilla.add(player.getUniqueId(), Users.VOTE_LIST, name);
+                                        UltraVanilla.add(player.getUniqueId(), Users.VOTE_LIST, name);
                                         return true;
                                     }
                                 }

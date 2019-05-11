@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,7 +18,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
     public static final String HOME_PATH = "data.homes";
     public static final ChatColor COLOR = ChatColor.GRAY;
 
-    public HomeCommand(Ultravanilla plugin) {
+    public HomeCommand(UltraVanilla plugin) {
         super(plugin);
         this.color = COLOR;
     }
@@ -60,7 +60,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
         homes.add(home);
 
         // Save the new home list to config
-        Ultravanilla.set(player, HOME_PATH, homes);
+        UltraVanilla.set(player, HOME_PATH, homes);
     }
 
     /**
@@ -71,7 +71,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      */
     public static List<Position> getHomes(Player player) {
         @SuppressWarnings({"unchecked"})
-        List<Position> homes = (List<Position>) Ultravanilla.getConfig(player.getUniqueId()).getList(HOME_PATH);
+        List<Position> homes = (List<Position>) UltraVanilla.getConfig(player.getUniqueId()).getList(HOME_PATH);
         return homes;
     }
 
@@ -108,7 +108,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             if (found) {
 
                 // Save the new home list to config
-                Ultravanilla.set(player, HOME_PATH, homes);
+                UltraVanilla.set(player, HOME_PATH, homes);
             }
         }
         return found;
@@ -246,12 +246,12 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     if (!homes.isEmpty()) {
 
                         // Print out all of the home names
-                        sender.sendMessage(format("Homes:"));
+                        sender.sendMessage(title("Homes"));
                         if (((Player) sender).getBedSpawnLocation() != null) {
-                            sender.sendMessage(format("- %s", object("bed")));
+                            sender.sendMessage(format("• %s", object("bed")));
                         }
                         for (Position home : homes) {
-                            sender.sendMessage(format("- %s", object(home.getName())));
+                            sender.sendMessage(format("• %s", object(home.getName())));
                         }
                     } else {
                         sender.sendMessage(format("You do not have any homes!"));
@@ -326,7 +326,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             }
 
             // If the command didn't return yet, the homes list has been updated above, so it's time to save it
-            Ultravanilla.set(player, HOME_PATH, homes);
+            UltraVanilla.set(player, HOME_PATH, homes);
         } else {
             sender.sendMessage(playerOnly());
         }

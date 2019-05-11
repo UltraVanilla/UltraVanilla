@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DoCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public DoCommand(Ultravanilla instance) {
+    public DoCommand(UltraVanilla instance) {
         super(instance);
     }
 

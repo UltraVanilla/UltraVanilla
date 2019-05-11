@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -17,7 +17,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
 
     public static final ChatColor COLOR = ChatColor.DARK_GREEN;
 
-    public UserCommand(Ultravanilla instance) {
+    public UserCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
@@ -29,7 +29,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
         if (args.length > 0) {
 
             OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(args[0]);
-            YamlConfiguration config = Ultravanilla.getConfig(offlinePlayer.getUniqueId());
+            YamlConfiguration config = UltraVanilla.getConfig(offlinePlayer.getUniqueId());
 
             if (config == null) {
                 sender.sendMessage(format("User %s not found", quote(noun(args[0]))));
@@ -37,7 +37,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
             }
 
             if (args.length == 1) {
-                sender.sendMessage(format("%s info", posessiveNoun(offlinePlayer.getName())));
+                sender.sendMessage(title(format("%s info", posessiveNoun(offlinePlayer.getName()))));
                 for (String key : config.getKeys(true)) {
                     sender.sendMessage(format("%s: %s", key, reset(config.get(key) + "")));
                 }
@@ -53,7 +53,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
                     if (args[1].equalsIgnoreCase("get")) {
                         sender.sendMessage(format("%s: %s", key, reset(config.get(key).toString())));
                     } else if (args[1].equalsIgnoreCase("clear")) {
-                        Ultravanilla.set(offlinePlayer.getUniqueId(), key, null);
+                        UltraVanilla.set(offlinePlayer.getUniqueId(), key, null);
                         if (print) {
                             sender.sendMessage(format("Cleared %s for %s", quote(object(key)), noun(offlinePlayer.getName())));
                         }
@@ -63,7 +63,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
                     }
                 } else if (args.length == 4) {
                     if (args[1].equalsIgnoreCase("set")) {
-                        Ultravanilla.set(offlinePlayer.getUniqueId(), key, args[3]);
+                        UltraVanilla.set(offlinePlayer.getUniqueId(), key, args[3]);
                         if (print) {
                             sender.sendMessage(format("Set %s to %s for %s", quote(object(key)), quote(object(args[3])), noun(offlinePlayer.getName())));
                         }
@@ -96,7 +96,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
                     suggestions.add("clear");
                     suggestions.add("get");
                 } else if (args.length >= 3) {
-                    YamlConfiguration config = Ultravanilla.getConfig(player.getUniqueId());
+                    YamlConfiguration config = UltraVanilla.getConfig(player.getUniqueId());
                     if (config != null) {
                         if (args.length == 3) {
                             suggestions.addAll(config.getKeys(true));

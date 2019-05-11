@@ -1,17 +1,21 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryCommand extends UltraCommand implements CommandExecutor {
 
     public static final ChatColor COLOR = ChatColor.DARK_AQUA;
 
-    public InventoryCommand(Ultravanilla instance) {
+    public InventoryCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
@@ -32,24 +36,35 @@ public class InventoryCommand extends UltraCommand implements CommandExecutor {
                     if (sender instanceof Player) {
                         ((Player) sender).openInventory(player.getInventory());
                     } else {
-                        sender.sendMessage(format("%s's inventory:\n%s", player.getName(), player.getInventory().toString()));
+                        sender.sendMessage(format("%s's inventory:\n%s", player.getName(), getInventoryList(player.getInventory().getContents())));
                     }
                 } else {
                     if (args[1].equalsIgnoreCase("enderchest")) {
                         if (sender instanceof Player) {
                             ((Player) sender).openInventory(player.getEnderChest());
                         } else {
-                            sender.sendMessage(format("%s's ender chest:\n%s", player.getName(), player.getEnderChest().toString()));
+                            sender.sendMessage(format("%s's ender chest:\n%s", player.getName(), getInventoryList(player.getEnderChest().getContents())));
                         }
+                    }
+                    if (args[1].equalsIgnoreCase("armor")) {
+                        sender.sendMessage(format("%s's armor:\n%s", player.getName(), getInventoryList(player.getInventory().getArmorContents())));
                     } else {
                         return false;
                     }
                 }
             } else {
-                sender.sendMessage(playerNotFound(args[0]));
+                sender.sendMessage(playerNotOnline(args[0]));
             }
             return true;
         }
         return false;
+    }
+
+    private String getInventoryList(ItemStack[] stacks) {
+        List<String> list = new ArrayList<>();
+        for (ItemStack itemStack : stacks) {
+            list.add(itemStack.getType().toString() + "x" + itemStack.getAmount() + "");
+        }
+        return list.toString();
     }
 }

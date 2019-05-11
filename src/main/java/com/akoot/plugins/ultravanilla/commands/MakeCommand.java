@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,7 +16,7 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public MakeCommand(Ultravanilla plugin) {
+    public MakeCommand(UltraVanilla plugin) {
         super(plugin);
         color = COLOR;
     }
@@ -50,7 +50,7 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
                 }
                 sender.sendMessage(color + String.format("Made %s %s %s", noun(playerList(players)), number(subCommand), reset(message)));
             } else {
-                sender.sendMessage(playerNotFound(args[1]));
+                sender.sendMessage(playerNotOnline(args[1]));
             }
             return true;
         }

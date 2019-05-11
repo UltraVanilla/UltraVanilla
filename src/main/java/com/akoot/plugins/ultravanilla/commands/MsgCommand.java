@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.Bukkit;
@@ -18,13 +18,13 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public MsgCommand(Ultravanilla instance) {
+    public MsgCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
 
     public static void msg(CommandSender from, CommandSender to, String message) {
-        Ultravanilla plugin = Ultravanilla.getInstance();
+        UltraVanilla plugin = UltraVanilla.getInstance();
         String fromFormat = plugin.getConfig().getString("strings.private-message.from");
         String toFormat = plugin.getConfig().getString("strings.private-message.to");
         String spyFormat = plugin.getConfig().getString("strings.private-message.spy");
@@ -67,7 +67,7 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
             if (to != null) {
                 msg(sender, to, getArg(args, 1));
             } else {
-                sender.sendMessage(playerNotFound(args[0]));
+                sender.sendMessage(playerNotOnline(args[0]));
             }
             return true;
         }

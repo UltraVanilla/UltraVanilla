@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +19,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
 
     public static final ChatColor COLOR = ChatColor.YELLOW;
 
-    public SeenCommand(Ultravanilla instance) {
+    public SeenCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
@@ -30,11 +30,11 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
             if (player.hasPlayedBefore()) {
                 if (args.length == 1) {
-                    long lastJoin = Ultravanilla.getConfig(player.getUniqueId()).getLong(Users.LAST_LOGIN);
+                    long lastJoin = UltraVanilla.getConfig(player.getUniqueId()).getLong(Users.LAST_LOGIN);
                     sender.sendMessage(format("%s was last seen on %s", noun(player.getName()), object(getDate(lastJoin))));
                 } else if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("first")) {
-                        long firstJoin = Ultravanilla.getConfig(player.getUniqueId()).getLong(Users.FIRST_LOGIN);
+                        long firstJoin = UltraVanilla.getConfig(player.getUniqueId()).getLong(Users.FIRST_LOGIN);
                         sender.sendMessage(format("%s first joined on %s", noun(player.getName()), object(getDate(firstJoin))));
                     } else {
                         return false;
@@ -43,7 +43,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                     return false;
                 }
             } else {
-                sender.sendMessage(playerNotFound(args[0]));
+                sender.sendMessage(playerNotOnline(args[0]));
             }
         } else {
             return false;

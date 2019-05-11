@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ public class AfkCommand extends UltraCommand implements CommandExecutor, TabExec
 
     public static final ChatColor COLOR = ChatColor.GRAY;
 
-    public AfkCommand(Ultravanilla instance) {
+    public AfkCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }

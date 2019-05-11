@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,7 +15,7 @@ public class PrintCommand extends UltraCommand implements CommandExecutor, TabEx
 
     public static final ChatColor COLOR = ChatColor.DARK_GRAY;
 
-    public PrintCommand(Ultravanilla instance) {
+    public PrintCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }

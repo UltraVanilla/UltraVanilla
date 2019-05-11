@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.util.RawComponent;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RawCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public RawCommand(Ultravanilla instance) {
+    public RawCommand(UltraVanilla instance) {
         super(instance);
     }
 
@@ -35,7 +35,7 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
                 players = getPlayers(playersString);
             }
             for (Player player : players) {
-                Ultravanilla.tellRaw(message, player);
+                UltraVanilla.tellRaw(message, player);
             }
             return true;
         }

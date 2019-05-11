@@ -1,6 +1,6 @@
 name: UltraVanilla
 version: ${project.version}
-main: com.akoot.plugins.ultravanilla.Ultravanilla
+main: com.akoot.plugins.ultravanilla.UltraVanilla
 api-version: 1.13
 prefix: UltraVanilla
 authors: [Akoot_, DAD_1996]
@@ -107,6 +107,11 @@ commands:
     aliases: [inv]
     description: Opens a player's inventory
     usage: /inventory <player>
+  lag:
+    description: Shows the percentage of lag from the last minute
+    usage: |
+      /lag
+      /lag median|average
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

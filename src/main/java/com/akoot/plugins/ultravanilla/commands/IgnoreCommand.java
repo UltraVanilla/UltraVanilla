@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ public class IgnoreCommand extends UltraCommand implements CommandExecutor {
 
     public static final ChatColor COLOR = ChatColor.RED;
 
-    public IgnoreCommand(Ultravanilla instance) {
+    public IgnoreCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
@@ -31,7 +31,7 @@ public class IgnoreCommand extends UltraCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length == 0) {
-                List<String> ignored = Ultravanilla.getConfig(player.getUniqueId()).getStringList(Users.IGNORED);
+                List<String> ignored = UltraVanilla.getConfig(player.getUniqueId()).getStringList(Users.IGNORED);
                 sender.sendMessage(format("Ignored players"));
                 for (String id : ignored) {
                     OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(id));
@@ -40,19 +40,19 @@ public class IgnoreCommand extends UltraCommand implements CommandExecutor {
             } else if (args.length == 1) {
                 Player p = plugin.getServer().getPlayer(args[0]);
                 if (p != null) {
-                    if (Ultravanilla.isIgnored(player, p)) {
+                    if (UltraVanilla.isIgnored(player, p)) {
                         sender.sendMessage(format("Stopped ignoring %s", noun(p.getName())));
-                        Ultravanilla.remove(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
+                        UltraVanilla.remove(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                     } else {
                         if (!p.hasPermission("ultravanilla.command.ignore.bypass")) {
                             sender.sendMessage(format("Ignored %s", noun(p.getName())));
-                            Ultravanilla.add(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
+                            UltraVanilla.add(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                         } else {
                             sender.sendMessage(format("You can't ignore that player"));
                         }
                     }
                 } else {
-                    sender.sendMessage(playerNotFound(args[0]));
+                    sender.sendMessage(playerNotOnline(args[0]));
                 }
             }
         } else {

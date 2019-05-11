@@ -1,10 +1,9 @@
 player:
-  added: []
+  added:
+    - /lag command
   removed: []
   fixed: []
 staff:
-  added:
-    - /inventory
+  added: []
   removed: []
-  fixed:
-    - Error on list ping with 0 offline players
+  fixed: []

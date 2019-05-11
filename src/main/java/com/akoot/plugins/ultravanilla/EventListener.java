@@ -20,9 +20,9 @@ import java.util.List;
 
 public class EventListener implements Listener {
 
-    private Ultravanilla plugin;
+    private UltraVanilla plugin;
 
-    public EventListener(Ultravanilla instance) {
+    public EventListener(UltraVanilla instance) {
         this.plugin = instance;
     }
 
@@ -57,16 +57,17 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String nick = Ultravanilla.getConfig(player.getUniqueId()).getString(Users.NICKNAME);
-        String nameColor = ChatColor.valueOf(Ultravanilla.getConfig(player.getUniqueId()).getString("name-color", "RESET")) + "";
+        String nick = UltraVanilla.getConfig(player.getUniqueId()).getString(Users.NICKNAME);
+        String nameColor = ChatColor.valueOf(UltraVanilla.getConfig(player.getUniqueId()).getString("name-color", "RESET")) + "";
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);
             player.setPlayerListName(nick);
         }
         player.setPlayerListName(nameColor + player.getPlayerListName());
-        Ultravanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
+        UltraVanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
         if (!player.hasPlayedBefore()) {
-            Ultravanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
+            UltraVanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
+            plugin.firstJoin(player.getName());
         }
     }
 
@@ -89,7 +90,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         AfkCommand.setAFK(player, false);
 
-        YamlConfiguration config = Ultravanilla.getConfig(player.getUniqueId());
+        YamlConfiguration config = UltraVanilla.getConfig(player.getUniqueId());
 
         if (config.getBoolean("muted", false)) {
             player.sendMessage(Palette.WRONG + "You are muted.");
@@ -144,7 +145,7 @@ public class EventListener implements Listener {
                 if (word.length() >= 3 && word.startsWith("@")) {
                     word = word.substring(1);
                     if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
-                        if (Ultravanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || Ultravanilla.isIgnored(player, p)) {
+                        if (UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || UltraVanilla.isIgnored(player, p)) {
                             String at = Palette.NOUN + word + ChatColor.RESET;
                             plugin.ping(p);
                             message = message.replace("@" + word, at);
@@ -156,7 +157,7 @@ public class EventListener implements Listener {
 
         //ignored
         for (Player p : event.getRecipients()) {
-            if (Ultravanilla.isIgnored(p, player)) {
+            if (UltraVanilla.isIgnored(p, player)) {
                 event.getRecipients().remove(p);
             }
         }

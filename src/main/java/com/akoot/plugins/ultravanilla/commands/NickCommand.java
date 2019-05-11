@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
-import com.akoot.plugins.ultravanilla.Ultravanilla;
+import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public NickCommand(Ultravanilla instance) {
+    public NickCommand(UltraVanilla instance) {
         super(instance);
         color = COLOR;
     }
@@ -32,13 +32,13 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                         player.setDisplayName(null);
                         player.setPlayerListName(player.getName());
                         sender.sendMessage(format("Your nickname was cleared!"));
-                        Ultravanilla.set(player, Users.NICKNAME, null);
+                        UltraVanilla.set(player, Users.NICKNAME, null);
                     } else {
                         String newName = Palette.translate(args[0]);
                         sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
                         player.setDisplayName(newName + ChatColor.RESET);
                         player.setPlayerListName(newName);
-                        Ultravanilla.set(player, Users.NICKNAME, newName);
+                        UltraVanilla.set(player, Users.NICKNAME, newName);
                     }
                 } else {
                     sender.sendMessage(playerOnly());
@@ -52,9 +52,9 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                         sender.sendMessage(format("Set %s nickname to %s", posessiveNoun(username), reset(newName)));
                         target.setDisplayName(newName + ChatColor.RESET);
                         target.setPlayerListName(newName);
-                        Ultravanilla.set(target, Users.NICKNAME, newName);
+                        UltraVanilla.set(target, Users.NICKNAME, newName);
                     } else {
-                        sender.sendMessage(playerNotFound(args[0]));
+                        sender.sendMessage(playerNotOnline(args[0]));
                     }
                 } else {
                     sender.sendMessage(wrong("You do not have permission to change other people's nicknames!"));

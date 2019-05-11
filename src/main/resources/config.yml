@@ -1,3 +1,4 @@
+# Groups
 default-group: default
 format:
   default: '&r<{name-color}{name}&r> {text-color}{message}'

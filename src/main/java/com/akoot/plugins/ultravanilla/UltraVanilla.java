@@ -22,14 +22,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public final class Ultravanilla extends JavaPlugin {
+public final class UltraVanilla extends JavaPlugin {
 
-    public static Ultravanilla instance;
+    public static UltraVanilla instance;
     private Permission permissions;
 
     private YamlConfiguration changelog;
@@ -47,7 +48,7 @@ public final class Ultravanilla extends JavaPlugin {
     }
     private Random random;
 
-    public static Ultravanilla getInstance() {
+    public static UltraVanilla getInstance() {
         return instance;
     }
 
@@ -131,6 +132,7 @@ public final class Ultravanilla extends JavaPlugin {
     }
 
     public void loadConfigs() {
+        init("join.txt", false);
         getConfig("config.yml", false);
         changelog = getConfig("changelog.yml", true);
     }
@@ -138,11 +140,22 @@ public final class Ultravanilla extends JavaPlugin {
     private YamlConfiguration getConfig(String name, boolean overwrite) {
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File(this.getDataFolder(), name);
-        if (!configFile.exists() || overwrite) {
+        init(name, overwrite);
+        try {
+            config.load(configFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+        return config;
+    }
+
+    private void init(String name, boolean overwrite) {
+        File file = new File(this.getDataFolder(), name);
+        if (!file.exists() || overwrite) {
             InputStream fis = getClass().getResourceAsStream("/" + name);
             FileOutputStream fos = null;
             try {
-                fos = new FileOutputStream(configFile);
+                fos = new FileOutputStream(file);
                 byte[] buf = new byte[1024];
                 int i;
                 while ((i = fis.read(buf)) != -1) {
@@ -163,12 +176,6 @@ public final class Ultravanilla extends JavaPlugin {
                 }
             }
         }
-        try {
-            config.load(configFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        return config;
     }
 
     private void saveConfig(YamlConfiguration config, String fileName) {
@@ -239,6 +246,21 @@ public final class Ultravanilla extends JavaPlugin {
         getCommand("reply").setExecutor(new ReplyCommand(instance));
         getCommand("changelog").setExecutor(new ChangelogCommand(instance));
         getCommand("inventory").setExecutor(new InventoryCommand(instance));
+        getCommand("lag").setExecutor(new LagCommand(instance));
+    }
+
+    public void firstJoin(String name) {
+        File joinFile = new File(getDataFolder(), "join.txt");
+        if (joinFile.exists()) {
+            try {
+                for (String line : Files.readAllLines(joinFile.toPath())) {
+                    line = line.replace("%player", name);
+                    getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setRandomMOTD() {
