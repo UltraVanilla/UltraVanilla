@@ -112,6 +112,15 @@ commands:
     usage: |
       /lag
       /lag median|average
+  ticket:
+    description: Create a ticket to notify admins about something
+    usage: |
+      /ticket create <message>
+      /ticket list
+      /ticket read <id>
+      /ticket close <id>
+      /ticket delete <id>
+      /ticket answer <id> <message>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

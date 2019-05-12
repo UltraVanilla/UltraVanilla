@@ -191,6 +191,13 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     Position newHome = new Position(player.getLocation());
                     newHome.setName("home");
 
+                    // Remove old home
+                    for (Position home : homes) {
+                        if (home.getName().equals("home")) {
+                            homes.remove(home);
+                        }
+                    }
+
                     // Add the home to the list
                     homes.add(newHome);
                     sender.sendMessage(format("Home set"));

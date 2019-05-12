@@ -6,6 +6,7 @@ import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.stuff.Poll;
+import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -23,10 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public final class UltraVanilla extends JavaPlugin {
 
@@ -34,9 +32,11 @@ public final class UltraVanilla extends JavaPlugin {
     private Permission permissions;
 
     private YamlConfiguration changelog;
+    private YamlConfiguration storage;
 
     private List<Poll> polls;
     private List<String> motds;
+    private List<Ticket> tickets;
     private String motd;
 
     public List<Poll> getPolls() {
@@ -135,6 +135,7 @@ public final class UltraVanilla extends JavaPlugin {
         init("join.txt", false);
         getConfig("config.yml", false);
         changelog = getConfig("changelog.yml", true);
+        storage = getConfig("storage.yml", false);
     }
 
     private YamlConfiguration getConfig(String name, boolean overwrite) {
@@ -198,6 +199,14 @@ public final class UltraVanilla extends JavaPlugin {
         set(uid, key, list);
     }
 
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public YamlConfiguration getStorage() {
+        return storage;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -211,9 +220,11 @@ public final class UltraVanilla extends JavaPlugin {
 
         random = new Random();
         polls = new ArrayList<>();
+        tickets = new ArrayList<>();
 
         ConfigurationSerialization.registerClass(Position.class);
         ConfigurationSerialization.registerClass(Powertool.class);
+
 
         getDataFolder().mkdir();
         Users.DIR.mkdir();
@@ -221,6 +232,12 @@ public final class UltraVanilla extends JavaPlugin {
 
         motds = getConfig().getStringList("motd.strings");
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
+
+        for (Map<?, ?> map : storage.getMapList("tickets")) {
+            Ticket ticket = new Ticket(this);
+            ticket.load((Map<String, Object>) map);
+            tickets.add(ticket);
+        }
 
         getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
 
@@ -247,6 +264,7 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("changelog").setExecutor(new ChangelogCommand(instance));
         getCommand("inventory").setExecutor(new InventoryCommand(instance));
         getCommand("lag").setExecutor(new LagCommand(instance));
+        getCommand("ticket").setExecutor(new TicketCommand(instance));
     }
 
     public void firstJoin(String name) {
@@ -273,5 +291,33 @@ public final class UltraVanilla extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        saveStorage();
+    }
+
+    public Ticket getTicket(int id) {
+        for (Ticket ticket : tickets) {
+            if (ticket.getId() == id) {
+                return ticket;
+            }
+        }
+        return null;
+    }
+
+    private void saveStorage() {
+
+        // Tickets
+        List<Map<?, ?>> ticketMaps = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("author", ticket.getAuthorId().toString());
+            map.put("content", ticket.getContent());
+            map.put("status", ticket.getStatus().toString());
+            map.put("response", ticket.getResponse());
+            map.put("admin", ticket.getAdmin());
+            ticketMaps.add(map);
+        }
+        storage.set("tickets", ticketMaps);
+
+        saveConfig(storage, "storage.yml");
     }
 }

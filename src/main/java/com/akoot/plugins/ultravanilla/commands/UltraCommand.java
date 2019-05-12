@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -119,9 +120,11 @@ public class UltraCommand {
     }
 
     protected String getArg(String[] args, int index) {
-        String at = args[index];
-        String arg = String.join(" ", args);
-        return arg.substring(arg.lastIndexOf(at)).trim();
+        String message = "";
+        for (int i = index - 1; i < args.length; i++) {
+            message += args[i] + " ";
+        }
+        return message.trim();
     }
 
     protected List<String> suggestPlayers() {
@@ -174,5 +177,14 @@ public class UltraCommand {
             }
         }
         return players;
+    }
+
+    protected int getInt(CommandSender sender, String arg) {
+        try {
+            return Integer.valueOf(arg);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(format(wrong("%s is not a number..."), quote(arg)));
+            return -1;
+        }
     }
 }

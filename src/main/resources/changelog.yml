@@ -1,9 +1,11 @@
 player:
   added:
-    - /lag command
+    - /ticket command
   removed: []
-  fixed: []
+  fixed:
+    - /home set stting multiple homes
 staff:
-  added: []
+  added:
+    - Tickets! Read em with /ticket list
   removed: []
   fixed: []
