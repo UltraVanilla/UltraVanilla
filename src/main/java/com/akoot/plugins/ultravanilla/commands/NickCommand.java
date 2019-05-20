@@ -31,33 +31,39 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                     if (args[0].equals(player.getName())) {
                         player.setDisplayName(null);
                         player.setPlayerListName(player.getName());
-                        sender.sendMessage(format("Your nickname was cleared!"));
                         UltraVanilla.set(player, Users.NICKNAME, null);
+                        sender.sendMessage(format(command, "message.clear.self"));
                     } else {
                         String newName = Palette.translate(args[0]);
-                        sender.sendMessage(format("%s nickname is now %s", noun("Your"), reset(newName)));
                         player.setDisplayName(newName + ChatColor.RESET);
                         player.setPlayerListName(newName);
                         UltraVanilla.set(player, Users.NICKNAME, newName);
+                        sender.sendMessage(format(command, "message.set.self", "{name}", newName));
                     }
                 } else {
-                    sender.sendMessage(playerOnly());
+                    sender.sendMessage(plugin.getString("player-only", "{action}", "have a nickname"));
                 }
             } else if (args.length == 2) {
                 if (sender.hasPermission("ultravanilla.command.nick.others")) {
                     Player target = plugin.getServer().getPlayer(args[0]);
                     String newName = Palette.translate(args[1]);
                     if (target != null) {
-                        String username = target.getName();
-                        sender.sendMessage(format("Set %s nickname to %s", posessiveNoun(username), reset(newName)));
-                        target.setDisplayName(newName + ChatColor.RESET);
-                        target.setPlayerListName(newName);
-                        UltraVanilla.set(target, Users.NICKNAME, newName);
+                        if (args[1].equals(target.getName())) {
+                            target.setDisplayName(null);
+                            target.setPlayerListName(target.getName());
+                            UltraVanilla.set(target, Users.NICKNAME, null);
+                            sender.sendMessage(format(command, "message.clear.other", "{player}", target.getName(), "{player's}", posessive(target.getName())));
+                        } else {
+                            target.setDisplayName(newName + ChatColor.RESET);
+                            target.setPlayerListName(newName);
+                            UltraVanilla.set(target, Users.NICKNAME, newName);
+                            sender.sendMessage(format(command, "message.set.other", "{player}", target.getName(), "{player's}", posessive(target.getName()), "{name}", newName));
+                        }
                     } else {
-                        sender.sendMessage(playerNotOnline(args[0]));
+                        sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));
                     }
                 } else {
-                    sender.sendMessage(wrong("You do not have permission to change other people's nicknames!"));
+                    sender.sendMessage(plugin.getString("no-permission", "{action}", "change other people's nicknames"));
                 }
             }
             return true;
@@ -67,7 +73,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
+        if (args.length == 1 || args.length == 2) {
             return null;
         }
         return new ArrayList<>();

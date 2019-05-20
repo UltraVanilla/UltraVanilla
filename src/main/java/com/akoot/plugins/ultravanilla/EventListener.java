@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla;
 
 import com.akoot.plugins.ultravanilla.commands.AfkCommand;
+import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
@@ -16,8 +17,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import java.util.List;
-
 public class EventListener implements Listener {
 
     private UltraVanilla plugin;
@@ -26,16 +25,26 @@ public class EventListener implements Listener {
         this.plugin = instance;
     }
 
+    private void unsetAfk(Player player) {
+        if (Users.isAFK(player)) {
+            Users.AFK.remove(player.getUniqueId());
+            plugin.getServer().broadcastMessage(Palette.translate(plugin.getCommandString("afk.message.false")
+                    .replace("{player}", player.getName())
+                    .replace("$color", AfkCommand.COLOR + "")
+            ));
+        }
+    }
+
     @EventHandler
     public void onPlayerCommandSend(PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
-        AfkCommand.setAFK(player, false);
+        unsetAfk(player);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        AfkCommand.setAFK(player, false);
+        unsetAfk(player);
     }
 
     @EventHandler
@@ -77,9 +86,8 @@ public class EventListener implements Listener {
         if (player.hasPermission("ultravanilla.command.suicide")) {
             String message = event.getDeathMessage();
             if (message != null && message.endsWith(" died")) {
-                List<String> messages = plugin.getConfig().getStringList("strings.suicide-message");
-                message = messages.get(plugin.getRandom().nextInt(messages.size()));
-                event.setDeathMessage(String.format(message, player.getName()));
+                message = plugin.getRandomString("suicide-messages", "{player}", player.getName(), "$color", SuicideCommand.COLOR + "");
+                event.setDeathMessage(message);
             }
         }
     }
@@ -88,7 +96,7 @@ public class EventListener implements Listener {
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 
         Player player = event.getPlayer();
-        AfkCommand.setAFK(player, false);
+        unsetAfk(player);
 
         YamlConfiguration config = UltraVanilla.getConfig(player.getUniqueId());
 

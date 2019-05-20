@@ -10,6 +10,7 @@ import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -244,9 +245,9 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("nick").setExecutor(new NickCommand(instance));
         getCommand("suicide").setExecutor(new SuicideCommand(instance));
         getCommand("make").setExecutor(new MakeCommand(instance));
-        getCommand("gm").setExecutor(new GamemodeCommand(instance));
+        getCommand("gm").setExecutor(new GmCommand(instance));
         getCommand("title").setExecutor(new TitleCommand(instance));
-        getCommand("reloadconf").setExecutor(new ReloadCommand(instance));
+        getCommand("reload").setExecutor(new ReloadCommand(instance));
         getCommand("ping").setExecutor(new PingCommand(instance));
         getCommand("vote").setExecutor(new VoteCommand(instance));
         getCommand("raw").setExecutor(new RawCommand(instance));
@@ -294,6 +295,22 @@ public final class UltraVanilla extends JavaPlugin {
         saveStorage();
     }
 
+    public String getTitle(String title, ChatColor color) {
+        return getString("title", "{title}", title, "$color", color + "");
+    }
+
+    public String getString(String key, String... format) {
+        String message = getConfig().getString(("strings." + key));
+        for (int i = 0; i < format.length; i += 2) {
+            message = message.replace(format[i], format[i + 1]);
+        }
+        return Palette.translate(message);
+    }
+
+    public String getString(String key) {
+        return Palette.translate(getConfig().getString("strings." + key));
+    }
+
     public Ticket getTicket(int id) {
         for (Ticket ticket : tickets) {
             if (ticket.getId() == id) {
@@ -301,6 +318,27 @@ public final class UltraVanilla extends JavaPlugin {
             }
         }
         return null;
+    }
+
+    public String getCommandString(String key) {
+        return getConfig().getString("strings.command." + key);
+    }
+
+    public String getRandomString(String key, String... format) {
+        List<String> list = getConfig().getStringList("strings." + key);
+        String message = list.get(random.nextInt(list.size() - 1));
+        for (int i = 0; i < format.length; i += 2) {
+            message = message.replace(format[i], format[i + 1]);
+        }
+        return Palette.translate(message);
+    }
+
+    public void sendMessageToStaff(String message, String permission) {
+        for (Player player : getServer().getOnlinePlayers()) {
+            if (player.hasPermission(permission)) {
+                player.sendMessage(message);
+            }
+        }
     }
 
     private void saveStorage() {
@@ -312,7 +350,7 @@ public final class UltraVanilla extends JavaPlugin {
             map.put("author", ticket.getAuthorId().toString());
             map.put("content", ticket.getContent());
             map.put("status", ticket.getStatus().toString());
-            map.put("response", ticket.getResponse());
+            map.put("response", ticket.getReply());
             map.put("admin", ticket.getAdmin());
             ticketMaps.add(map);
         }

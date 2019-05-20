@@ -1,7 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
-import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,18 +38,17 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
                 for (Player player : getPlayers(args[0])) {
                     if (subCommand.equalsIgnoreCase("say")) {
                         player.chat(message);
-                        message = quote(message);
                     } else if (subCommand.equalsIgnoreCase("do")) {
                         player.performCommand(message);
                         message = "/" + message;
                     } else {
-                        sender.sendMessage(String.format("Can't make anyone %s anything.", Palette.VERB + object(subCommand)));
+                        sender.sendMessage(format(command, "error.wrong-verb", "{player}", player.getName(), "{verb}", subCommand));
                         return false;
                     }
                 }
-                sender.sendMessage(color + String.format("Made %s %s %s", noun(playerList(players)), number(subCommand), reset(message)));
+                sender.sendMessage(format(command, "message.made", "{player}", playerList(players), "{verb}", subCommand, "{action}", message));
             } else {
-                sender.sendMessage(playerNotOnline(args[1]));
+                sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));
             }
             return true;
         }
@@ -66,7 +64,8 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
         if (args.length == 1) {
             return null;
         } else if (args.length == 2) {
-            addDefaults(list, args[1], "say", "do");
+            list.add("say");
+            list.add("do");
         }
 
         return list;

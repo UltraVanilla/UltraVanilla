@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla.stuff;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ public class Ticket {
     private int id;
     private String content;
     private String admin;
-    private String response;
+    private String reply;
     private Status status;
     private UltraVanilla plugin;
 
@@ -41,11 +42,11 @@ public class Ticket {
         this.author = UUID.fromString(map.get("author").toString());
         this.content = map.get("content").toString();
         this.status = Status.valueOf(map.get("status").toString());
-        this.response = map.get("response") != null ? map.get("response").toString() : null;
-        this.admin = map.get("admin") != null ? map.get("admin").toString() : null;
+        this.reply = map.get("reply") != null ? map.get("reply").toString() : "";
+        this.admin = map.get("admin") != null ? map.get("admin").toString() : "";
     }
 
-    public String getContentShortened() {
+    public String getPreview() {
         if (content.length() <= 24) {
             return content;
         } else {
@@ -57,8 +58,8 @@ public class Ticket {
         return content;
     }
 
-    public String getResponse() {
-        return response;
+    public String getReply() {
+        return reply;
     }
 
     public Status getStatus() {
@@ -69,28 +70,51 @@ public class Ticket {
         plugin.getTickets().remove(this);
     }
 
-    public void close() {
-        this.status = Status.CLOSED;
-    }
-
-    public void respond(String admin, String response) {
-        this.admin = admin;
-        this.status = Status.ANSWERED;
-        this.response = response;
-    }
-
-    public void open(Player author, String content) {
+    public void create(Player author) {
         this.author = author.getUniqueId();
         this.status = Status.OPEN;
-        this.content = content;
+        this.admin = "";
+        this.reply = "";
         plugin.getTickets().add(this);
     }
 
-    public void reopen() {
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void reply(String admin, String response) {
+        this.admin = admin;
+        this.reply = response;
+        this.status = Status.ANSWERED;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void reopen(String reply) {
         this.status = Status.OPEN;
+        this.reply = null;
+        this.content = reply;
     }
 
     public enum Status {
         CLOSED, OPEN, ANSWERED
+    }
+
+    public boolean isAuthor(CommandSender sender) {
+        return sender instanceof Player && isAuthor((Player) sender);
+    }
+
+    public boolean isAuthor(Player player) {
+        return author == player.getUniqueId();
+    }
+
+    public boolean hasResponse() {
+        return reply != null && !reply.isEmpty();
+    }
+
+    public String toString() {
+        return id + ":" + status + "\n" + author + ": " + content + "\n" + admin + ": " + reply;
     }
 }

@@ -31,13 +31,13 @@ public class ReplyCommand extends UltraCommand implements CommandExecutor, TabEx
             } else {
                 Player player = plugin.getServer().getPlayer(to);
                 if (player == null) {
-                    sender.sendMessage(playerNotOnline(to));
+                    sender.sendMessage(plugin.getString("player-offline", "{player}", to));
                 } else {
                     MsgCommand.msg(sender, player, getArg(args));
                 }
             }
         } else {
-            sender.sendMessage(format("You have no one to reply to"));
+            sender.sendMessage(format(command, "error.no-replies"));
         }
         return true;
     }

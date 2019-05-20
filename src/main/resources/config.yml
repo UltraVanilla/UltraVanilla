@@ -1,3 +1,13 @@
+# MOTD
+motd:
+  server-name: '&6&lUltra&fVanilla'
+  version-color: GRAY
+  strings:
+    - '&cI FREAKING LOVE SCIENCE'
+    - '&cI LOVE TESTING MY PLUGIN(S)'
+    - '&cIllegal & badass testing inside...'
+    - "&cYou don't wanna know..."
+
 # Groups
 default-group: default
 format:
@@ -6,27 +16,176 @@ format:
 
 # Strings
 strings:
-  suicide-message:
-    - '%s committed suicide'
-    - '%s took their own life'
-  private-message:
-    to: '&7&oYou whisper to {recipient}: {message}'
-    from: '&7&o{player} whispers to you: {message}'
-    spy: '&8&o{player} whispers to {recipient}: {message}'
-
-# MOTD
-motd:
-  server-name: '&6&lUltra&fVanilla'
-  version-color: AQUA
-  strings:
-    - 'A Minecraft Server?'
-    - '&bWhat did you expect?'
-    - '&duwu'
-    - '&oCongradulations to &9%player&r&o...!'
-    - '&0Whatareyoulookingat'
-    - '&oHello, epic department?'
-    - 'Message of the day :)!'
-    - '&bГде я в любом случае?'
+  title: '$color------ &r{title} $color------'
+  command:
+    afk:
+      message:
+        true: '$noun{player}$color is now AFK'
+        false: '$noun{player}$color is no longer AFK'
+    changelog:
+      format:
+        list:
+          title:
+            player: '$object{name} $number{version} $colorChangelog'
+            staff: '$objectStaff Section'
+          item:
+            fixed: '&e* Fixed $color{message}'
+            added: '&a+ Added $color{message}'
+            removed: '&c- Removed $color{message}'
+            changed: '&6^ Changed $color{message} '
+            broke: '&4# Broke $color{message}'
+    gm:
+      message:
+        set:
+          self: 'Set $nounyour $colorgamemode to $object{gamemode}'
+          other: "Set $noun{player's} $colorgamemode to $object{gamemode}"
+      error:
+        invalid-gamemode: 'Invalid gamemode "$wrong{gamemode}$color"!'
+        already-in-gamemode:
+          self: 'You are already in $object{gamemode} $colormode!'
+          other: '$noun{player} $coloris already in $object{gamemode} $colormode!'
+    home:
+      format:
+        list:
+          title: 'Homes'
+          item: '• $object{name}'
+      message:
+        teleport:
+          home: 'Teleporting home...'
+          bed: 'Teleporting to your $objectbed$color...'
+          misc: 'Teleporting to "$object{name}$color"...'
+        set:
+          home: 'Home set!'
+          misc: 'Home "$object{name}$color" set!'
+        remove:
+          home: 'Home removed!'
+          misc: 'Home "$object{name}$color" removed!'
+          all: 'All of your homes were cleared!'
+      error:
+        not-found:
+          misc: 'Home "$object{name}$color" does not exist!'
+          home: 'You do not have a home set!'
+          any: 'You do not have any homes!'
+        limited-homes: '$wrongYou can only set up to 1 home!'
+    ignore:
+      format:
+        list:
+          title: 'Ignored Players'
+          item: '$noun{player}'
+      message:
+        ignore: 'You are now ignoring $noun{player}'
+        unignore: 'You are no longer ignoring $noun{player}'
+      error:
+        ignore-staff: '$wrongYou cannot ignore $noun{player}'
+    lag:
+      format:
+        list:
+          title:
+            current: 'Current Lag'
+            median: 'Median Lag'
+            average: 'Average Lag'
+          item:
+            ping: 'Ping: $number{ping}ms'
+            tps: 'TPS: $number{tps}'
+            percent: 'The server is $number{percent}% $colorlaggy'
+    make:
+      message:
+        made: 'Made $noun{player}$color $verb{verb}&r$color {action}'
+      error:
+        wrong-verb: "Can't make $noun{player} $color$verb{verb}&r$color anything..."
+    motd:
+      message:
+        set: 'MOTD was set to: &r{motd}'
+    message:
+      format:
+        to: '&7&oYou whisper to {recipient}: {message}'
+        from: '&7&o{player} whispers to you: {message}'
+        spy: '&8&o{player} whispers to {recipient}: {message}'
+      error:
+        player-offline: '&cNo player was found'
+    nick:
+      message:
+        set:
+          self: 'Your nickname was set to &r{name}&r$color!'
+          other: "$noun{player's} $colornickname was set to &r{name}&r$color!"
+        clear:
+          self: 'Your nickname was cleared!'
+          other: "$noun{player's} $colornickname was cleared!"
+    ping:
+      format:
+        pinged: '$noun{player} $colorpinged you!'
+        ping: 'You pinged $noun{player}$color!'
+      message:
+        enable: 'Ping enabled!'
+        disable: 'Ping disabled!'
+        already-enabled: 'Ping already enabled!'
+        already-disabled: 'Ping already disabled!'
+      error:
+        pind-disabled: '$noun{player} $wronghas ping disabled!'
+    reply:
+      error:
+        no-replies: 'You have no one to reply to...'
+    seen:
+      format:
+        date-format: 'E, M/dd/y G @ h:mma z'
+        seen:
+          last: '$noun{player} $color was last seen on $object{date}'
+          first: '$noun{player} $color was first seen on $object{date}'
+    spawn:
+      message:
+        set: 'Spawn set to your location'
+      error:
+        not-set: '$wrongSpawn is not set!'
+    suicide:
+      message:
+        kill-self: 'You just killed yourself.'
+    ticket:
+      format:
+        read:
+          content:
+            player: '$nounAnonymous $colorsays: "{content}"'
+            self: '$nounYou $colorsaid: "{content}"'
+            staff: '$noun{author} $colorsays: "{content}"'
+          reply:
+            player: '$noun{admin} $colorreplied: "{response}"'
+            self: '$noun{admin} $color replied: "{response}"'
+            staff: '$noun{admin} $colorreplied to $noun{author}$color: "{response}"'
+        list:
+          title: 'Tickets'
+          item:
+            player: '$number#{id} $color"{preview}" ($object{status}$color)'
+            self: '$number#{id}$color:$nounyou $color"{preview}" ($object{status}$color}'
+            staff: '$number#{id}$color:$noun{author} $color"{preview}" ($object{status}$color}"'
+      message:
+        create:
+          player: 'Created a new ticket with ID $number#{id}$color!'
+          staff: '$noun{player} $colorhas opened a new ticket ($number#{id}$color)!'
+        delete:
+          player: 'Deleted ticket $number#{id}$color!'
+          staff: '$noun{player} $color deleted ticket $number#{id}$color!'
+        close:
+          player: 'Closed ticket $number#{id}$color!'
+          staff: '$noun{player} $color closed ticket $number#{id}$color!'
+        reply:
+          author: 'You replied to $noun{admin} $colorand reopened this ticket!'
+          staff: "You replied to $noun{author's} $colorticket ($number#{id}$color)!"
+          player: '$noun{admin} $colorreplied to your ticket ($number#{id}$color)!'
+      error:
+        invalid-id: 'Ticket with ID: $wrong{id} $colordoes not exist!'
+        no-reply: 'Your ticket has not been replied to by an admin yet...'
+  not-a-number: '$number{number} $wrongis not a valid number!'
+  player-only: 'You must be a player to {action}'
+  no-permission: '$wrongYou do not have permission to $object{action}$wrong!'
+  player-offline: '$noun{player} $wrongis not online!'
+  player-unknown: '$noun{player} $wronghas never joined the server!'
+  ignored: '$wrongYou are being ignored by $noun{player}'
+  suicide-messages:
+    - '$noun{player}$color committed suicide'
+    - '$noun{player}$color took their own life'
+    - "$noun{player}$color couldn't handle it anymore"
+    - 'Life was too stressful for $noun{player}$color so they killed themselves'
+    - '$noun{player}$color pondered for a long time. They wondered and pondered and finally came up with a solution to all of their problems.'
+    - '$noun{player}$color just blew their brains out with a double barrel. Damn...'
 
 # Colors
 color:

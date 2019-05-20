@@ -1,11 +1,21 @@
 player:
   added:
-    - /ticket command
-  removed: []
-  fixed:
-    - /home set stting multiple homes
-staff:
-  added:
-    - Tickets! Read em with /ticket list
+    - '"changed" and "broke" section to changelog'
+    - player suggestions typing /nick to help reset it
+    - more suicide death messages
   removed: []
   fixed: []
+  changed:
+    - a few command messages
+    - opening tickets with /ticket reply
+  broke:
+    - a few command messages (testing later)
+    - /home set, use "/home set home" (revamping)
+    - /vote (revamping)
+staff:
+  added: []
+  removed: []
+  fixed: []
+  changed: []
+  broke:
+    - /user (revamping)

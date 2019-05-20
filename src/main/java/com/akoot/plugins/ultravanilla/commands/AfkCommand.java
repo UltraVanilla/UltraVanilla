@@ -1,9 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
-import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,29 +21,20 @@ public class AfkCommand extends UltraCommand implements CommandExecutor, TabExec
         this.color = COLOR;
     }
 
-    public static void setAFK(Player player, boolean mode) {
-        if (mode != Users.AFK.contains(player.getUniqueId())) {
-            Bukkit.getServer().broadcastMessage(String.format("%s is %s AFK", Palette.NOUN + (player.getName()) + COLOR, mode ? "now" : "no longer"));
-            if (mode) {
-                Users.AFK.add(player.getUniqueId());
-            } else {
-                Users.AFK.remove(player.getUniqueId());
-            }
-        }
-    }
-
-    public static void toggleAFK(Player player) {
-        setAFK(player, !Users.AFK.contains(player.getUniqueId()));
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                toggleAFK(player);
+                if (Users.isAFK(player)) {
+                    Users.AFK.remove(player.getUniqueId());
+                    plugin.getServer().broadcastMessage(format(command, "message.false", "{player}", player.getName()));
+                } else {
+                    Users.AFK.add(player.getUniqueId());
+                    plugin.getServer().broadcastMessage(format(command, "message.true", "{player}", player.getName()));
+                }
             } else {
-                sender.sendMessage(playerOnly());
+                sender.sendMessage(plugin.getString("player-only", "{action}", "toggle your AFK mode"));
             }
             return true;
         }

@@ -17,7 +17,8 @@ commands:
     usage: |
       /nick <name>
       /nick [player] <name>
-  reloadconf:
+  reload:
+    aliases: [reloadconfig, uvreload]
     description: Reload the configs
     permission: ultravanilla.command.reload
     usage: /ultravanilla:reload
@@ -93,7 +94,8 @@ commands:
   afk:
     description: Toggles AFK mode
     usage: /afk
-  msg:
+  message:
+    aliases: [tell, whisper, msg, m, t]
     description: Send a private message
     usage: /msg <player> <message>
   reply:

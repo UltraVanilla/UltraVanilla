@@ -1,5 +1,7 @@
 package com.akoot.plugins.ultravanilla.reference;
 
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.util.*;
 
@@ -17,4 +19,8 @@ public class Users {
 
     public static final Map<String, String> REPLIES = new HashMap<>();
     public static final List<UUID> AFK = new ArrayList<>();
+
+    public static boolean isAFK(Player player) {
+        return AFK.contains(player.getUniqueId());
+    }
 }

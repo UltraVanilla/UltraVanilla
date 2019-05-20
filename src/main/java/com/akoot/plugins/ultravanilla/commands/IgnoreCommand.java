@@ -32,31 +32,31 @@ public class IgnoreCommand extends UltraCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length == 0) {
                 List<String> ignored = UltraVanilla.getConfig(player.getUniqueId()).getStringList(Users.IGNORED);
-                sender.sendMessage(format("Ignored players"));
+                sender.sendMessage(plugin.getTitle(format(command, "format.list.title"), color));
                 for (String id : ignored) {
                     OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(UUID.fromString(id));
-                    sender.sendMessage(offlinePlayer.getName());
+                    sender.sendMessage(format(command, "format.list.item", "{player}", offlinePlayer.getName()));
                 }
             } else if (args.length == 1) {
                 Player p = plugin.getServer().getPlayer(args[0]);
                 if (p != null) {
                     if (UltraVanilla.isIgnored(player, p)) {
-                        sender.sendMessage(format("Stopped ignoring %s", noun(p.getName())));
+                        sender.sendMessage(format(command, "message.unignore", "{name}", p.getName()));
                         UltraVanilla.remove(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                     } else {
                         if (!p.hasPermission("ultravanilla.command.ignore.bypass")) {
-                            sender.sendMessage(format("Ignored %s", noun(p.getName())));
+                            sender.sendMessage(format(command, "message.ignore", "{name}", p.getName()));
                             UltraVanilla.add(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                         } else {
-                            sender.sendMessage(format("You can't ignore that player"));
+                            sender.sendMessage(format(command, "error.ignore-staff", "{player}", p.getName()));
                         }
                     }
                 } else {
-                    sender.sendMessage(playerNotOnline(args[0]));
+                    sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));
                 }
             }
         } else {
-            sender.sendMessage(playerOnly());
+            sender.sendMessage(plugin.getString("player-only", "{action}", "ignore players"));
         }
         return false;
     }

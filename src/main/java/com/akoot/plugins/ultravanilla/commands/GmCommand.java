@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamemodeCommand extends UltraCommand implements CommandExecutor, TabExecutor {
+public class GmCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
     public static final ChatColor COLOR = ChatColor.WHITE;
 
-    public GamemodeCommand(UltraVanilla plugin) {
+    public GmCommand(UltraVanilla plugin) {
         super(plugin);
         color = COLOR;
     }
@@ -30,40 +30,49 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 gameMode = player.getGameMode() == GameMode.CREATIVE ? GameMode.SURVIVAL : GameMode.CREATIVE;
-                setGameMode(sender, player, gameMode);
+                sender.sendMessage(format(command, "message.set.self", "{gamemode}", gameMode.name()));
+                player.setGameMode(gameMode);
             } else {
-                sender.sendMessage(playerOnly());
+                sender.sendMessage(plugin.getString("player-only", "{action}", "change your gamemode"));
                 return false;
             }
         } else {
             gameMode = getGameMode(args[0]);
-            if (args.length == 1) {
-                if (sender instanceof Player) {
-                    setGameMode(sender, (Player) sender, gameMode);
-                } else {
-                    sender.sendMessage(playerOnly());
-                }
-            } else if (args.length == 2) {
-                for (Player player : getPlayers(args[1])) {
-                    if (player == null) {
-                        sender.sendMessage(playerNotOnline(args[1]));
-                        return true;
+            if (gameMode != null) {
+                if (args.length == 1) {
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        if (player.getGameMode() != gameMode) {
+                            sender.sendMessage(format(command, "message.set.self", "{gamemode}", gameMode.name()));
+                            player.setGameMode(gameMode);
+                        } else {
+                            sender.sendMessage(format(command, "error.already-in-gamemode.self", "{gamemode}", gameMode.name()));
+                        }
                     } else {
-                        setGameMode(sender, player, gameMode);
+                        sender.sendMessage(plugin.getString("player-only", "{action}", "change your gamemode"));
                     }
+                } else if (args.length == 2) {
+                    for (Player player : getPlayers(args[1])) {
+                        if (player != null) {
+                            if (player.getGameMode() != gameMode) {
+                                sender.sendMessage(format(command, "message.set.other", "{player}", player.getName(), "{player's}", posessive(player.getName()), "{gamemode}", gameMode.name()));
+                                player.setGameMode(gameMode);
+                            } else {
+                                sender.sendMessage(format(command, "error.already-in-gamemode.other", "{player}", player.getName(), "{gamemode}", gameMode.name()));
+
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));
+                        }
+                    }
+                } else {
+                    return false;
                 }
+            } else {
+                sender.sendMessage(format(command, "error.invalid-gamemode", "{gamemode}", args[0]));
             }
         }
         return true;
-    }
-
-    private void setGameMode(CommandSender sender, Player player, GameMode gameMode) {
-        if (gameMode != null) {
-            player.setGameMode(gameMode);
-            sender.sendMessage(color + String.format("Set %s gamemode to %s", posessiveNoun(player.getName()), number(gameMode.name().toLowerCase())));
-        } else {
-            sender.sendMessage(wrong("Invalid gamemode specified"));
-        }
     }
 
     private GameMode getGameMode(String gameModeString) {
@@ -92,7 +101,7 @@ public class GamemodeCommand extends UltraCommand implements CommandExecutor, Ta
                 list.add(name.substring(0, 1));
             }
         } else if (args.length == 2) {
-            list = suggestPlayers();
+            return null;
         }
         return list;
     }

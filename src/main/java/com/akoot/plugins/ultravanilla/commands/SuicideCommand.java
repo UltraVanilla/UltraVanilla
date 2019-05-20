@@ -25,12 +25,12 @@ public class SuicideCommand extends UltraCommand implements CommandExecutor, Tab
         if (sender instanceof Player) {
             if (args.length == 0) {
                 ((Player) sender).setHealth(0);
-                sender.sendMessage(color + "You just killed yourself.");
+                sender.sendMessage(format(command, "message.kill-self"));
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage(playerOnly());
+            sender.sendMessage(plugin.getString("player-only", "{action}", "kill yourself"));
         }
 
         return true;

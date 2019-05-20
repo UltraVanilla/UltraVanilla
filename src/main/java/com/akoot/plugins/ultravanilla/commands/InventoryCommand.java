@@ -28,7 +28,7 @@ public class InventoryCommand extends UltraCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     player = (Player) sender;
                 } else {
-                    sender.sendMessage(playerOnly());
+                    sender.sendMessage(plugin.getString("player-only", "{action}", "open your inventory"));
                 }
             }
             if (player != null) {
@@ -36,24 +36,24 @@ public class InventoryCommand extends UltraCommand implements CommandExecutor {
                     if (sender instanceof Player) {
                         ((Player) sender).openInventory(player.getInventory());
                     } else {
-                        sender.sendMessage(format("%s's inventory:\n%s", player.getName(), getInventoryList(player.getInventory().getContents())));
+                        sender.sendMessage(String.format("%s's inventory:\n%s", player.getName(), getInventoryList(player.getInventory().getContents())));
                     }
                 } else {
                     if (args[1].equalsIgnoreCase("enderchest")) {
                         if (sender instanceof Player) {
                             ((Player) sender).openInventory(player.getEnderChest());
                         } else {
-                            sender.sendMessage(format("%s's ender chest:\n%s", player.getName(), getInventoryList(player.getEnderChest().getContents())));
+                            sender.sendMessage(String.format("%s's ender chest:\n%s", player.getName(), getInventoryList(player.getEnderChest().getContents())));
                         }
                     }
                     if (args[1].equalsIgnoreCase("armor")) {
-                        sender.sendMessage(format("%s's armor:\n%s", player.getName(), getInventoryList(player.getInventory().getArmorContents())));
+                        sender.sendMessage(String.format("%s's armor:\n%s", player.getName(), getInventoryList(player.getInventory().getArmorContents())));
                     } else {
                         return false;
                     }
                 }
             } else {
-                sender.sendMessage(playerNotOnline(args[0]));
+                sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));
             }
             return true;
         }

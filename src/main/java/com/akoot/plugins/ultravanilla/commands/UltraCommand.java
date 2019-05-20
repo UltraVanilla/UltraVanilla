@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,77 +21,8 @@ public class UltraCommand {
         this.plugin = instance;
     }
 
-    protected String playerOnly() {
-        return color + "You are not a player!";
-    }
-
-    protected String quote(String item) {
-        return "\"" + item + "\"";
-    }
-
-    protected String isNaN(String item) {
-        return format("%s is not a number!", number(quote(item)));
-    }
-
-    protected String reset(String item) {
-        return ChatColor.RESET + item + color;
-    }
-
-    protected String format(String item, Object... format) {
-        return color + String.format(item, format);
-    }
-
-    protected String noun(String item) {
-        return Palette.NOUN + item + color;
-    }
-
-    protected String posessiveNoun(String item) {
-        return noun(item + (item.endsWith("s") ? "'" : "'s"));
-    }
-
-    protected String number(String item) {
-        return Palette.NUMBER + item + color;
-    }
-
-    protected String object(String item) {
-        return Palette.OBJECT + item + color;
-    }
-
-    protected String wrong(String item) {
-        return Palette.WRONG + item + color;
-    }
-
-    protected String right(String item) {
-        return Palette.RIGHT + item + color;
-    }
-
-    protected String bool(boolean bool) {
-        return (bool ? Palette.TRUE : Palette.FALSE) + "" + bool + color;
-    }
-
-    protected String title(String item) {
-        return color + "------ " + reset(item) + color + " ------";
-    }
-
-    protected String playerNotOnline(String name) {
-        return format("%s is not online!", noun(name));
-    }
-
-    protected String playerNotFound(String name) {
-        return format("%s has never joined!", noun(name));
-    }
-
-
-    protected String noPermission(String item) {
-        return format(Palette.WRONG + "You do not have permission to " + Palette.FALSE + item);
-    }
-
-    protected void addDefaults(List<String> list, String arg, String... items) {
-        for (String item : items) {
-            if (item.startsWith(arg.toLowerCase())) {
-                list.add(item);
-            }
-        }
+    protected String posessive(String item) {
+        return item + (item.endsWith("s") ? "'" : "'s");
     }
 
     protected String[] refinedArgs(String[] args) {
@@ -127,16 +59,6 @@ public class UltraCommand {
         return message.trim();
     }
 
-    protected List<String> suggestPlayers() {
-        List<String> suggestions = new ArrayList<>();
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            suggestions.add(player.getName());
-        }
-        suggestions.add("@a");
-        suggestions.add("@r");
-        return suggestions;
-    }
-
     protected String playerList(List<Player> players) {
         String list = "";
         if (players.size() == 1) {
@@ -146,7 +68,7 @@ public class UltraCommand {
             if (i == players.size() - 1) {
                 list += "and " + players.get(i);
             } else {
-                list += players.get(i) + ", ";
+                list += players.get(i).getName() + ", ";
             }
         }
         return list;
@@ -179,11 +101,34 @@ public class UltraCommand {
         return players;
     }
 
+    protected String format(Command command, String key) {
+        String message = plugin.getCommandString(command.getName() + "." + key);
+        if (message != null) {
+            message = message.replace("$color", color + "");
+        } else {
+            message = key;
+        }
+        return color + Palette.translate(message);
+    }
+
+    protected String format(Command command, String key, String... format) {
+        String message = plugin.getCommandString(command.getName() + "." + key);
+        if (message != null) {
+            for (int i = 0; i < format.length; i += 2) {
+                message = message.replace(format[i], format[i + 1]);
+            }
+            message = message.replace("$color", color + "");
+        } else {
+            message = key;
+        }
+        return color + Palette.translate(message);
+    }
+
     protected int getInt(CommandSender sender, String arg) {
         try {
             return Integer.valueOf(arg);
         } catch (NumberFormatException e) {
-            sender.sendMessage(format(wrong("%s is not a number..."), quote(arg)));
+            sender.sendMessage(plugin.getString("not-a-number", "{number}", arg));
             return -1;
         }
     }

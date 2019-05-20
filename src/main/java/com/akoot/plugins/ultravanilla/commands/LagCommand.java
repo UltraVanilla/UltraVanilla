@@ -27,28 +27,29 @@ public class LagCommand extends UltraCommand implements CommandExecutor, TabExec
         int i = 0;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("average")) {
-                sender.sendMessage(title("Average lag"));
+                sender.sendMessage(plugin.getTitle(format(command, "format.list.title.average"), color));
                 i = 2;
             } else if (args[0].equalsIgnoreCase("median")) {
-                sender.sendMessage(title("Median lag"));
+                sender.sendMessage(plugin.getTitle(format(command, "format.list.title.median"), color));
                 i = 1;
             }
         } else {
-            sender.sendMessage(title("Current lag"));
+            sender.sendMessage(plugin.getTitle(format(command, "format.list.title.current"), color));
         }
         double tps = MinecraftServer.getServer().recentTps[i];
         double percent = (1.0 - (tps / 20.0)) * 100.0;
         if (percent < 0) {
             percent = 0.0;
         }
-        String percentString = String.format("%.1f", percent) + "%";
+        String percentString = String.format("%.1f", percent);
         String tpsString = String.format("%.1f", tps);
         if (sender instanceof Player) {
-            int ping = ((CraftPlayer) sender).getHandle().ping;
-            sender.sendMessage(format("Ping: %s", number(ping + "ms")));
+            String ping = ((CraftPlayer) sender).getHandle().ping + "";
+            sender.sendMessage(format(command, "format.list.item.ping", "{ping}", ping));
         }
-        sender.sendMessage(format("TPS: %s", number(tpsString)));
-        sender.sendMessage(format("The server is %s laggy", number(percentString)));
+        sender.sendMessage(format(command, "format.list.item.tps", "{tps}", tpsString));
+        sender.sendMessage(format(command, "format.list.item.percent", "{percent}", percentString));
+
         ;
         return true;
     }

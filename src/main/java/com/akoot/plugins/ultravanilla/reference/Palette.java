@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class Palette {
 
+    private static Random random = new Random();
+
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
 
     public static final ChatColor NOUN = ChatColor.LIGHT_PURPLE;
@@ -18,7 +20,10 @@ public class Palette {
     public static final ChatColor RIGHT = ChatColor.GREEN;
     public static final ChatColor TRUE = ChatColor.DARK_AQUA;
     public static final ChatColor FALSE = ChatColor.DARK_RED;
-    private static Random random = new Random();
+
+    public static String BOOLEAN(boolean bool) {
+        return (bool ? Palette.TRUE : Palette.FALSE) + "" + bool;
+    }
 
     public static String translate(String text) {
 
@@ -32,6 +37,19 @@ public class Palette {
         if (text.contains("&h")) {
             text = text.replace("&h", "" + ChatColor.values()[random.nextInt(ChatColor.values().length)]);
         }
+
+        //TODO: read from config
+        text = text
+                .replace("$noun", NOUN + "")
+                .replace("$verb", VERB + "")
+                .replace("$number", NUMBER + "")
+                .replace("$object", OBJECT + "")
+                .replace("$wrong", WRONG + "")
+                .replace("$right", RIGHT + "")
+                .replace("$true", TRUE + "")
+                .replace("$false", FALSE + "")
+        ;
+
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 

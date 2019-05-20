@@ -31,11 +31,11 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
             if (player.hasPlayedBefore()) {
                 if (args.length == 1) {
                     long lastJoin = UltraVanilla.getConfig(player.getUniqueId()).getLong(Users.LAST_LOGIN);
-                    sender.sendMessage(format("%s was last seen on %s", noun(player.getName()), object(getDate(lastJoin))));
+                    sender.sendMessage(format(command, "format.seen.last", "{player}", player.getName(), "{date}", getDate(lastJoin)));
                 } else if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("first")) {
                         long firstJoin = UltraVanilla.getConfig(player.getUniqueId()).getLong(Users.FIRST_LOGIN);
-                        sender.sendMessage(format("%s first joined on %s", noun(player.getName()), object(getDate(firstJoin))));
+                        sender.sendMessage(format(command, "format.seen.first", "{player}", player.getName(), "{date}", getDate(firstJoin)));
                     } else {
                         return false;
                     }
@@ -43,7 +43,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                     return false;
                 }
             } else {
-                sender.sendMessage(playerNotOnline(args[0]));
+                sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));
             }
         } else {
             return false;
@@ -53,7 +53,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
 
     private String getDate(long time) {
         Date date = new Date(time);
-        DateFormat df = new SimpleDateFormat("E, M/dd/y G @ h:mma z");
+        DateFormat df = new SimpleDateFormat(plugin.getCommandString("seen.format.date-format"));
         return df.format(date);
     }
 
