@@ -5,7 +5,7 @@ import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
-import com.akoot.plugins.ultravanilla.stuff.Poll;
+import com.akoot.plugins.ultravanilla.stuff.Channel;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.milkbowl.vault.permission.Permission;
@@ -35,14 +35,9 @@ public final class UltraVanilla extends JavaPlugin {
     private YamlConfiguration changelog;
     private YamlConfiguration storage;
 
-    private List<Poll> polls;
     private List<String> motds;
     private List<Ticket> tickets;
     private String motd;
-
-    public List<Poll> getPolls() {
-        return polls;
-    }
 
     public List<String> getMotds() {
         return motds;
@@ -220,7 +215,7 @@ public final class UltraVanilla extends JavaPlugin {
         }
 
         random = new Random();
-        polls = new ArrayList<>();
+//        polls = new ArrayList<>();
         tickets = new ArrayList<>();
 
         ConfigurationSerialization.registerClass(Position.class);
@@ -249,7 +244,6 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("title").setExecutor(new TitleCommand(instance));
         getCommand("reload").setExecutor(new ReloadCommand(instance));
         getCommand("ping").setExecutor(new PingCommand(instance));
-        getCommand("vote").setExecutor(new VoteCommand(instance));
         getCommand("raw").setExecutor(new RawCommand(instance));
         getCommand("motd").setExecutor(new MotdCommand(instance));
         getCommand("ignore").setExecutor(new IgnoreCommand(instance));
@@ -257,7 +251,6 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("seen").setExecutor(new SeenCommand(instance));
         getCommand("spawn").setExecutor(new SpawnCommand(instance));
         getCommand("print").setExecutor(new PrintCommand(instance));
-        getCommand("user").setExecutor(new UserCommand(instance));
         getCommand("do").setExecutor(new DoCommand(instance));
         getCommand("afk").setExecutor(new AfkCommand(instance));
         getCommand("msg").setExecutor(new MsgCommand(instance));
@@ -266,6 +259,7 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("inventory").setExecutor(new InventoryCommand(instance));
         getCommand("lag").setExecutor(new LagCommand(instance));
         getCommand("ticket").setExecutor(new TicketCommand(instance));
+        getCommand("customize").setExecutor(new CustomizeCommand(instance));
     }
 
     public void firstJoin(String name) {
@@ -338,6 +332,14 @@ public final class UltraVanilla extends JavaPlugin {
             if (player.hasPermission(permission)) {
                 player.sendMessage(message);
             }
+        }
+    }
+
+    public void getChannels() {
+        List<Map<?, ?>> maps = getStorage().getMapList("chat.channels");
+        List<Channel> channels = new ArrayList<>();
+        for (Map<?, ?> map : maps) {
+            Channel channel = new Channel(map.get("id").toString());
         }
     }
 

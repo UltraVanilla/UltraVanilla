@@ -66,7 +66,7 @@ public class UltraCommand {
         }
         for (int i = 0; i < players.size(); i++) {
             if (i == players.size() - 1) {
-                list += "and " + players.get(i);
+                list += "and " + players.get(i).getName();
             } else {
                 list += players.get(i).getName() + ", ";
             }

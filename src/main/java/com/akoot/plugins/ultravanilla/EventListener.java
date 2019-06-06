@@ -4,6 +4,7 @@ import com.akoot.plugins.ultravanilla.commands.AfkCommand;
 import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.serializable.Position;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandSendEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public class EventListener implements Listener {
@@ -77,6 +75,23 @@ public class EventListener implements Listener {
         if (!player.hasPlayedBefore()) {
             UltraVanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
             plugin.firstJoin(player.getName());
+        }
+        String thisVersion = plugin.getDescription().getVersion();
+        String lastVersion = UltraVanilla.getConfig(player.getUniqueId()).getString("last-version");
+        if (lastVersion == null || !lastVersion.equals(thisVersion)) {
+            player.performCommand("changelog");
+        }
+        UltraVanilla.set(player, "last-version", thisVersion);
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Position spawn = (Position) plugin.getStorage().get("spawn.location");
+        Player player = event.getPlayer();
+        if (player.getBedSpawnLocation() == null) {
+            if (spawn != null) {
+                event.setRespawnLocation(spawn.getLocation());
+            }
         }
     }
 

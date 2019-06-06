@@ -23,7 +23,7 @@ public class MotdCommand extends UltraCommand implements CommandExecutor, TabExe
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getMOTD().replace("%player", sender.getName()));
-        } else if (args.length == 1) {
+        } else {
             if (sender.hasPermission("ultravanilla.command.motd.set")) {
                 String motd = getArg(args);
                 plugin.setMOTD(motd);
@@ -31,8 +31,6 @@ public class MotdCommand extends UltraCommand implements CommandExecutor, TabExe
             } else {
                 sender.sendMessage(plugin.getString("no-permission", "{action}", "set the MOTD"));
             }
-        } else {
-            return false;
         }
         return true;
     }

@@ -34,21 +34,12 @@ commands:
     usage: /gm [gamemode] [player]
   title:
     description: Show a title
-    permission: minecraft.command.title
+    permission: ultravanilla.command.title
     usage: /title <title> [-s <subtitle>]
   ping:
     description: Ping a player
     permission: ultravanilla.command.ping
     usage: /ping <player>
-  vote:
-    description: Create and vote for polls
-    permission: ultravanilla.command.vote
-    aliases: [poll]
-    usage: |
-      /vote list
-      /vote <name>
-      /vote <name> <option>
-      /vote create <name> [-time:<time>] <title>
   raw:
     description: Send a JSON message to everyone
     permission: ultravanilla.command.raw
@@ -81,13 +72,6 @@ commands:
   print:
     description: Print a message
     usage: /print <message> [\n<new line>]
-  user:
-    description: Configure a user
-    permission: ultravanilla.command.user
-    usage: |
-      /user <name>
-      /user <name> get|clear <key>
-      /user <name> set <key> [value]
   do:
     description: Run multiple commands
     usage: /do "<command> [subcommand]"...
@@ -123,6 +107,12 @@ commands:
       /ticket close <id>
       /ticket delete <id>
       /ticket answer <id> <message>
+  customize:
+    description: Customize an item in hand
+    permission: ultravanilla.command.customize
+    usage: |
+      /customize name <name>
+      /customize lore <lore>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

@@ -173,6 +173,12 @@ strings:
       error:
         invalid-id: 'Ticket with ID: $wrong{id} $colordoes not exist!'
         no-reply: 'Your ticket has not been replied to by an admin yet...'
+    customize:
+      message:
+        set-lore: "Set this $object{item's} $colorlore to: \n&r{lore}"
+        set-name: "Renamed this $object{item} $colorto: &r{name}"
+      error:
+        invalid-item: 'You cannot customize that $object{item}'
   not-a-number: '$number{number} $wrongis not a valid number!'
   player-only: 'You must be a player to {action}'
   no-permission: '$wrongYou do not have permission to $object{action}$wrong!'

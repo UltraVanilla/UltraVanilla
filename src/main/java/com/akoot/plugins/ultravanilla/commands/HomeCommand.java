@@ -29,7 +29,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param player   The user
      * @param name     The name of the home
      */
-    public static void setHome(Player player, String name) {
+    private void setHome(Player player, String name) {
 
         // Create a new home
         Position home = new Position(player.getLocation());
@@ -42,8 +42,6 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
         if (homes == null) {
             homes = new ArrayList<>();
         }
-
-        homes.forEach(e -> player.sendMessage(e.getName()));
 
         // Loop through the home list
         for (Position h : new ArrayList<>(homes)) {
@@ -58,7 +56,6 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
         // Add the home to the home list
         homes.add(home);
-        homes.forEach(e -> player.sendMessage(e.getName()));
 
         // Save the new home list to config
         UltraVanilla.set(player, HOME_PATH, homes);
@@ -70,8 +67,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param player The user
      * @return A list of homes a user has. Returns null if they do not have any homes
      */
-    public static List<Position> getHomes(Player player) {
-        @SuppressWarnings({"unchecked"})
+    public List<Position> getHomes(Player player) {
         List<Position> homes = (List<Position>) UltraVanilla.getConfig(player.getUniqueId()).getList(HOME_PATH);
         return homes;
     }
@@ -83,7 +79,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param name   The name of the home to remove
      * @return Whether or not the home was deleted
      */
-    public static boolean removeHome(Player player, String name) {
+    private boolean removeHome(Player player, String name) {
 
         // Set a found variable to initially be false
         boolean found = false;
@@ -122,7 +118,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param name   The name of the home
      * @return The location of the specified home. Returns null of not found
      */
-    public static Location getHomeLocation(Player player, String name) {
+    private Location getHomeLocation(Player player, String name) {
 
         // Get home list from config
         List<Position> homes = getHomes(player);
@@ -194,6 +190,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     // Create a new "default" home with the name "home"
                     setHome(player, "home");
                     sender.sendMessage(format(command, "message.set.home"));
+                    return true;
                 }
 
                 // /home remove

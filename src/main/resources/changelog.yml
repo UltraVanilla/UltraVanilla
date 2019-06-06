@@ -1,21 +1,16 @@
 player:
   added:
-    - '"changed" and "broke" section to changelog'
-    - player suggestions typing /nick to help reset it
-    - more suicide death messages
+    - /changelog on join
   removed: []
-  fixed: []
-  changed:
-    - a few command messages
-    - opening tickets with /ticket reply
-  broke:
-    - a few command messages (testing later)
-    - /home set, use "/home set home" (revamping)
-    - /vote (revamping)
-staff:
-  added: []
-  removed: []
-  fixed: []
+  fixed:
+    - /home not working right
   changed: []
-  broke:
-    - /user (revamping)
+  broke: []
+staff:
+  added:
+    - /customize
+  removed: []
+  fixed:
+    - /motd not setting
+  changed: []
+  broke: []
