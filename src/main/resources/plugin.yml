@@ -91,6 +91,7 @@ commands:
     usage: /changelog
   inventory:
     aliases: [inv]
+    permission: ultravanilla.command.inventory
     description: Opens a player's inventory
     usage: /inventory <player>
   lag:

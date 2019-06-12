@@ -1,16 +1,13 @@
 player:
-  added:
-    - /changelog on join
+  added: []
   removed: []
-  fixed:
-    - /home not working right
+  fixed: []
   changed: []
   broke: []
 staff:
-  added:
-    - /customize
+  added: []
   removed: []
   fixed:
-    - /motd not setting
+    - /inventory permissions
   changed: []
   broke: []
