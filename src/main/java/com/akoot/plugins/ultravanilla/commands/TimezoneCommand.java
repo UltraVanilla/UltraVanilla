@@ -1,0 +1,54 @@
+package com.akoot.plugins.ultravanilla.commands;
+
+import com.akoot.plugins.ultravanilla.UltraVanilla;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.TimeZone;
+
+public class TimezoneCommand extends UltraCommand implements CommandExecutor, TabExecutor {
+
+    public static final ChatColor COLOR = ChatColor.LIGHT_PURPLE;
+
+    public TimezoneCommand(UltraVanilla instance) {
+        super(instance);
+        this.color = COLOR;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (args.length == 0) {
+                String timezone = UltraVanilla.getConfig(player.getUniqueId()).getString("timezone", "");
+                if ((timezone == null || timezone.isEmpty())) {
+                    sender.sendMessage(error(command, "not-set"));
+                } else {
+                    sender.sendMessage(message(command, "display", "{timezone}", timezone));
+                }
+            } else if (args.length == 1) {
+                UltraVanilla.set(player, "timezone", args[0].toUpperCase());
+                sender.sendMessage(message(command, "set", "{timezone}", args[0].toUpperCase()));
+            } else {
+                return false;
+            }
+        } else {
+            sender.sendMessage(plugin.getString("player-only", "{action}", "set your timezone"));
+        }
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            return Arrays.asList(TimeZone.getAvailableIDs());
+        }
+        return null;
+    }
+}

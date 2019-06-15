@@ -124,6 +124,14 @@ public class UltraCommand {
         return color + Palette.translate(message);
     }
 
+    protected String message(Command command, String key, String... format) {
+        return format(command, "message." + key, format);
+    }
+
+    protected String error(Command command, String key, String... format) {
+        return format(command, "error." + key, format);
+    }
+
     protected int getInt(CommandSender sender, String arg) {
         try {
             return Integer.valueOf(arg);

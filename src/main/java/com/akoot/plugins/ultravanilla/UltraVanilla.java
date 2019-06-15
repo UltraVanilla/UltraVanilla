@@ -203,6 +203,24 @@ public final class UltraVanilla extends JavaPlugin {
         return storage;
     }
 
+    public static boolean isSuperAdmin(Player player) {
+        return getConfig(player.getUniqueId()).getBoolean("super-admin", false);
+    }
+
+    public void firstJoin(String name) {
+        File joinFile = new File(getDataFolder(), "join.txt");
+        if (joinFile.exists()) {
+            try {
+                for (String line : Files.readAllLines(joinFile.toPath())) {
+                    line = line.replace("%player", name);
+                    getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -260,20 +278,8 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("lag").setExecutor(new LagCommand(instance));
         getCommand("ticket").setExecutor(new TicketCommand(instance));
         getCommand("customize").setExecutor(new CustomizeCommand(instance));
-    }
-
-    public void firstJoin(String name) {
-        File joinFile = new File(getDataFolder(), "join.txt");
-        if (joinFile.exists()) {
-            try {
-                for (String line : Files.readAllLines(joinFile.toPath())) {
-                    line = line.replace("%player", name);
-                    getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
+        getCommand("timezone").setExecutor(new TimezoneCommand(instance));
     }
 
     private void setRandomMOTD() {

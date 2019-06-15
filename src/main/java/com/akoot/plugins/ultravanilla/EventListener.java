@@ -15,6 +15,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.util.List;
+
 public class EventListener implements Listener {
 
     private UltraVanilla plugin;
@@ -30,6 +32,23 @@ public class EventListener implements Listener {
                     .replace("{player}", player.getName())
                     .replace("$color", AfkCommand.COLOR + "")
             ));
+        }
+    }
+
+    // Might break with future versions
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if (!UltraVanilla.isSuperAdmin(event.getPlayer())) {
+            if (event.getCause().name().equals("COMMAND") || event.getCause().name().equals("SPECTATE")) {
+                for (Player p : plugin.getServer().getOnlinePlayers()) {
+                    if (p.getLocation().equals(event.getTo())) {
+                        YamlConfiguration config = plugin.getConfig(p.getUniqueId());
+                        if (config != null && config.getBoolean(Users.TP_DISABLED, false)) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -73,6 +92,10 @@ public class EventListener implements Listener {
         player.setPlayerListName(nameColor + player.getPlayerListName());
         UltraVanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
         if (!player.hasPlayedBefore()) {
+            Position spawn = ((Position) plugin.getConfig().get("spawn"));
+            if (spawn != null) {
+                player.teleport(spawn.getLocation());
+            }
             UltraVanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
             plugin.firstJoin(player.getName());
         }
@@ -88,9 +111,18 @@ public class EventListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Position spawn = (Position) plugin.getStorage().get("spawn.location");
         Player player = event.getPlayer();
+        List<Position> homes = (List<Position>) plugin.getConfig(player.getUniqueId()).get(Users.HOMES);
         if (player.getBedSpawnLocation() == null) {
             if (spawn != null) {
                 event.setRespawnLocation(spawn.getLocation());
+            }
+            if (homes != null) {
+                for (Position home : homes) {
+                    if (home.getName().equals("home")) {
+                        event.setRespawnLocation(home.getLocation());
+                        break;
+                    }
+                }
             }
         }
     }

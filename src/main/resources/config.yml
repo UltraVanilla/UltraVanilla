@@ -139,6 +139,15 @@ strings:
     suicide:
       message:
         kill-self: 'You just killed yourself.'
+    tptoggle:
+      message:
+        toggle: '$object$verb{enabled}$color teleport access'
+    timezone:
+      message:
+        display: 'Your time zone: $object{timezone}'
+        set: '$object{timezone} $coloris now your timezone'
+      error:
+        not-set: '$wrongYour time zone is not set!'
     ticket:
       format:
         read:

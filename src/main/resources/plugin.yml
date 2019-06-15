@@ -108,6 +108,15 @@ commands:
       /ticket close <id>
       /ticket delete <id>
       /ticket answer <id> <message>
+  tptoggle:
+    description: Toggles teleport access
+    usage: /tptoggle
+    permission: ultravanilla.command.tptoggle
+  timezone:
+    description: Sets your timezone
+    usage: |
+      /timezone
+      /timezone <zone>
   customize:
     description: Customize an item in hand
     permission: ultravanilla.command.customize

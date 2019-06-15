@@ -1,13 +1,16 @@
 player:
-  added: []
+  added:
+    - /timezone
   removed: []
   fixed: []
-  changed: []
+  changed:
+    - 'respawn location: 1st bed, 2nd home, finally /spawn'
   broke: []
 staff:
-  added: []
+  added:
+    - /tptoggle
   removed: []
   fixed:
-    - /inventory permissions
+    - /msg being weird
   changed: []
   broke: []

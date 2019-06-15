@@ -65,7 +65,7 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
                 to = plugin.getServer().getPlayer(args[0]);
             }
             if (to != null) {
-                msg(sender, to, getArg(args, 1));
+                msg(sender, to, getArg(args, 2));
             } else {
                 sender.sendMessage(format(command, "player-offline", "{player}", args[0]));
             }
