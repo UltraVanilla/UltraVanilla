@@ -280,6 +280,8 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("customize").setExecutor(new CustomizeCommand(instance));
         getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
         getCommand("timezone").setExecutor(new TimezoneCommand(instance));
+        getCommand("hat").setExecutor(new HatCommand(instance));
+
     }
 
     private void setRandomMOTD() {

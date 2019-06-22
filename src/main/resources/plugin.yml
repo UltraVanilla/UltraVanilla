@@ -123,6 +123,10 @@ commands:
     usage: |
       /customize name <name>
       /customize lore <lore>
+  hat:
+    description: Set your hat
+    permission: ultravanilla.command.hat
+    usage: /hat
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

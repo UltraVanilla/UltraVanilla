@@ -139,6 +139,9 @@ strings:
     suicide:
       message:
         kill-self: 'You just killed yourself.'
+        pact:
+          create: 'You are in a suicide pact with $noun{player}'
+          cease: 'You are no longer in a suicide pact with $noun{player}'
     tptoggle:
       message:
         toggle: '$object$verb{enabled}$color teleport access'

@@ -1,16 +1,15 @@
 player:
   added:
-    - /timezone
-  removed: []
-  fixed: []
-  changed:
-    - 'respawn location: 1st bed, 2nd home, finally /spawn'
-  broke: []
-staff:
-  added:
-    - /tptoggle
+    - /hat
+    - cool secret easter egg
   removed: []
   fixed:
-    - /msg being weird
+    - /timezone suggestions
+  changed: []
+  broke: []
+staff:
+  added: []
+  removed: []
+  fixed: []
   changed: []
   broke: []
