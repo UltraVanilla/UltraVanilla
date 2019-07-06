@@ -1,12 +1,12 @@
 player:
-  added:
-    - /hat
-    - cool secret easter egg
+  added: []
   removed: []
   fixed:
-    - /timezone suggestions
+    - /ignore
+    - /home setting multiple times (Thank you TechnoNinja64)
   changed: []
-  broke: []
+  broke:
+    - /ignore lol
 staff:
   added: []
   removed: []

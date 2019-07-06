@@ -211,11 +211,11 @@ public class EventListener implements Listener {
         }
 
         //ignored
-        for (Player p : event.getRecipients()) {
-            if (UltraVanilla.isIgnored(p, player)) {
-                event.getRecipients().remove(p);
-            }
-        }
+//        for (Player p : event.getRecipients()) {
+//            if (UltraVanilla.isIgnored(p, player)) {
+//                event.getRecipients().remove(p);
+//            }
+//        }
 
         event.setMessage(message);
     }

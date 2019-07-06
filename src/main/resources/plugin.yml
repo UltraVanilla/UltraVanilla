@@ -127,6 +127,14 @@ commands:
     description: Set your hat
     permission: ultravanilla.command.hat
     usage: /hat
+  user:
+    description: Display and edit info for a certain user
+    permission: ultravanilla.command.user
+    usage: |
+      /user
+      /user <player>
+      /user <player> get|clear <key>
+      /user <player> set <key> <value>
 permissions:
   ultravanilla.command.nick:
     description: Gives access to /nick

@@ -117,4 +117,11 @@ public class Position implements ConfigurationSerializable {
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        String worldName = Bukkit.getWorld(world).getName();
+        worldName = worldName.equals("world") ? "" : " " + worldName + ",";
+        return String.format("{%s:%s %s, %s, %s}", name, worldName, (int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
+    }
 }

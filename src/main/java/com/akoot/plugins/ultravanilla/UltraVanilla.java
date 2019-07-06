@@ -39,6 +39,10 @@ public final class UltraVanilla extends JavaPlugin {
     private List<Ticket> tickets;
     private String motd;
 
+    public static YamlConfiguration getConfig(OfflinePlayer player) {
+        return getConfig(player.getUniqueId());
+    }
+
     public List<String> getMotds() {
         return motds;
     }
@@ -281,6 +285,7 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
         getCommand("timezone").setExecutor(new TimezoneCommand(instance));
         getCommand("hat").setExecutor(new HatCommand(instance));
+        getCommand("user").setExecutor(new UserCommand(instance));
 
     }
 

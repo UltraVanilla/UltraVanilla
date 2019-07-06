@@ -283,7 +283,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             return true;
                         }
                     }
-                    sender.sendMessage(format(command, "message.error.not-found.home", "{name}", args[0]));
+                    sender.sendMessage(format(command, "error.not-found.home", "{name}", args[0]));
                 }
             }
             // /home set|remove <name>
