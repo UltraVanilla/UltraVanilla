@@ -90,7 +90,10 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             for (OfflinePlayer player : plugin.getServer().getOfflinePlayers()) {
-                suggestions.add(player.getName());
+                String name = player.getName();
+                if (name != null && (args[0].length() < 1 || name.toLowerCase().startsWith(args[0].toLowerCase()))) {
+                    suggestions.add(name);
+                }
             }
         } else if (args.length == 2) {
             suggestions.add("first");

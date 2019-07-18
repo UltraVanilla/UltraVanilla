@@ -372,43 +372,35 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             // /home [name]|set|remove
             if (args.length == 1) {
                 if (homes != null) {
-
-                    if (args[0].isEmpty()) {
-                        for (Position home : homes) {
-                            list.add(home.getName());
-                        }
-                        list.add("list");
-                        list.add("remove");
-                        list.add("remove-all");
-                        list.add("set");
-                    } else {
-                        for (Position home : homes) {
-                            if (home.getName().startsWith(args[0])) {
-                                list.add(home.getName());
+                    for (Position home : homes) {
+                        String name = home.getName();
+                        if (args[0].length() < 1 || name.toLowerCase().startsWith(args[0].toLowerCase())) {
+                            list.add(name);
                             }
                         }
-                        if (player.getBedSpawnLocation() != null) {
-                            list.add("bed");
+
+                    String[] subCommands = {"list", "remove", "remove-all", "set", "bed"};
+                    for (String subCommand : subCommands) {
+                        if (args[0].length() < 1 || subCommand.toLowerCase().startsWith(args[0].toLowerCase())) {
+                            list.add(subCommand);
                         }
-                        list.add("list");
-                        list.add("remove");
-                        list.add("remove-all");
-                        list.add("set");
                     }
                 }
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("remove")) {
                     if (homes != null) {
-                        if (args[1].isEmpty()) {
-                            for (Position home : homes) {
-                                list.add(home.getName());
+                        for (Position home : homes) {
+                            String name = home.getName();
+                            if (args[1].length() < 1 || name.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                list.add(name);
                             }
-                        } else {
-                            for (Position home : homes) {
-                                if (home.getName().startsWith(args[1])) {
-                                    list.add(home.getName());
-                                }
-                            }
+                        }
+                    }
+                } else if (args[0].equalsIgnoreCase("list") && sender.hasPermission("ultravanilla.permission.admin")) {
+                    for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
+                        String name = offlinePlayer.getName();
+                        if (name != null && (args[1].length() < 1 || name.toLowerCase().startsWith(args[1].toLowerCase()))) {
+                            list.add(name);
                         }
                     }
                 }

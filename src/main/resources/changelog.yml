@@ -2,18 +2,11 @@ player:
   added: []
   removed: []
   fixed:
-    - /ignore
-    - pinging people using @, you can now add punctuation after their name and it'll work now
-  changed:
-    - /seen name suggestions to include offline names
-    - join messages to show nicknames
+    - tab completion for /seen and /home
+  changed: []
   broke: []
 staff:
-  added:
-    - /back
-    - /home list <player-name> (click to teleport)
-    - /seen to display where someone left (click to teleport)
-    - /smite
+  added: []
   removed: []
   fixed: []
   changed: []
