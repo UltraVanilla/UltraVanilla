@@ -15,8 +15,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import java.util.List;
-
 public class EventListener implements Listener {
 
     private UltraVanilla plugin;
@@ -50,12 +48,7 @@ public class EventListener implements Listener {
                 }
             }
         }
-    }
-
-    @EventHandler
-    public void onPlayerCommandSend(PlayerCommandSendEvent event) {
-        Player player = event.getPlayer();
-        unsetAfk(player);
+        UltraVanilla.set(event.getPlayer(), "last-teleport", new Position(event.getFrom()));
     }
 
     @EventHandler
@@ -88,6 +81,9 @@ public class EventListener implements Listener {
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);
             player.setPlayerListName(nick);
+            event.setJoinMessage(event.getJoinMessage().replace(player.getName(), ChatColor.stripColor(nick)));
+            player.setCustomName(ChatColor.stripColor(nick));
+            player.setCustomNameVisible(true);
         }
         player.setPlayerListName(nameColor + player.getPlayerListName());
         UltraVanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
@@ -108,23 +104,11 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Position spawn = (Position) plugin.getStorage().get("spawn.location");
+    public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        List<Position> homes = (List<Position>) plugin.getConfig(player.getUniqueId()).get(Users.HOMES);
-        if (player.getBedSpawnLocation() == null) {
-            if (spawn != null) {
-                event.setRespawnLocation(spawn.getLocation());
-            }
-            if (homes != null) {
-                for (Position home : homes) {
-                    if (home.getName().equals("home")) {
-                        event.setRespawnLocation(home.getLocation());
-                        break;
-                    }
-                }
-            }
-        }
+        UltraVanilla.set(player.getUniqueId(), Users.LOGOUT_LOCATION, new Position(event.getPlayer().getLocation()));
+        UltraVanilla.set(player.getUniqueId(), Users.LAST_LOGOUT, System.currentTimeMillis());
+        event.setQuitMessage(event.getQuitMessage().replace(player.getName(), ChatColor.stripColor(player.getDisplayName())));
     }
 
     @EventHandler
@@ -199,6 +183,7 @@ public class EventListener implements Listener {
             for (String word : message.split(" ")) {
                 if (word.length() >= 3 && word.startsWith("@")) {
                     word = word.substring(1);
+                    word = word.replaceAll("[?.,]", "");
                     if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
                         if (UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || UltraVanilla.isIgnored(player, p)) {
                             String at = Palette.NOUN + word + ChatColor.RESET;
@@ -211,11 +196,12 @@ public class EventListener implements Listener {
         }
 
         //ignored
-//        for (Player p : event.getRecipients()) {
-//            if (UltraVanilla.isIgnored(p, player)) {
-//                event.getRecipients().remove(p);
-//            }
-//        }
+        for (Player p : event.getRecipients()) {
+            if (UltraVanilla.isIgnored(p, player)) {
+                event.getRecipients().remove(p);
+                break;
+            }
+        }
 
         event.setMessage(message);
     }

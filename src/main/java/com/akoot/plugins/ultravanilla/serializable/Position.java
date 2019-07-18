@@ -124,4 +124,24 @@ public class Position implements ConfigurationSerializable {
         worldName = worldName.equals("world") ? "" : " " + worldName + ",";
         return String.format("{%s:%s %s, %s, %s}", name, worldName, (int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
     }
+
+    public String getTpCommand() {
+        String worldName = "";
+        switch (Bukkit.getWorld(world).getName().toLowerCase()) {
+            case "world_nether":
+                worldName = "the_nether";
+                break;
+            case "world":
+                worldName = "overworld";
+                break;
+            case "world_the_end":
+                worldName = "the_end";
+                break;
+        }
+        return String.format("/execute in %s run tp %s %s %s", worldName, x, y, z);
+    }
+
+    public String toStringTrimmed() {
+        return String.format("%s, %s, %s, %s", (int) Math.round(x), (int) Math.round(y), (int) Math.round(z), Bukkit.getWorld(world).getName());
+    }
 }

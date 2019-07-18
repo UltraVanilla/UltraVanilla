@@ -286,6 +286,8 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("timezone").setExecutor(new TimezoneCommand(instance));
         getCommand("hat").setExecutor(new HatCommand(instance));
         getCommand("user").setExecutor(new UserCommand(instance));
+        getCommand("smite").setExecutor(new SmiteCommand(instance));
+        getCommand("back").setExecutor(new BackCommand(instance));
 
     }
 

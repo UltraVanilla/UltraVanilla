@@ -1,9 +1,13 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.serializable.Position;
+import com.akoot.plugins.ultravanilla.util.RawComponent;
+import com.akoot.plugins.ultravanilla.util.RawMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -67,7 +71,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param player The user
      * @return A list of homes a user has. Returns null if they do not have any homes
      */
-    public List<Position> getHomes(Player player) {
+    public List<Position> getHomes(OfflinePlayer player) {
         List<Position> homes = (List<Position>) UltraVanilla.getConfig(player.getUniqueId()).getList(HOME_PATH);
         return homes;
     }
@@ -316,6 +320,27 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     } else {
                         sender.sendMessage(format(command, "message.error.not-found.misc", "{name}", homeName));
                         return true;
+                    }
+                } else if (args[0].equalsIgnoreCase("list")) {
+                    if (sender.hasPermission("ultravanilla.permission.admin")) {
+                        OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
+                        if (target.hasPlayedBefore()) {
+                            homes = getHomes(target);
+                            RawMessage message = new RawMessage();
+                            for (Position home : homes) {
+                                RawComponent component = new RawComponent();
+                                component.setContent(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\\n");
+                                component.setCommand(home.getTpCommand());
+                                message.addComponent(component);
+                            }
+                            sender.sendMessage(plugin.getTitle(Palette.NOUN + target.getName() + color + "'s homes", color));
+                            UltraVanilla.tellRaw(message, player);
+                        } else {
+                            sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
+                        }
+
+                    } else {
+                        sender.sendMessage(plugin.getString("no-permission", "{action}", "list other people's homes"));
                     }
                 } else {
                     return false;

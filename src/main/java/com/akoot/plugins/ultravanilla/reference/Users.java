@@ -16,6 +16,9 @@ public class Users {
     public static final String LAST_LOGIN = "login.last";
     public static final String FIRST_LOGIN = "login.first";
     public static final String TP_DISABLED = "tp-disabled";
+    public static final String LAST_LOCATION = "last-location";
+    public static final String LOGOUT_LOCATION = "logout.location";
+    public static final String LAST_LOGOUT = "logout.time";
 
 
     public static final Map<String, String> REPLIES = new HashMap<>();

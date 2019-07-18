@@ -2,6 +2,9 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.serializable.Position;
+import com.akoot.plugins.ultravanilla.util.RawComponent;
+import com.akoot.plugins.ultravanilla.util.RawMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -52,6 +55,20 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                 } else {
                     return false;
                 }
+                if (sender.hasPermission("ultravanilla.permission.admin")) {
+                    Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
+                    String locationText = color + "Last Location: " + ChatColor.RESET + position.toStringTrimmed();
+                    if (sender instanceof Player) {
+                        RawMessage message = new RawMessage();
+                        RawComponent component = new RawComponent();
+                        component.setContent(locationText);
+                        component.setCommand(position.getTpCommand());
+                        message.addComponent(component);
+                        UltraVanilla.tellRaw(message, (Player) sender);
+                    } else {
+                        sender.sendMessage(locationText);
+                    }
+                }
             } else {
                 sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));
             }
@@ -71,10 +88,13 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> suggestions = new ArrayList<>();
-        if (args.length == 2) {
+        if (args.length == 1) {
+            for (OfflinePlayer player : plugin.getServer().getOfflinePlayers()) {
+                suggestions.add(player.getName());
+            }
+        } else if (args.length == 2) {
             suggestions.add("first");
-            return suggestions;
         }
-        return null;
+        return suggestions;
     }
 }

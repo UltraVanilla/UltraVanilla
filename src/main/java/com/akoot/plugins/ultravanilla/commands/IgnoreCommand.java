@@ -44,20 +44,18 @@ public class IgnoreCommand extends UltraCommand implements CommandExecutor {
                         sender.sendMessage(format(command, "message.unignore", "{name}", p.getName()));
                         UltraVanilla.remove(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                     } else {
-                        if (!p.hasPermission("ultravanilla.command.ignore.bypass")) {
-                            sender.sendMessage(format(command, "message.ignore", "{name}", p.getName()));
-                            UltraVanilla.add(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
-                        } else {
-                            sender.sendMessage(format(command, "error.ignore-staff", "{player}", p.getName()));
-                        }
+                        sender.sendMessage(format(command, "message.ignore", "{name}", p.getName()));
+                        UltraVanilla.add(player.getUniqueId(), Users.IGNORED, p.getUniqueId().toString());
                     }
                 } else {
                     sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));
                 }
+            } else {
+                return false;
             }
         } else {
             sender.sendMessage(plugin.getString("player-only", "{action}", "ignore players"));
         }
-        return false;
+        return true;
     }
 }
