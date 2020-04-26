@@ -30,17 +30,14 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
     /**
      * Creates a home if one doesn't exist, replaces a home if it already exits
      *
-     * @param player   The user
-     * @param name     The name of the home
+     * @param player The user
+     * @param name   The name of the home
      */
-    private void setHome(Player player, String name) {
+    private void setHome(Player player, List<Position> homes, String name) {
 
         // Create a new home
         Position home = new Position(player.getLocation());
         home.setName(name);
-
-        // Get home list from config
-        List<Position> homes = getHomes(player);
 
         // Check if there is a valid list, if not create one
         if (homes == null) {
@@ -48,15 +45,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
         }
 
         // Loop through the home list
-        for (Position h : new ArrayList<>(homes)) {
-
-            // Check if a home in the list already has that name
-            if (h.getName().equals(name)) {
-
-                // Remove the home if it exists, as it will be re-created later with a new Location
-                homes.remove(h);
-            }
-        }
+        // Check if a home in the list already has that name
+        // Remove the home if it exists, as it will be re-created later with a new Location
+        homes.removeIf(h -> h.getName().equals(name));
 
         // Add the home to the home list
         homes.add(home);
@@ -83,13 +74,10 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * @param name   The name of the home to remove
      * @return Whether or not the home was deleted
      */
-    private boolean removeHome(Player player, String name) {
+    private boolean removeHome(Player player, List<Position> homes, String name) {
 
         // Set a found variable to initially be false
         boolean found = false;
-
-        // Get home list from config
-        List<Position> homes = getHomes(player);
 
         // Check if there is a valid list, if not return null
         if (homes != null) {
@@ -118,14 +106,11 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
     /**
      * Gets the location of a home
      *
-     * @param player The user
+     * @param homes The player's homes
      * @param name   The name of the home
      * @return The location of the specified home. Returns null of not found
      */
-    private Location getHomeLocation(Player player, String name) {
-
-        // Get home list from config
-        List<Position> homes = getHomes(player);
+    private Location getHomeLocation(List<Position> homes, String name) {
 
         // Check if there is a valid list, if not return null
         if (homes != null) {
@@ -191,9 +176,14 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 // /home set
                 if (args[0].equalsIgnoreCase("set")) {
 
-                    // Create a new "default" home with the name "home"
-                    setHome(player, "home");
-                    sender.sendMessage(format(command, "message.set.home"));
+                    if (canSetAnotherHome(player, homes, "home")) {
+                        // Create a new "default" home with the name "home"
+                        setHome(player, homes, "home");
+                        sender.sendMessage(format(command, "message.set.home"));
+
+                    } else {
+                        sender.sendMessage(error(command, "limited-homes"));
+                    }
                     return true;
                 }
 
@@ -296,17 +286,30 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 // Set the home name
                 String homeName = args[1];
 
-                // /home set <name>
-                if (args[0].equalsIgnoreCase("set")) {
-
-                    if (homes.size() > 0 && !player.hasPermission("ultravanilla.command.home.unlimited")) {
-                        sender.sendMessage(format(command, "message.error.limited-homes"));
-                        return true;
+                if (args[0].equals("sync")) {
+                    if (sender.hasPermission("ultravanilla.command.home.sync")) {
+                        OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
+                        if (target.hasPlayedBefore()) {
+                            homes = getHomes(target);
+                            sender.sendMessage(COLOR + "Synced homes with " + Palette.NOUN + target.getName());
+                        } else {
+                            sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getString("no-permission", "{action}", "sync with another player's homes"));
                     }
+                }
 
-                    // Use the static method as it's easier
-                    setHome(player, homeName);
-                    sender.sendMessage(format(command, "message.set.misc", "{name}", homeName));
+                // /home set <name>
+                else if (args[0].equalsIgnoreCase("set")) {
+
+                    if (canSetAnotherHome(player, homes, homeName)) {
+                        // Use the static method as it's easier
+                        setHome(player, homes, homeName);
+                        sender.sendMessage(format(command, "message.set.misc", "{name}", homeName));
+                    } else {
+                        sender.sendMessage(error(command, "limited-homes"));
+                    }
                     return true;
                 }
 
@@ -314,13 +317,12 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 else if (args[0].equalsIgnoreCase("remove")) {
 
                     // Use the static method as it's easier. If succeeded, send message
-                    if (removeHome(player, homeName)) {
+                    if (removeHome(player, homes, homeName)) {
                         sender.sendMessage(format(command, "message.remove.misc", "{name}", homeName));
-                        return true;
                     } else {
                         sender.sendMessage(format(command, "message.error.not-found.misc", "{name}", homeName));
-                        return true;
                     }
+                    return true;
                 } else if (args[0].equalsIgnoreCase("list")) {
                     if (sender.hasPermission("ultravanilla.permission.admin")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
@@ -335,6 +337,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             }
                             sender.sendMessage(plugin.getTitle(Palette.NOUN + target.getName() + color + "'s homes", color));
                             UltraVanilla.tellRaw(message, player);
+                            homes = getHomes(player);
                         } else {
                             sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
                         }
@@ -353,6 +356,10 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             sender.sendMessage(plugin.getString("player-only", "{action}", "use homes"));
         }
         return true;
+    }
+
+    private boolean canSetAnotherHome(Player player, List<Position> homes, String homeName) {
+        return hasHome(homeName, homes) || homes.size() == 0 || player.hasPermission("ultravanilla.command.home.unlimited");
     }
 
     @Override
@@ -376,10 +383,10 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         String name = home.getName();
                         if (args[0].length() < 1 || name.toLowerCase().startsWith(args[0].toLowerCase())) {
                             list.add(name);
-                            }
                         }
+                    }
 
-                    String[] subCommands = {"list", "remove", "remove-all", "set", "bed"};
+                    String[] subCommands = {"list", "remove", "remove-all", "set", "bed", "sync"};
                     for (String subCommand : subCommands) {
                         if (args[0].length() < 1 || subCommand.toLowerCase().startsWith(args[0].toLowerCase())) {
                             list.add(subCommand);
@@ -396,7 +403,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             }
                         }
                     }
-                } else if (args[0].equalsIgnoreCase("list") && sender.hasPermission("ultravanilla.permission.admin")) {
+                } else if ((args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("sync")) && sender.hasPermission("ultravanilla.permission.admin")) {
                     for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
                         String name = offlinePlayer.getName();
                         if (name != null && (args[1].length() < 1 || name.toLowerCase().startsWith(args[1].toLowerCase()))) {
@@ -407,6 +414,15 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             }
         }
         return list;
+    }
+
+    private boolean hasHome(String name, List<Position> homes) {
+        for (Position home : homes) {
+            if (home.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

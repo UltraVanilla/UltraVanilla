@@ -34,14 +34,19 @@ public class SuicideCommand extends UltraCommand implements CommandExecutor, Tab
         if (sender instanceof Player) {
             Player suicider = (Player) sender;
             if (args.length == 0) {
-                suicider.setHealth(0);
-                sender.sendMessage(format(command, "message.kill-self"));
-                String pactId = UltraVanilla.getConfig(suicider.getUniqueId()).getString("suicide-pact");
-                if (pactId != null && !pactId.isEmpty()) {
-                    Player player = plugin.getServer().getPlayer(UUID.fromString(pactId));
-                    if (player != null) {
-                        player.setHealth(0);
+                if (UltraVanilla.getConfig(suicider).getLong("last-suicide") + (plugin.getConfig().getLong("suicide-time") * 1000L) <= System.currentTimeMillis()) {
+                    suicider.setHealth(0);
+                    sender.sendMessage(format(command, "message.kill-self"));
+                    UltraVanilla.set(suicider, "last-suicide", System.currentTimeMillis());
+                    String pactId = UltraVanilla.getConfig(suicider.getUniqueId()).getString("suicide-pact");
+                    if (pactId != null && !pactId.isEmpty()) {
+                        Player player = plugin.getServer().getPlayer(UUID.fromString(pactId));
+                        if (player != null) {
+                            player.setHealth(0);
+                        }
                     }
+                } else {
+                    sender.sendMessage(COLOR + "You must wait to suicide again!");
                 }
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("pact")) {

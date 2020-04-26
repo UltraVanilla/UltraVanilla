@@ -144,10 +144,8 @@ commands:
     permission: ultravanilla.command.back
     usage: /back
 permissions:
-  ultravanilla.command.nick:
-    description: Gives access to /nick
+  ultravanilla.donator:
+    description: Donator permissions
     children:
-      ultravanilla.command.nick.others:
-        description: Gives access to change other player's nicknames
-  ultravanilla.command.motd.set:
-    description: Allows the setting of MOTD
+      ultravanilla.command.nick: true
+      ultravanilla.command.hat: true

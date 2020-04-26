@@ -5,6 +5,7 @@ import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
+import com.akoot.plugins.ultravanilla.serializable.Title;
 import com.akoot.plugins.ultravanilla.stuff.Channel;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
@@ -13,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -229,6 +231,9 @@ public final class UltraVanilla extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        random = new Random();
+        tickets = new ArrayList<>();
+
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         if (rsp == null) {
             getLogger().warning("Vault could not link to a permissions provider.");
@@ -236,12 +241,9 @@ public final class UltraVanilla extends JavaPlugin {
             permissions = rsp.getProvider();
         }
 
-        random = new Random();
-//        polls = new ArrayList<>();
-        tickets = new ArrayList<>();
-
         ConfigurationSerialization.registerClass(Position.class);
         ConfigurationSerialization.registerClass(Powertool.class);
+        ConfigurationSerialization.registerClass(Title.class);
 
 
         getDataFolder().mkdir();
@@ -288,15 +290,20 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("user").setExecutor(new UserCommand(instance));
         getCommand("smite").setExecutor(new SmiteCommand(instance));
         getCommand("back").setExecutor(new BackCommand(instance));
-
+//        getCommand("title").setExecutor(new SettitleCommand(instance));
+//        getCommand("creattitle").setExecutor(new CreatetitleCommand(instance));
+//        getCommand("removetitle").setExecutor(new RemoveTitleCommand(instance));
     }
 
     private void setRandomMOTD() {
         setMOTD(motds.get(random.nextInt(motds.size())));
     }
 
-    public void ping(Player player) {
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
+    public void ping(CommandSender player, Player target) {
+        if (Users.isAFK(target)) {
+            player.sendMessage(target.getName() + " is AFK");
+        }
+        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
     }
 
     @Override

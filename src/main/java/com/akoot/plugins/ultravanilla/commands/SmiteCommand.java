@@ -31,8 +31,10 @@ public class SmiteCommand extends UltraCommand implements CommandExecutor, TabEx
                     player.sendMessage(ChatColor.GRAY + message);
                 }
             }
+        } else {
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override

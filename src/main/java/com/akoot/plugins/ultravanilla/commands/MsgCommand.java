@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MsgCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.WHITE;
+    public static final ChatColor COLOR = ChatColor.GRAY;
 
     public MsgCommand(UltraVanilla instance) {
         super(instance);
@@ -33,6 +33,12 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
                 .replace("{message}", message)
                 .replace("{recipient}", to.getName())
         ));
+
+        if (to instanceof Player) {
+            if (Users.isAFK((Player) to)) {
+                from.sendMessage(Palette.NOUN + to.getName() + COLOR + " is currently AFK");
+            }
+        }
 
         to.sendMessage(Palette.translate(fromFormat
                 .replace("{message}", message)

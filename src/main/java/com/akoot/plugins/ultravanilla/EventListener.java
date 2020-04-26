@@ -30,6 +30,7 @@ public class EventListener implements Listener {
                     .replace("{player}", player.getName())
                     .replace("$color", AfkCommand.COLOR + "")
             ));
+            player.setPlayerListName(player.getDisplayName());
         }
     }
 
@@ -97,7 +98,7 @@ public class EventListener implements Listener {
         }
         String thisVersion = plugin.getDescription().getVersion();
         String lastVersion = UltraVanilla.getConfig(player.getUniqueId()).getString("last-version");
-        if (lastVersion == null || !lastVersion.equals(thisVersion)) {
+        if (lastVersion == null || !lastVersion.equals(thisVersion) && player.hasPlayedBefore()) {
             player.performCommand("changelog");
         }
         UltraVanilla.set(player, "last-version", thisVersion);
@@ -164,6 +165,7 @@ public class EventListener implements Listener {
                 .replace("{rank}", group + ChatColor.RESET)
                 .replace("{rank-abbreviation}", abbreviation + ChatColor.RESET)
                 .replace("{capitalized-rank}", abbreviation + rest)
+                .replace("{custom-capitalized-rank}", plugin.getConfig().getString("rename-groups." + group, abbreviation + rest))
                 .replace("{name}", "%1$s")
                 .replace("{message}", "%2$s");
         event.setFormat(formatted);
@@ -181,13 +183,13 @@ public class EventListener implements Listener {
             String username = p.getName().toLowerCase();
             String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
             for (String word : message.split(" ")) {
-                if (word.length() >= 3 && word.startsWith("@")) {
+                if (word.startsWith("@")) {
                     word = word.substring(1);
-                    word = word.replaceAll("[?.,]", "");
+                    word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
                     if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
                         if (UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || UltraVanilla.isIgnored(player, p)) {
                             String at = Palette.NOUN + word + ChatColor.RESET;
-                            plugin.ping(p);
+                            plugin.ping(player, p);
                             message = message.replace("@" + word, at);
                         }
                     }

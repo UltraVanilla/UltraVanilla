@@ -1,3 +1,7 @@
+suicide-time: 10
+rename-groups:
+  headadmin: "Head Admin"
+  waterboi: "Water Boi"
 # MOTD
 motd:
   server-name: '&6&lUltra&fVanilla'
@@ -12,7 +16,7 @@ motd:
 default-group: default
 format:
   default: '&r<{name-color}{name}&r> {text-color}{message}'
-  prefixed: '&7[{rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
+  prefixed: '&7[{custom-capitalized-rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 
 # Strings
 strings:
