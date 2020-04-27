@@ -33,7 +33,7 @@ public class AfkCommand extends UltraCommand implements CommandExecutor, TabExec
                 } else {
                     Users.AFK.add(player.getUniqueId());
                     plugin.getServer().broadcastMessage(format(command, "message.true", "{player}", player.getName()));
-                    player.setPlayerListName(ChatColor.GRAY + "[AFK] " + player.getDisplayName());
+                    player.setPlayerListName(player.getDisplayName() + ChatColor.GRAY + " [" + ChatColor.LIGHT_PURPLE + "AFK" + ChatColor.GRAY + "]");
                 }
             } else {
                 sender.sendMessage(plugin.getString("player-only", "{action}", "toggle your AFK mode"));

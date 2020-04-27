@@ -286,17 +286,17 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 // Set the home name
                 String homeName = args[1];
 
-                if (args[0].equals("sync")) {
-                    if (sender.hasPermission("ultravanilla.command.home.sync")) {
+                if (args[0].equals("copy")) {
+                    if (sender.hasPermission("ultravanilla.command.home.copy")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
                         if (target.hasPlayedBefore()) {
                             homes = getHomes(target);
-                            sender.sendMessage(COLOR + "Synced homes with " + Palette.NOUN + target.getName());
+                            sender.sendMessage(COLOR + "Copied " + Palette.NOUN + posessive(target.getName()) + COLOR + " homes");
                         } else {
                             sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
                         }
                     } else {
-                        sender.sendMessage(plugin.getString("no-permission", "{action}", "sync with another player's homes"));
+                        sender.sendMessage(plugin.getString("no-permission", "{action}", "copy another player's homes"));
                     }
                 }
 
@@ -386,7 +386,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         }
                     }
 
-                    String[] subCommands = {"list", "remove", "remove-all", "set", "bed", "sync"};
+                    String[] subCommands = {"list", "remove", "remove-all", "set", "bed", "copy"};
                     for (String subCommand : subCommands) {
                         if (args[0].length() < 1 || subCommand.toLowerCase().startsWith(args[0].toLowerCase())) {
                             list.add(subCommand);
@@ -403,7 +403,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             }
                         }
                     }
-                } else if ((args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("sync")) && sender.hasPermission("ultravanilla.permission.admin")) {
+                } else if ((args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("copy")) && sender.hasPermission("ultravanilla.permission.admin")) {
                     for (OfflinePlayer offlinePlayer : plugin.getServer().getOfflinePlayers()) {
                         String name = offlinePlayer.getName();
                         if (name != null && (args[1].length() < 1 || name.toLowerCase().startsWith(args[1].toLowerCase()))) {
