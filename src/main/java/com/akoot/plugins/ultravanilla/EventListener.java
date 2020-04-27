@@ -183,7 +183,7 @@ public class EventListener implements Listener {
             String username = p.getName().toLowerCase();
             String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
             for (String word : message.split(" ")) {
-                if (word.startsWith("@")) {
+                if (word.startsWith("@") && word.length() >= 2) {
                     word = word.substring(1);
                     word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
                     if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {

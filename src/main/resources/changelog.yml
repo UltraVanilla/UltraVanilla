@@ -1,22 +1,15 @@
 player:
-  added:
-    - capitalization customization in roles
-    - AFK status in tab list
-    - notifying whether someone is AFK when you /msg them
+  added: []
   removed: []
   fixed:
-    - pinging with @ to ignore all punctuation
-    - multiple homes glitch
-    - being able to nick other people as donator
-    - changelog showing up when you join the game for the first time (lol)
+    - "@ not working"
   changed:
-    - /suicide to have a cooldown (no more spam!)
+    - "&7[&dAFK&7] in tab at the right of your name"
   broke: []
 staff:
-  added:
-    - /home sync <player> - used to sync your homes with another player (does not update automatically)
+  added: []
   removed: []
-  fixed:
-    - /homes <player> replacing your own (sorry lol)
-  changed: []
+  fixed: []
+  changed:
+    - "/home &esync&7 to /home &6copy"
   broke: []
