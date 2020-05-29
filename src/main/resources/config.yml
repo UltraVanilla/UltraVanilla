@@ -1,7 +1,31 @@
+# 1.15
+votekick:
+  kicks-to-ban: 3
+  percent-to-kick: 0.3
+# 1.14
+times:
+  member: 5
+  loyalist: 240
+  pro: 720
+  master: 2160
+  elder: 4320
+  grandmaster: 7200
+  sage-1: 8640
+  sage-2: 17280
+# 1.13
 suicide-time: 10
 rename-groups:
   headadmin: "Head Admin"
   waterboi: "Water Boi"
+  d-veteran: "§dD§7] [Veteran"
+  d-member: "§dD§7] [Member"
+  d-loyalist: "§dD§7] [Loyalist"
+  d-pro: "§dD§7] [Pro"
+  d-master: "§dD§7] [Master"
+  d-elder: "§dD§7] [Elder"
+  d-grandmaster: "§dD§7] [Grand Master"
+  d-sage-1: "§dD§7] [Sage"
+  d-sage-2: "§dD§7] [Sage §6II"
 # MOTD
 motd:
   server-name: '&6&lUltra&fVanilla'

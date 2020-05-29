@@ -15,6 +15,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.io.IOException;
+
 public class EventListener implements Listener {
 
     private UltraVanilla plugin;
@@ -87,14 +89,17 @@ public class EventListener implements Listener {
             player.setCustomNameVisible(true);
         }
         player.setPlayerListName(nameColor + player.getPlayerListName());
-        UltraVanilla.set(player, Users.LAST_LOGIN, System.currentTimeMillis());
         if (!player.hasPlayedBefore()) {
             Position spawn = ((Position) plugin.getConfig().get("spawn"));
             if (spawn != null) {
                 player.teleport(spawn.getLocation());
             }
             UltraVanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis());
-            plugin.firstJoin(player.getName());
+            try {
+                plugin.firstJoin(player.getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         String thisVersion = plugin.getDescription().getVersion();
         String lastVersion = UltraVanilla.getConfig(player.getUniqueId()).getString("last-version");
@@ -102,13 +107,30 @@ public class EventListener implements Listener {
             player.performCommand("changelog");
         }
         UltraVanilla.set(player, "last-version", thisVersion);
+
+        // set their role automatically
+        String[] roles = {"default", "member", "loyalist", "pro", "master", "elder", "grandmaster", "sage-1", "sage-2"};
+        for (int i = 0; i < roles.length - 1; i++) {
+            String role = roles[i];
+            String nextRole = roles[i + 1];
+            if (plugin.getPermissions().getPrimaryGroup(player).equals(role)) {
+                if (UltraVanilla.getPlayTime(player) / 60000L >= plugin.getConfig().getInt("times." + nextRole)) {
+                    plugin.getPermissions().playerAddGroup(player, nextRole);
+                }
+            }
+        }
+        // For v1.14 ONLY
+        UltraVanilla.set(player, Users.LAST_LOGOUT, null);
+        UltraVanilla.set(player, Users.LAST_LOGIN, null);
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UltraVanilla.set(player.getUniqueId(), Users.LOGOUT_LOCATION, new Position(event.getPlayer().getLocation()));
-        UltraVanilla.set(player.getUniqueId(), Users.LAST_LOGOUT, System.currentTimeMillis());
+
+        UltraVanilla.updatePlaytime(player);
+
         event.setQuitMessage(event.getQuitMessage().replace(player.getName(), ChatColor.stripColor(player.getDisplayName())));
     }
 
@@ -182,15 +204,24 @@ public class EventListener implements Listener {
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             String username = p.getName().toLowerCase();
             String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
+            boolean canPing = UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true);
             for (String word : message.split(" ")) {
                 if (word.startsWith("@") && word.length() >= 2) {
-                    word = word.substring(1);
-                    word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
-                    if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
-                        if (UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true) || UltraVanilla.isIgnored(player, p)) {
-                            String at = Palette.NOUN + word + ChatColor.RESET;
+
+                    if (player.hasPermission("ultravanilla.chat.everyone") && word.equalsIgnoreCase("@everyone")) {
+                        if (canPing) {
                             plugin.ping(player, p);
-                            message = message.replace("@" + word, at);
+                            message = message.replace("@everyone", ChatColor.AQUA + "@everyone" + ChatColor.RESET);
+                        }
+                    } else {
+                        word = word.substring(1);
+                        word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
+                        if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
+                            if (canPing || UltraVanilla.isIgnored(player, p)) {
+                                String at = Palette.NOUN + word + ChatColor.RESET;
+                                plugin.ping(player, p);
+                                message = message.replace("@" + word, at);
+                            }
                         }
                     }
                 }

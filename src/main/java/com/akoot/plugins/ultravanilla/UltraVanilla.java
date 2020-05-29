@@ -37,7 +37,6 @@ public final class UltraVanilla extends JavaPlugin {
     private YamlConfiguration changelog;
     private YamlConfiguration storage;
 
-    private List<String> motds;
     private List<Ticket> tickets;
     private String motd;
 
@@ -45,9 +44,6 @@ public final class UltraVanilla extends JavaPlugin {
         return getConfig(player.getUniqueId());
     }
 
-    public List<String> getMotds() {
-        return motds;
-    }
     private Random random;
 
     public static UltraVanilla getInstance() {
@@ -213,18 +209,39 @@ public final class UltraVanilla extends JavaPlugin {
         return getConfig(player.getUniqueId()).getBoolean("super-admin", false);
     }
 
-    public void firstJoin(String name) {
+    public static long getPlayTime(OfflinePlayer player) {
+        long difference = player.getLastSeen() - player.getLastLogin();
+        return UltraVanilla.getConfig(player).getLong("playtime", 0L) + difference;
+    }
+
+    public static void updatePlaytime(OfflinePlayer player) {
+        UltraVanilla.set(player, "playtime", getPlayTime(player));
+    }
+
+    public void firstJoin(String name) throws IOException {
         File joinFile = new File(getDataFolder(), "join.txt");
         if (joinFile.exists()) {
-            try {
-                for (String line : Files.readAllLines(joinFile.toPath())) {
-                    line = line.replace("%player", name);
-                    getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            int count = 0;
+            File bookFile = new File(getDataFolder(), "books.txt");
+            if (bookFile.exists()) {
+                count = Files.readAllBytes(bookFile.toPath())[0];
+            } else {
+                bookFile.createNewFile();
             }
+            for (String line : Files.readAllLines(joinFile.toPath())) {
+                line = line.replace("${player.name}", name);
+                line = line.replace("${book.id}", String.format("%04d", count));
+                getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
+            }
+            Files.write(bookFile.toPath(), new byte[]{(byte) (count + 1)});
         }
+    }
+
+    public void ping(CommandSender player, Player target) {
+        if (Users.isAFK(target)) {
+            player.sendMessage(target.getName() + " is AFK");
+        }
+        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
     }
 
     @Override
@@ -250,7 +267,6 @@ public final class UltraVanilla extends JavaPlugin {
         Users.DIR.mkdir();
         loadConfigs();
 
-        motds = getConfig().getStringList("motd.strings");
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
 
         for (Map<?, ?> map : storage.getMapList("tickets")) {
@@ -290,20 +306,14 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("user").setExecutor(new UserCommand(instance));
         getCommand("smite").setExecutor(new SmiteCommand(instance));
         getCommand("back").setExecutor(new BackCommand(instance));
-//        getCommand("title").setExecutor(new SettitleCommand(instance));
-//        getCommand("creattitle").setExecutor(new CreatetitleCommand(instance));
-//        getCommand("removetitle").setExecutor(new RemoveTitleCommand(instance));
+        getCommand("namecolor").setExecutor(new NameColorCommand(instance));
+        getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
+//        getCommand("votekick").setExecutor(new VoteKickCommand(instance));
     }
 
     private void setRandomMOTD() {
-        setMOTD(motds.get(random.nextInt(motds.size())));
-    }
-
-    public void ping(CommandSender player, Player target) {
-        if (Users.isAFK(target)) {
-            player.sendMessage(target.getName() + " is AFK");
-        }
-        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
+        List<String> motdList = getConfig().getStringList("motd.strings");
+        setMOTD(motdList.get(random.nextInt(motdList.size())));
     }
 
     @Override

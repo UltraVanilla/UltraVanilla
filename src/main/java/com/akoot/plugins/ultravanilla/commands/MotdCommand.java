@@ -38,7 +38,7 @@ public class MotdCommand extends UltraCommand implements CommandExecutor, TabExe
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (sender.hasPermission("ultravanilla.command.motd.set")) {
-            return plugin.getMotds();
+            return plugin.getConfig().getStringList("motd.strings");
         }
         return new ArrayList<>();
     }

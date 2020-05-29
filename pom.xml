@@ -6,7 +6,7 @@
 
     <groupId>com.akoot.plugins</groupId>
     <artifactId>UltraVanilla</artifactId>
-    <version>1.13.1</version>
+    <version>1.14</version>
     <packaging>jar</packaging>
 
     <name>Ultravanilla</name>
@@ -64,6 +64,10 @@
 
     <repositories>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
@@ -81,7 +85,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
+            <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>

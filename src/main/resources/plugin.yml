@@ -143,6 +143,19 @@ commands:
     description: Returns you to your previous location before a teleport
     permission: ultravanilla.command.back
     usage: /back
+  namecolor:
+    aliases: [nc]
+    description: Set your name color
+    permission: ultravanilla.command.namecolor
+    usage: /namecolor <color>
+  playtime:
+    aliases: [pt]
+    description: Get the playtime in hours, minutes, and seconds of a player
+    usage: /playtime [player]
+#  votekick:
+#    description: Vote for things
+#    permission: ultravanilla.command.votekick
+#    usage: /votekick <player>
 permissions:
   ultravanilla.donator:
     description: Donator permissions

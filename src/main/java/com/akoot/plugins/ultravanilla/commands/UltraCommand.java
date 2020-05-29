@@ -25,6 +25,14 @@ public class UltraCommand {
         return item + (item.endsWith("s") ? "'" : "'s");
     }
 
+    protected String fmt(String message, Object... args) {
+        return color + Palette.translate(String.format(message, args));
+    }
+
+    protected void sendMessage(CommandSender sender, String message, Object... args) {
+        sender.sendMessage(fmt(message, args));
+    }
+
     protected String[] refinedArgs(String[] args) {
         Pattern pattern = Pattern.compile("\"[^\"]+\"|[-\\w]+");
         Matcher matcher = pattern.matcher(String.join(" ", args));

@@ -1,15 +1,17 @@
 player:
-  added: []
+  added:
+    - "@everyone"
+    - /namecolor
+    - /playtime
+    - Automatic promotions (on join) based on playtime
+    - Rulebooks!
   removed: []
-  fixed:
-    - "@ not working"
-  changed:
-    - "&7[&dAFK&7] in tab at the right of your name"
+  fixed: []
+  changed: []
   broke: []
 staff:
   added: []
   removed: []
   fixed: []
-  changed:
-    - "/home &esync&7 to /home &6copy"
+  changed: []
   broke: []

@@ -19,24 +19,48 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (args.length == 0) {
+
+        if (args.length == 0) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 Position spawn = (Position) plugin.getConfig().get("spawn");
                 if (spawn != null) {
                     player.teleport(spawn.getLocation());
                 } else {
                     sender.sendMessage(format(command, "error.not-set"));
                 }
-            } else if (args.length == 1 && player.hasPermission("ultravanilla.command.spawn.set")) {
-                sender.sendMessage(format(command, "message.set"));
-                plugin.getConfig().set("spawn", new Position(player.getLocation()));
-                plugin.saveConfig();
             } else {
-                return false;
+                sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the spawn"));
+            }
+        } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("set")) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    if (player.hasPermission("ultravanilla.command.spawn.set")) {
+                        player.sendMessage(format(command, "message.set"));
+                        plugin.getConfig().set("spawn", new Position(player.getLocation()));
+                        plugin.saveConfig();
+                    } else {
+                        sender.sendMessage(plugin.getString("no-permission", "{action}", "set spawn"));
+                    }
+                } else {
+                    sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the spawn"));
+                }
+            } else {
+                Position spawn = (Position) plugin.getConfig().get("spawn");
+                Player player = plugin.getServer().getPlayer(args[0]);
+                if (player == null) {
+                    sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));
+                    return true;
+                }
+                if (spawn != null) {
+                    player.teleport(spawn.getLocation());
+                } else {
+                    sender.sendMessage(format(command, "error.not-set"));
+                }
             }
         } else {
-            sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the spawn"));
+            return false;
         }
         return true;
     }
