@@ -1,17 +1,12 @@
 player:
-  added:
-    - "@everyone"
-    - /namecolor
-    - /playtime
-    - Automatic promotions (on join) based on playtime
-    - Rulebooks!
+  added: []
   removed: []
-  fixed: []
-  changed: []
+  fixed: "/namecolor"
+  changed: "AFK in tab list"
   broke: []
 staff:
   added: []
   removed: []
   fixed: []
-  changed: []
+  changed: "auto-promotion to auto-suggest to staff instead"
   broke: []

@@ -44,8 +44,8 @@ public class PlayTimeCommand extends UltraCommand implements CommandExecutor, Ta
             sender.sendMessage(getPlayTime((OfflinePlayer) sender));
         } else if (args.length == 1) {
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-            if (player.hasPlayedBefore()) {
-                sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));
+            if (!player.hasPlayedBefore()) {
+                sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));
                 return true;
             }
             sender.sendMessage(getPlayTime(player));

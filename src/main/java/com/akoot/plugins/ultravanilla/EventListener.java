@@ -108,18 +108,22 @@ public class EventListener implements Listener {
         }
         UltraVanilla.set(player, "last-version", thisVersion);
 
-        // set their role automatically
+        // suggest their role automatically
         String[] roles = {"default", "member", "loyalist", "pro", "master", "elder", "grandmaster", "sage-1", "sage-2"};
         for (int i = 0; i < roles.length - 1; i++) {
             String role = roles[i];
             String nextRole = roles[i + 1];
             if (plugin.getPermissions().getPrimaryGroup(player).equals(role)) {
                 if (UltraVanilla.getPlayTime(player) / 60000L >= plugin.getConfig().getInt("times." + nextRole)) {
-                    plugin.getPermissions().playerAddGroup(player, nextRole);
+                    for (Player p : plugin.getServer().getOnlinePlayers()) {
+                        if (p.hasPermission("ultravanilla.moderator")) {
+                            p.sendMessage(String.format(Palette.translate("&d%s&6 should be a &7%s&6 by now!"), player.getName(), nextRole));
+                        }
+                    }
                 }
             }
         }
-        // For v1.14 ONLY
+        // For v1.14 - 1.5 ONLY
         UltraVanilla.set(player, Users.LAST_LOGOUT, null);
         UltraVanilla.set(player, Users.LAST_LOGIN, null);
     }

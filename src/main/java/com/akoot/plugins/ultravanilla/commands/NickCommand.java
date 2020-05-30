@@ -2,7 +2,6 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
-import com.akoot.plugins.ultravanilla.reference.Users;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,15 +28,13 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (args[0].equals(player.getName())) {
-                        player.setDisplayName(null);
-                        player.setPlayerListName(player.getName());
-                        UltraVanilla.set(player, Users.NICKNAME, null);
+                        UltraVanilla.set(player, "display-name", null);
+                        UltraVanilla.updateDisplayName(player);
                         sender.sendMessage(format(command, "message.clear.self"));
                     } else {
                         String newName = Palette.translate(args[0]);
-                        player.setDisplayName(newName + ChatColor.RESET);
-                        player.setPlayerListName(newName);
-                        UltraVanilla.set(player, Users.NICKNAME, newName);
+                        UltraVanilla.set(player, "display-name", newName);
+                        UltraVanilla.updateDisplayName(player);
                         sender.sendMessage(format(command, "message.set.self", "{name}", newName));
                     }
                 } else {
@@ -49,14 +46,12 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                     String newName = Palette.translate(args[1]);
                     if (target != null) {
                         if (args[1].equals(target.getName())) {
-                            target.setDisplayName(null);
-                            target.setPlayerListName(target.getName());
-                            UltraVanilla.set(target, Users.NICKNAME, null);
+                            UltraVanilla.set(target, "display-name", null);
+                            UltraVanilla.updateDisplayName(target);
                             sender.sendMessage(format(command, "message.clear.other", "{player}", target.getName(), "{player's}", posessive(target.getName())));
                         } else {
-                            target.setDisplayName(newName + ChatColor.RESET);
-                            target.setPlayerListName(newName);
-                            UltraVanilla.set(target, Users.NICKNAME, newName);
+                            UltraVanilla.set(target, "display-name", newName);
+                            UltraVanilla.updateDisplayName(target);
                             sender.sendMessage(format(command, "message.set.other", "{player}", target.getName(), "{player's}", posessive(target.getName()), "{name}", newName));
                         }
                     } else {

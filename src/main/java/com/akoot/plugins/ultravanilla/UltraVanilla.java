@@ -129,6 +129,10 @@ public final class UltraVanilla extends JavaPlugin {
         return ignored.contains(target.getUniqueId().toString());
     }
 
+    public static ChatColor getNameColor(OfflinePlayer player) {
+        return ChatColor.valueOf(UltraVanilla.getConfig(player).getString("name-color", "RESET"));
+    }
+
     public void loadConfigs() {
         init("join.txt", false);
         getConfig("config.yml", false);
@@ -235,6 +239,12 @@ public final class UltraVanilla extends JavaPlugin {
             }
             Files.write(bookFile.toPath(), new byte[]{(byte) (count + 1)});
         }
+    }
+
+    public static void updateDisplayName(Player player) {
+        String displayName = UltraVanilla.getConfig(player).getString("display-name");
+        player.setDisplayName(displayName);
+        player.setPlayerListName((displayName != null ? displayName : player.getName()) + (Users.isAFK(player) ? " §7§o(AFK)" : ""));
     }
 
     public void ping(CommandSender player, Player target) {

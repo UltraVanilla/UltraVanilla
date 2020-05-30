@@ -26,7 +26,7 @@ public class UltraCommand {
     }
 
     protected String fmt(String message, Object... args) {
-        return color + Palette.translate(String.format(message, args));
+        return color + Palette.translate(String.format(message.replace("&:", color + ""), args));
     }
 
     protected void sendMessage(CommandSender sender, String message, Object... args) {
@@ -147,5 +147,23 @@ public class UltraCommand {
             sender.sendMessage(plugin.getString("not-a-number", "{number}", arg));
             return -1;
         }
+    }
+
+    /**
+     * Get suggestions based on what the user has typed, like if they start typing the beginning of a suggestion then
+     * only show the suggestions that start with that argument.
+     *
+     * @param suggestions All of the possible suggestions based on the argument count
+     * @param args        The arguments the user has passed
+     * @return The list of suggestions which are relevant to the query
+     */
+    protected List<String> getSuggestions(List<String> suggestions, String[] args) {
+        List<String> realSuggestions = new ArrayList<>();
+        for (String s : suggestions) {
+            if (args[args.length - 1].length() < args.length || s.toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+                realSuggestions.add(s);
+            }
+        }
+        return realSuggestions;
     }
 }
