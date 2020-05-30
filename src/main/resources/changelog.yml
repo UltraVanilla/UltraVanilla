@@ -1,12 +1,17 @@
 player:
-  added: []
+  added:
+    - "/playtime"
+    - "/whois"
   removed: []
-  fixed: "/namecolor"
-  changed: "AFK in tab list"
+  fixed:
+    - "/namecolor"
+  changed:
+    - "AFK in tab list"
   broke: []
 staff:
   added: []
   removed: []
   fixed: []
-  changed: "auto-promotion to auto-suggest to staff instead"
+  changed:
+    - "auto-promotion to auto-suggest to staff instead"
   broke: []

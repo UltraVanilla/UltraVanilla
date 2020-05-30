@@ -318,6 +318,7 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("back").setExecutor(new BackCommand(instance));
         getCommand("namecolor").setExecutor(new NameColorCommand(instance));
         getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
+        getCommand("whois").setExecutor(new WhoIsCommand(instance));
 //        getCommand("votekick").setExecutor(new VoteKickCommand(instance));
     }
 

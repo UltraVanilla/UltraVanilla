@@ -152,6 +152,10 @@ commands:
     aliases: [pt]
     description: Get the playtime in hours, minutes, and seconds of a player
     usage: /playtime [player]
+  whois:
+    aliases: [whomis]
+    description: Find out who is behind that extravagant nickname
+    usage: /whois <name>
 #  votekick:
 #    description: Vote for things
 #    permission: ultravanilla.command.votekick
