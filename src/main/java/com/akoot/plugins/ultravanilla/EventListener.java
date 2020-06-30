@@ -79,7 +79,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String nick = UltraVanilla.getConfig(player.getUniqueId()).getString(Users.NICKNAME);
+        String nick = UltraVanilla.getConfig(player.getUniqueId()).getString("display-name");
         String nameColor = ChatColor.valueOf(UltraVanilla.getConfig(player.getUniqueId()).getString("name-color", "RESET")) + "";
         if (nick != null) {
             player.setDisplayName(nick + ChatColor.RESET);

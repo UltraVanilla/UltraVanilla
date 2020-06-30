@@ -25,9 +25,17 @@ public class WhoIsCommand extends UltraCommand implements CommandExecutor, TabEx
         if (args.length == 1) {
             String search = args[0];
             for (Player player : plugin.getServer().getOnlinePlayers()) {
+                String name = player.getName();
                 String displayName = ChatColor.stripColor(player.getDisplayName());
-                if (search.equals(displayName)) {
-                    sendMessage(sender, "&r%s &:is none other than &d%s&:!", player.getDisplayName(), player.getName());
+                if (search.equalsIgnoreCase(name) || search.equals(displayName)) {
+                    if (search.equals(displayName)) {
+                        sendMessage(sender, "&r%s &:is none other than &d%s&:!", displayName, name);
+                    } else {
+                        if (!displayName.isEmpty()) {
+                            sendMessage(sender, "&d%s &:is none other than &r%s&:!", name, displayName);
+                        }
+                    }
+                    sendMessage(sender, "&d%s &:is a &7%s&:.", name, plugin.getPermissions().getPrimaryGroup(player));
                     return true;
                 }
             }
@@ -45,6 +53,7 @@ public class WhoIsCommand extends UltraCommand implements CommandExecutor, TabEx
                 if (!displayName.isEmpty() && !suggestions.contains(displayName) && !displayName.equals(player.getName())) {
                     suggestions.add(displayName);
                 }
+                suggestions.add(player.getName());
             }
         }
         return getSuggestions(suggestions, args);

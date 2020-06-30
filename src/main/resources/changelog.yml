@@ -1,17 +1,15 @@
 player:
-  added:
-    - "/playtime"
-    - "/whois"
+  added: []
   removed: []
   fixed:
-    - "/namecolor"
+    - nicknames resetting when joining or doing /afk
+    - /spawn <player> being available to players
   changed:
-    - "AFK in tab list"
+    - /whois to show the roles of players as well
   broke: []
 staff:
   added: []
   removed: []
   fixed: []
-  changed:
-    - "auto-promotion to auto-suggest to staff instead"
+  changed: []
   broke: []

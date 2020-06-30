@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RawMessage {
 
-    private List<RawComponent> components;
+    private final List<RawComponent> components;
 
     public RawMessage() {
         components = new ArrayList<>();

@@ -40,6 +40,8 @@ public final class UltraVanilla extends JavaPlugin {
     private List<Ticket> tickets;
     private String motd;
 
+    private File configFile;
+
     public static YamlConfiguration getConfig(OfflinePlayer player) {
         return getConfig(player.getUniqueId());
     }
@@ -242,7 +244,8 @@ public final class UltraVanilla extends JavaPlugin {
     }
 
     public static void updateDisplayName(Player player) {
-        String displayName = UltraVanilla.getConfig(player).getString("display-name");
+        YamlConfiguration config = UltraVanilla.getConfig(player);
+        String displayName = ChatColor.valueOf(config.getString("name-color", "RESET")) + config.getString("display-name");
         player.setDisplayName(displayName);
         player.setPlayerListName((displayName != null ? displayName : player.getName()) + (Users.isAFK(player) ? " §7§o(AFK)" : ""));
     }
@@ -276,6 +279,7 @@ public final class UltraVanilla extends JavaPlugin {
         getDataFolder().mkdir();
         Users.DIR.mkdir();
         loadConfigs();
+        configFile = new File(getDataFolder(), "config.yml");
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
 
@@ -320,6 +324,22 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
         getCommand("whois").setExecutor(new WhoIsCommand(instance));
 //        getCommand("votekick").setExecutor(new VoteKickCommand(instance));
+
+        // 1.14.2 only
+        if (!getConfig().getBoolean("cleared-nicknames", false)) {
+            getLogger().info("Updating nicknames...");
+            for (OfflinePlayer offlinePlayer : getServer().getOfflinePlayers()) {
+                set(offlinePlayer, "display-name", getConfig(offlinePlayer).getString("nickname"));
+                set(offlinePlayer, "nickname", null);
+            }
+            getConfig().set("cleared-nicknames", true);
+            try {
+                getConfig().save(configFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            getLogger().info("DONE");
+        }
     }
 
     private void setRandomMOTD() {

@@ -54,7 +54,11 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
                     return true;
                 }
                 if (spawn != null) {
-                    player.teleport(spawn.getLocation());
+                    if (sender.hasPermission("ultravanilla.command.spawn.player")) {
+                        player.teleport(spawn.getLocation());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to spawn.");
+                    }
                 } else {
                     sender.sendMessage(format(command, "error.not-set"));
                 }
