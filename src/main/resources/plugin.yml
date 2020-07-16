@@ -5,7 +5,10 @@ api-version: 1.13
 prefix: UltraVanilla
 authors: [Akoot_]
 description: Official plugin for UltraVanilla Minecraft server
-website: ultravanilla.cf
+website: ultravanilla.net
+depend:
+  - ProtocolLib
+  - Vault
 commands:
   suicide:
     description: Kill yourself!
@@ -79,7 +82,7 @@ commands:
     description: Toggles AFK mode
     usage: /afk
   message:
-    aliases: [tell, whisper, msg, m, t]
+    aliases: [tell, whisper, msg, m, t, w]
     description: Send a private message
     usage: /msg <player> <message>
   reply:

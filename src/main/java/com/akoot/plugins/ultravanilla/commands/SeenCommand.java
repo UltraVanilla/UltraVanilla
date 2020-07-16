@@ -5,7 +5,7 @@ import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.util.RawComponent;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

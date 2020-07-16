@@ -1,7 +1,8 @@
 package com.akoot.plugins.ultravanilla.reference;
 
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
+import java.awt.*;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,8 @@ public class Palette {
     private static Random random = new Random();
 
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
+    public static String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[a-f0-9])";
+    public static String MIX_SYMBOL = "+";
 
     public static final ChatColor NOUN = ChatColor.LIGHT_PURPLE;
     public static final ChatColor VERB = ChatColor.ITALIC;
@@ -38,6 +41,22 @@ public class Palette {
             text = text.replace("&h", "" + ChatColor.values()[random.nextInt(ChatColor.values().length)]);
         }
 
+        if (text.contains("&#")) {
+            Pattern p = Pattern.compile("&(#[0-9a-fA-F]{6})");
+            Matcher m = p.matcher(text);
+            while (m.find()) {
+                text = text.replace(m.group(), ChatColor.of(m.group(1)) + "");
+            }
+        }
+
+        if (text.contains("&>")) {
+            Pattern p = Pattern.compile("&>" + colorMatch + "\\" + MIX_SYMBOL + colorMatch + "([^&$]+)");
+            Matcher m = p.matcher(text);
+            while (m.find()) {
+                text = text.replace(m.group(), gradient(m.group(3), m.group(1), m.group(2)));
+            }
+        }
+
         //TODO: read from config
         text = text
                 .replace("$noun", NOUN + "")
@@ -51,6 +70,32 @@ public class Palette {
         ;
 
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public static ChatColor getRandomColor() {
+        return ChatColor.getByChar(rainbowseq[(int) (Math.random() * rainbowseq.length)]);
+    }
+
+    public static String gradient(String str, ChatColor color1, ChatColor color2) {
+        return gradient(str, LegacyColors.getColor(color1), LegacyColors.getColor(color2));
+    }
+
+    public static String gradient(String str, String color1, String color2) {
+        return gradient(str, LegacyColors.getColor(color1), LegacyColors.getColor(color2));
+    }
+
+    public static String gradient(String str, Color one, Color two) {
+        int l = str.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < l; i++) {
+            sb.append(ChatColor.of(new Color(
+                    (one.getRed() + (i * (1.0F / l) * (two.getRed() - one.getRed()))) / 255,
+                    (one.getGreen() + (i * (1.0F / l) * (two.getGreen() - one.getGreen()))) / 255,
+                    (one.getBlue() + (i * (1.0F / l) * (two.getBlue() - one.getBlue()))) / 255
+            )));
+            sb.append(str.charAt(i));
+        }
+        return sb.toString();
     }
 
     public static String rainbow(String msg) {

@@ -5,8 +5,7 @@ import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +15,18 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.io.IOException;
+
+//import com.akoot.plugins.ultravanilla.util.FormattedComponent;
+//import com.akoot.plugins.ultravanilla.util.FormattedMessage;
+//import com.akoot.plugins.ultravanilla.util.RawComponent;
+//import com.akoot.plugins.ultravanilla.util.RawMessage;
+//import com.comphenix.protocol.PacketType;
+//import com.comphenix.protocol.events.PacketContainer;
+//import com.comphenix.protocol.wrappers.WrappedChatComponent;
+//import net.md_5.bungee.api.chat.BaseComponent;
+//import org.bukkit.OfflinePlayer;
+//import org.bukkit.command.CommandSender;
+//import java.lang.reflect.InvocationTargetException;
 
 public class EventListener implements Listener {
 
@@ -28,10 +39,7 @@ public class EventListener implements Listener {
     private void unsetAfk(Player player) {
         if (Users.isAFK(player)) {
             Users.AFK.remove(player.getUniqueId());
-            plugin.getServer().broadcastMessage(Palette.translate(plugin.getCommandString("afk.message.false")
-                    .replace("{player}", player.getName())
-                    .replace("$color", AfkCommand.COLOR + "")
-            ));
+            plugin.getServer().broadcastMessage(player.getDisplayName() + AfkCommand.COLOR + " is no longer AFK");
             player.setPlayerListName(player.getDisplayName());
         }
     }
@@ -62,33 +70,21 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
-        OfflinePlayer[] offlinePlayers = plugin.getServer().getOfflinePlayers();
-        OfflinePlayer offlinePlayer;
-        String name = "Nobody";
-        if (offlinePlayers.length > 0) {
-            offlinePlayer = offlinePlayers[plugin.getRandom().nextInt(offlinePlayers.length)];
-            name = offlinePlayer.getName();
-        }
         String version = plugin.getServer().getVersion();
         version = version.substring(version.indexOf("MC: ") + 4, version.length() - 1);
         event.setMotd(Palette.translate(plugin.getConfig().getString("motd.server-name")) +
-                " " + ChatColor.valueOf(plugin.getConfig().getString("motd.version-color")) + version +
-                "\n" + ChatColor.RESET + plugin.getMOTD().replace("%player", name));
+                " " + ChatColor.of(plugin.getConfig().getString("motd.version-color")) + version +
+                "\n" + ChatColor.RESET + plugin.getMOTD());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String nick = UltraVanilla.getConfig(player.getUniqueId()).getString("display-name");
-        String nameColor = ChatColor.valueOf(UltraVanilla.getConfig(player.getUniqueId()).getString("name-color", "RESET")) + "";
         if (nick != null) {
-            player.setDisplayName(nick + ChatColor.RESET);
-            player.setPlayerListName(nick);
-            event.setJoinMessage(event.getJoinMessage().replace(player.getName(), ChatColor.stripColor(nick)));
-            player.setCustomName(ChatColor.stripColor(nick));
-            player.setCustomNameVisible(true);
+            UltraVanilla.updateDisplayName(player);
+            event.setJoinMessage(event.getJoinMessage().replace(player.getName(), player.getDisplayName() + ChatColor.YELLOW));
         }
-        player.setPlayerListName(nameColor + player.getPlayerListName());
         if (!player.hasPlayedBefore()) {
             Position spawn = ((Position) plugin.getConfig().get("spawn"));
             if (spawn != null) {
@@ -123,9 +119,6 @@ public class EventListener implements Listener {
                 }
             }
         }
-        // For v1.14 - 1.5 ONLY
-        UltraVanilla.set(player, Users.LAST_LOGOUT, null);
-        UltraVanilla.set(player, Users.LAST_LOGIN, null);
     }
 
     @EventHandler
@@ -135,7 +128,7 @@ public class EventListener implements Listener {
 
         UltraVanilla.updatePlaytime(player);
 
-        event.setQuitMessage(event.getQuitMessage().replace(player.getName(), ChatColor.stripColor(player.getDisplayName())));
+        event.setQuitMessage(event.getQuitMessage().replace(player.getName(), player.getDisplayName() + ChatColor.YELLOW));
     }
 
     @EventHandler
@@ -144,10 +137,11 @@ public class EventListener implements Listener {
         if (player.hasPermission("ultravanilla.command.suicide")) {
             String message = event.getDeathMessage();
             if (message != null && message.endsWith(" died")) {
-                message = plugin.getRandomString("suicide-messages", "{player}", player.getName(), "$color", SuicideCommand.COLOR + "");
+                message = plugin.getRandomString("suicide-messages", "{player}", player.getDisplayName(), "$color", SuicideCommand.COLOR + "");
                 event.setDeathMessage(message);
             }
         }
+        event.setDeathMessage(event.getDeathMessage().replace(player.getName(), player.getDisplayName() + ChatColor.RESET));
     }
 
     @EventHandler
@@ -165,35 +159,27 @@ public class EventListener implements Listener {
         }
 
         // Chat formatter
-        String nameColor = ChatColor.valueOf(config.getString("name-color", "RESET")) + "";
-        String textColor = ChatColor.valueOf(config.getString("text-color", "RESET")) + "";
-        String group = plugin.getPermissions() != null ? plugin.getPermissions().getPrimaryGroup(player) : config.getString("default-group");
-        String color = ChatColor.valueOf(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
+        boolean donator = player.hasPermission("ultravanilla.donator");
+        String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
+        String group = plugin.getPermissions().getPrimaryGroup(player);
+        String rankColor = ChatColor.of(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
         String abbreviation = group.substring(0, 1).toUpperCase();
         String rest = group.substring(1);
-        String format;
 
-        // Decide which format to show as specified in config.yml
-        if (group.equals(plugin.getConfig().getString("default-group"))) {
-            format = plugin.getConfig().getString("format.default");
-        } else {
-            format = plugin.getConfig().getString("format.prefixed");
-        }
+        String rank = rankColor + abbreviation + rest;
+
+        String donatorBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.donator")) + "";
+        String rankBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.rank")) + "";
+        String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
+
+        String format = String.format((donator ? "%s[%sD%s] " : "") + "%s[%s%s] %s<%s%s> %s%s",
+                donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor,
+                rankBracketsColor, rank, rankBracketsColor,
+                nameBracketsColor, "%1$s", nameBracketsColor,
+                textPrefix, "%2$s");
 
         // Replace all of the placeholders
-        String formatted = Palette.translate(format)
-                .replace("{name-color}", nameColor)
-                .replace("{text-color}", textColor)
-                .replace("{rank-color}", color)
-                .replace("{colored-rank}", color + group + ChatColor.RESET)
-                .replace("{colored-rank-abbreviation}", color + abbreviation + ChatColor.RESET)
-                .replace("{colored-capitalized-rank}", color + abbreviation + rest + ChatColor.RESET)
-                .replace("{rank}", group + ChatColor.RESET)
-                .replace("{rank-abbreviation}", abbreviation + ChatColor.RESET)
-                .replace("{capitalized-rank}", abbreviation + rest)
-                .replace("{custom-capitalized-rank}", plugin.getConfig().getString("rename-groups." + group, abbreviation + rest))
-                .replace("{name}", "%1$s")
-                .replace("{message}", "%2$s");
+        String formatted = Palette.translate(format);
         event.setFormat(formatted);
 
         // Chat message
@@ -215,14 +201,17 @@ public class EventListener implements Listener {
                     if (player.hasPermission("ultravanilla.chat.everyone") && word.equalsIgnoreCase("@everyone")) {
                         if (canPing) {
                             plugin.ping(player, p);
-                            message = message.replace("@everyone", ChatColor.AQUA + "@everyone" + ChatColor.RESET);
+                            message = message.replace("@everyone",
+                                    ChatColor.of(plugin.getConfig().getString("color.chat.ping.everyone"))
+                                            + "@everyone" + ChatColor.RESET);
                         }
                     } else {
                         word = word.substring(1);
                         word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
                         if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
                             if (canPing || UltraVanilla.isIgnored(player, p)) {
-                                String at = Palette.NOUN + word + ChatColor.RESET;
+                                String at = ChatColor.of(plugin.getConfig().getString("color.chat.ping.user"))
+                                        + word + ChatColor.RESET;
                                 plugin.ping(player, p);
                                 message = message.replace("@" + word, at);
                             }
@@ -241,5 +230,43 @@ public class EventListener implements Listener {
         }
 
         event.setMessage(message);
+//
+//        event.setCancelled(true);
+//        FormattedMessage formattedMessage = new FormattedMessage();
+//
+//        String rank = plugin.getConfig().getString("rename-groups." + group, abbreviation + rest);
+//        String rankColor = plugin.getConfig().getString("color.rank." + group, "reset");
+//        String donatorColor = plugin.getConfig().getString("color.rank.donator", "light_purple");
+//        String displayName = "#00bae7:Akoot_";
+//        String bracketsColor = plugin.getConfig().getString("color.chat.brackets", "gray");
+//
+//        // Donator status
+//        if(group.startsWith("d-")) {
+//            formattedMessage.addComponent(bracketsColor, "[");
+//            formattedMessage.addComponent(donatorColor, "D");
+//            formattedMessage.addComponent(bracketsColor, "]");
+//        }
+//
+//        // Rank
+//        formattedMessage.addComponent(bracketsColor, "[");
+//        FormattedComponent rankComponent = new FormattedComponent(rankColor, rank);
+//        rankComponent.setCommand("/playtime " + player.getName());
+//        formattedMessage.addComponent(rankComponent);
+//        formattedMessage.addComponent(rankColor, rank);
+//        formattedMessage.addComponent(bracketsColor, "]");
+//
+//        // name
+//        formattedMessage.addComponent(bracketsColor, "<");
+//        FormattedComponent nameComponent = new FormattedComponent()
+//        formattedMessage.addComponents(RawComponent.parseColors(displayName));
+//        formattedMessage.addComponent(bracketsColor, ">");
+//
+//        // message
+//        formattedMessage.addComponent(message);
+//
+//        for(Player recipient : event.getRecipients()) {
+//            UltraVanilla.tellRaw(formattedMessage, recipient);
+//            plugin.getLogger().info(String.format("[%s] %s: %s", group, player.getName(), message));
+//        }
     }
 }

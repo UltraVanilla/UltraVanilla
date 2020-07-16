@@ -1,7 +1,26 @@
-# 1.15
+# 1.16
 votekick:
   kicks-to-ban: 3
   percent-to-kick: 0.3
+#1.15
+color:
+  chat:
+    ping:
+      everyone: aqua
+      user: light_purple
+    brackets:
+      donator: gray
+      rank: gray
+      name: gray
+  rank:
+    veteran: gold
+    member: yellow
+    loyalist: green
+    donator: light_purple
+    helper: gray
+    moderator: blue
+    admin: red
+    owner: aqua
 # 1.14
 times:
   member: 5
@@ -17,15 +36,6 @@ suicide-time: 10
 rename-groups:
   headadmin: "Head Admin"
   waterboi: "Water Boi"
-  d-veteran: "§dD§7] [Veteran"
-  d-member: "§dD§7] [Member"
-  d-loyalist: "§dD§7] [Loyalist"
-  d-pro: "§dD§7] [Pro"
-  d-master: "§dD§7] [Master"
-  d-elder: "§dD§7] [Elder"
-  d-grandmaster: "§dD§7] [Grand Master"
-  d-sage-1: "§dD§7] [Sage"
-  d-sage-2: "§dD§7] [Sage §6II"
 # MOTD
 motd:
   server-name: '&6&lUltra&fVanilla'
@@ -38,9 +48,6 @@ motd:
 
 # Groups
 default-group: default
-format:
-  default: '&r<{name-color}{name}&r> {text-color}{message}'
-  prefixed: '&7[{custom-capitalized-rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 
 # Strings
 strings:
@@ -232,14 +239,3 @@ strings:
     - 'Life was too stressful for $noun{player}$color so they killed themselves'
     - '$noun{player}$color pondered for a long time. They wondered and pondered and finally came up with a solution to all of their problems.'
     - '$noun{player}$color just blew their brains out with a double barrel. Damn...'
-
-# Colors
-color:
-  rank:
-    member: YELLOW
-    loyalist: GREEN
-    donator: LIGHT_PURPLE
-    helper: GRAY
-    moderator: BLUE
-    admin: RED
-    owner: AQUA

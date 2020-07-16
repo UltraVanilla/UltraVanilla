@@ -2,7 +2,7 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Users;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,10 +28,10 @@ public class AfkCommand extends UltraCommand implements CommandExecutor, TabExec
                 Player player = (Player) sender;
                 if (Users.isAFK(player)) {
                     Users.AFK.remove(player.getUniqueId());
-                    plugin.getServer().broadcastMessage(format(command, "message.false", "{player}", player.getName()));
+                    plugin.getServer().broadcastMessage(player.getDisplayName() + color + " is now AFK");
                 } else {
                     Users.AFK.add(player.getUniqueId());
-                    plugin.getServer().broadcastMessage(format(command, "message.true", "{player}", player.getName()));
+                    plugin.getServer().broadcastMessage(player.getDisplayName() + color + " is no longer AFK");
                 }
                 UltraVanilla.updateDisplayName(player);
             } else {

@@ -1,11 +1,16 @@
 player:
-  added: []
-  removed: []
+  added:
+    - "&#ff0000R&#00ff00G&#0000ffB &xCOLORS&#f2f2f2 example: &&7#d1ae92test -> &#d1ae92test"
+    - "&>a+bGRAD&>b+dIENTS &#f2f2f2example: &&7>red+bluetest -> &>c+9test"
+  removed:
+    - "random player names from the MOTD"
   fixed:
-    - nicknames resetting when joining or doing /afk
-    - /spawn <player> being available to players
+    - "players being named &rnull"
+    - "being able to change other people's namecolors"
+    - "/lag"
   changed:
-    - /whois to show the roles of players as well
+    - "/namecolor format to use &a+&7 instead of &c,&7"
+    - "join, leave, death, afk etc messages to display nicknames and not usernames. Use &b/whois&7 already"
   broke: []
 staff:
   added: []

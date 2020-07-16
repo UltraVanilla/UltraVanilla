@@ -9,9 +9,11 @@ import com.akoot.plugins.ultravanilla.serializable.Title;
 import com.akoot.plugins.ultravanilla.stuff.Channel;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.akoot.plugins.ultravanilla.util.RawMessage;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -33,6 +35,7 @@ public final class UltraVanilla extends JavaPlugin {
 
     public static UltraVanilla instance;
     private Permission permissions;
+    private ProtocolManager protocolManager;
 
     private YamlConfiguration changelog;
     private YamlConfiguration storage;
@@ -53,7 +56,7 @@ public final class UltraVanilla extends JavaPlugin {
     }
 
     public static void tellRaw(RawMessage message, String name) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + name + " " + message.getJSON());
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + name + " " + message.getJson());
     }
 
     public static void tellRaw(RawMessage message, Player player) {
@@ -245,7 +248,10 @@ public final class UltraVanilla extends JavaPlugin {
 
     public static void updateDisplayName(Player player) {
         YamlConfiguration config = UltraVanilla.getConfig(player);
-        String displayName = ChatColor.valueOf(config.getString("name-color", "RESET")) + config.getString("display-name");
+        String displayName = config.getString("display-name");
+        if (displayName != null) {
+            displayName = ChatColor.valueOf(config.getString("name-color", "RESET")) + displayName;
+        }
         player.setDisplayName(displayName);
         player.setPlayerListName((displayName != null ? displayName : player.getName()) + (Users.isAFK(player) ? " §7§o(AFK)" : ""));
     }
@@ -255,6 +261,10 @@ public final class UltraVanilla extends JavaPlugin {
             player.sendMessage(target.getName() + " is AFK");
         }
         target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
+    }
+
+    public ProtocolManager getProtocolManager() {
+        return protocolManager;
     }
 
     @Override
@@ -271,10 +281,15 @@ public final class UltraVanilla extends JavaPlugin {
             permissions = rsp.getProvider();
         }
 
+        if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+            getLogger().warning("Vault could not link to a permissions provider.");
+        } else {
+            protocolManager = ProtocolLibrary.getProtocolManager();
+        }
+
         ConfigurationSerialization.registerClass(Position.class);
         ConfigurationSerialization.registerClass(Powertool.class);
         ConfigurationSerialization.registerClass(Title.class);
-
 
         getDataFolder().mkdir();
         Users.DIR.mkdir();
@@ -324,22 +339,6 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
         getCommand("whois").setExecutor(new WhoIsCommand(instance));
 //        getCommand("votekick").setExecutor(new VoteKickCommand(instance));
-
-        // 1.14.2 only
-        if (!getConfig().getBoolean("cleared-nicknames", false)) {
-            getLogger().info("Updating nicknames...");
-            for (OfflinePlayer offlinePlayer : getServer().getOfflinePlayers()) {
-                set(offlinePlayer, "display-name", getConfig(offlinePlayer).getString("nickname"));
-                set(offlinePlayer, "nickname", null);
-            }
-            getConfig().set("cleared-nicknames", true);
-            try {
-                getConfig().save(configFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            getLogger().info("DONE");
-        }
     }
 
     private void setRandomMOTD() {

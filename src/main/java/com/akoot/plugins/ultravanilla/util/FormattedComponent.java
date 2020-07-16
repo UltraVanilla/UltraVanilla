@@ -1,6 +1,6 @@
 package com.akoot.plugins.ultravanilla.util;
 
-public class FormattedComponent {
+public class FormattedComponent extends RawComponent {
 
     private boolean bold, italic, strikethrough, obfuscated, underline;
     private String color;
