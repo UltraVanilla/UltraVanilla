@@ -5,6 +5,7 @@ votekick:
 #1.15
 color:
   chat:
+    default-name-color: "#f2f2f2"
     ping:
       everyone: aqua
       user: light_purple
@@ -13,6 +14,7 @@ color:
       rank: gray
       name: gray
   rank:
+    default: white
     veteran: gold
     member: yellow
     loyalist: green

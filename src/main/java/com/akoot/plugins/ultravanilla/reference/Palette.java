@@ -32,13 +32,11 @@ public class Palette {
 
         // Rainbow text
         if (text.contains("&x")) {
-            String toColor = getRegex("&x[^&]*", text);
-            text = text.replace(toColor, rainbow(toColor.substring(2)));
-        }
-
-        // Random color text
-        if (text.contains("&h")) {
-            text = text.replace("&h", "" + ChatColor.values()[random.nextInt(ChatColor.values().length)]);
+            Pattern p = Pattern.compile("&x([^&$]+)");
+            Matcher m = p.matcher(text);
+            while (m.find()) {
+                text = text.replace(m.group(), rainbow(m.group(1)));
+            }
         }
 
         if (text.contains("&#")) {

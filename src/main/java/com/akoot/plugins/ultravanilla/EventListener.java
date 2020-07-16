@@ -16,18 +16,6 @@ import org.bukkit.event.server.ServerListPingEvent;
 
 import java.io.IOException;
 
-//import com.akoot.plugins.ultravanilla.util.FormattedComponent;
-//import com.akoot.plugins.ultravanilla.util.FormattedMessage;
-//import com.akoot.plugins.ultravanilla.util.RawComponent;
-//import com.akoot.plugins.ultravanilla.util.RawMessage;
-//import com.comphenix.protocol.PacketType;
-//import com.comphenix.protocol.events.PacketContainer;
-//import com.comphenix.protocol.wrappers.WrappedChatComponent;
-//import net.md_5.bungee.api.chat.BaseComponent;
-//import org.bukkit.OfflinePlayer;
-//import org.bukkit.command.CommandSender;
-//import java.lang.reflect.InvocationTargetException;
-
 public class EventListener implements Listener {
 
     private UltraVanilla plugin;
@@ -158,30 +146,6 @@ public class EventListener implements Listener {
             return;
         }
 
-        // Chat formatter
-        boolean donator = player.hasPermission("ultravanilla.donator");
-        String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
-        String group = plugin.getPermissions().getPrimaryGroup(player);
-        String rankColor = ChatColor.of(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
-        String abbreviation = group.substring(0, 1).toUpperCase();
-        String rest = group.substring(1);
-
-        String rank = rankColor + abbreviation + rest;
-
-        String donatorBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.donator")) + "";
-        String rankBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.rank")) + "";
-        String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
-
-        String format = String.format((donator ? "%s[%sD%s] " : "") + "%s[%s%s] %s<%s%s> %s%s",
-                donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor,
-                rankBracketsColor, rank, rankBracketsColor,
-                nameBracketsColor, "%1$s", nameBracketsColor,
-                textPrefix, "%2$s");
-
-        // Replace all of the placeholders
-        String formatted = Palette.translate(format);
-        event.setFormat(formatted);
-
         // Chat message
         String message = event.getMessage();
 
@@ -230,43 +194,33 @@ public class EventListener implements Listener {
         }
 
         event.setMessage(message);
-//
-//        event.setCancelled(true);
-//        FormattedMessage formattedMessage = new FormattedMessage();
-//
-//        String rank = plugin.getConfig().getString("rename-groups." + group, abbreviation + rest);
-//        String rankColor = plugin.getConfig().getString("color.rank." + group, "reset");
-//        String donatorColor = plugin.getConfig().getString("color.rank.donator", "light_purple");
-//        String displayName = "#00bae7:Akoot_";
-//        String bracketsColor = plugin.getConfig().getString("color.chat.brackets", "gray");
-//
-//        // Donator status
-//        if(group.startsWith("d-")) {
-//            formattedMessage.addComponent(bracketsColor, "[");
-//            formattedMessage.addComponent(donatorColor, "D");
-//            formattedMessage.addComponent(bracketsColor, "]");
-//        }
-//
-//        // Rank
-//        formattedMessage.addComponent(bracketsColor, "[");
-//        FormattedComponent rankComponent = new FormattedComponent(rankColor, rank);
-//        rankComponent.setCommand("/playtime " + player.getName());
-//        formattedMessage.addComponent(rankComponent);
-//        formattedMessage.addComponent(rankColor, rank);
-//        formattedMessage.addComponent(bracketsColor, "]");
-//
-//        // name
-//        formattedMessage.addComponent(bracketsColor, "<");
-//        FormattedComponent nameComponent = new FormattedComponent()
-//        formattedMessage.addComponents(RawComponent.parseColors(displayName));
-//        formattedMessage.addComponent(bracketsColor, ">");
-//
-//        // message
-//        formattedMessage.addComponent(message);
-//
-//        for(Player recipient : event.getRecipients()) {
-//            UltraVanilla.tellRaw(formattedMessage, recipient);
-//            plugin.getLogger().info(String.format("[%s] %s: %s", group, player.getName(), message));
-//        }
+
+        // Chat formatter
+        boolean donator = player.hasPermission("ultravanilla.donator");
+        String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
+        String group = plugin.getPermissions().getPrimaryGroup(player);
+        String rankColor = ChatColor.of(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
+        String abbreviation = group.substring(0, 1).toUpperCase();
+        String rest = group.substring(1);
+
+        String rank = rankColor + abbreviation + rest;
+
+        String donatorBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.donator")) + "";
+        String rankBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.rank")) + "";
+        String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
+        String defaultNameColor = ChatColor.of(plugin.getConfig().getString("color.chat.default-name-color")) + "";
+
+        String format = String.format("%s%s[%s%s] %s<%s%s> %s%s",
+                (donator ? String.format("%s[%sD%s] ",
+                        donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
+                        : ""),
+                rankBracketsColor, rank, rankBracketsColor,
+                nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,
+                textPrefix, "%2$s");
+
+
+        // Replace all of the placeholders
+        String formatted = Palette.translate(format);
+        event.setFormat(formatted);
     }
 }
