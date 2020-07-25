@@ -3,9 +3,9 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
-import com.akoot.plugins.ultravanilla.util.RawComponent;
-import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -59,12 +59,12 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                     Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
                     String locationText = color + "Last Location: " + ChatColor.RESET + position.toStringTrimmed();
                     if (sender instanceof Player) {
-                        RawMessage message = new RawMessage();
-                        RawComponent component = new RawComponent();
-                        component.setContent(locationText);
-                        component.setCommand(position.getTpCommand());
-                        message.addComponent(component);
-                        UltraVanilla.tellRaw(message, (Player) sender);
+                        TextComponent textComponent = new TextComponent();
+                        TextComponent component = new TextComponent();
+                        component.setText(locationText);
+                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand()));
+                        textComponent.addExtra(component);
+                        sender.sendMessage(textComponent);
                     } else {
                         sender.sendMessage(locationText);
                     }

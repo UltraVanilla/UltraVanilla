@@ -1,17 +1,10 @@
 player:
-  added:
-    - "&#ff0000R&#00ff00G&#0000ffB &xCOLORS &7example: &7&&7#d1ae92test -> &#d1ae92test"
-    - "&>a+bGRAD&>b+dIENTS &#f2f2f2example: &&7>red+bluetest -> &>c+9test"
-  removed:
-    - "random player names from the MOTD"
+  added: []
+  removed: []
   fixed:
-    - "players being named &rnull"
-    - "being able to change other people's namecolors"
-    - "/lag"
-    - "&&7x, it is better now"
+    - "/afk only showing \"is no longer afk\""
   changed:
-    - "/namecolor format to use &a+&7 instead of &c,&7"
-    - "join, leave, death, afk etc messages to display nicknames and not usernames. Use &b/whois&7 already"
+    - "the way gradients look (thank you &dlordpipe&7!)"
   broke: []
 staff:
   added: []

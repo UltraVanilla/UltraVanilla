@@ -8,7 +8,6 @@ import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
 import com.akoot.plugins.ultravanilla.stuff.Channel;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
-import com.akoot.plugins.ultravanilla.util.RawMessage;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import net.md_5.bungee.api.ChatColor;
@@ -53,18 +52,6 @@ public final class UltraVanilla extends JavaPlugin {
 
     public static UltraVanilla getInstance() {
         return instance;
-    }
-
-    public static void tellRaw(RawMessage message, String name) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + name + " " + message.getJson());
-    }
-
-    public static void tellRaw(RawMessage message, Player player) {
-        tellRaw(message, player.getName());
-    }
-
-    public static void tellRaw(RawMessage message) {
-        tellRaw(message, "@a");
     }
 
     public static void set(Player player, String key, Object value) {

@@ -2,8 +2,10 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
-import com.akoot.plugins.ultravanilla.util.RawComponent;
-import com.akoot.plugins.ultravanilla.util.RawMessage;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,10 +26,10 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
-            RawMessage message = new RawMessage();
+            TextComponent textComponent = new TextComponent();
             String[] rawComponents = String.join(" ", args).split("\\+");
             for (String text : rawComponents) {
-                message.addComponent(getComponent(text));
+                textComponent.addExtra(getComponent(text));
             }
             List<Player> players = new ArrayList<>(plugin.getServer().getOnlinePlayers());
             String playersString = getArgFor(args, "-to");
@@ -35,15 +37,15 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
                 players = getPlayers(playersString);
             }
             for (Player player : players) {
-                UltraVanilla.tellRaw(message, player);
+                player.sendMessage(textComponent);
             }
             return true;
         }
         return false;
     }
 
-    private RawComponent getComponent(String syntax) {
-        RawComponent component = new RawComponent();
+    private TextComponent getComponent(String syntax) {
+        TextComponent component = new TextComponent();
 
         String[] args = refinedArgs(syntax.split(" "));
         String command = getArgFor(args, "-command");
@@ -52,18 +54,18 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
         String hover = getArgFor(args, "-hover");
 
         if (command != null) {
-            component.setCommand(command);
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
         } else if (suggestion != null) {
-            component.setSuggestion(suggestion);
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestion));
         } else if (link != null) {
-            component.setLink(link);
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
         }
 
         if (hover != null) {
-            component.setHoverText(Palette.translate(hover));
+            component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover)));
         }
 
-        component.setContent(Palette.translate(args[0]));
+        component.setText(Palette.translate(args[0]));
 
         return component;
     }
@@ -79,13 +81,14 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
                 suggestions.add("-command");
                 suggestions.add("-suggest");
             }
-            if (!params.contains("-hover")) {
+            if (!(params.contains("-item") || params.contains("-hover"))) {
+                suggestions.add("-item");
                 suggestions.add("-hover");
             }
             if (!params.contains("-to")) {
                 suggestions.add("-to");
             }
         }
-        return suggestions;
+        return getSuggestions(suggestions, args);
     }
 }

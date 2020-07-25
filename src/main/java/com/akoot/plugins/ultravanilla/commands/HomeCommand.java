@@ -3,9 +3,9 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.serializable.Position;
-import com.akoot.plugins.ultravanilla.util.RawComponent;
-import com.akoot.plugins.ultravanilla.util.RawMessage;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -328,15 +328,15 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
                         if (target.hasPlayedBefore()) {
                             homes = getHomes(target);
-                            RawMessage message = new RawMessage();
+                            TextComponent textComponent = new TextComponent();
                             for (Position home : homes) {
-                                RawComponent component = new RawComponent();
-                                component.setContent(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\\n");
-                                component.setCommand(home.getTpCommand());
-                                message.addComponent(component);
+                                TextComponent component = new TextComponent();
+                                component.setText(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\\n");
+                                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, home.getTpCommand()));
+                                textComponent.addExtra(component);
                             }
                             sender.sendMessage(plugin.getTitle(Palette.NOUN + target.getName() + color + "'s homes", color));
-                            UltraVanilla.tellRaw(message, player);
+                            player.sendMessage(textComponent);
                             homes = getHomes(player);
                         } else {
                             sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
