@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla.reference;
 import net.md_5.bungee.api.ChatColor;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,15 +83,28 @@ public class Palette {
         return gradient(str, LegacyColors.getColor(color1), LegacyColors.getColor(color2));
     }
 
-    public static String gradient(String str, Color one, Color two) {
-        int l = str.length();
+    // implementation by lordpipe
+    public static String gradient(String str, Color from, Color to) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < l; i++) {
-            sb.append(ChatColor.of(new Color(
-                    (one.getRed() + (i * (1.0F / l) * (two.getRed() - one.getRed()))) / 255,
-                    (one.getGreen() + (i * (1.0F / l) * (two.getGreen() - one.getGreen()))) / 255,
-                    (one.getBlue() + (i * (1.0F / l) * (two.getBlue() - one.getBlue()))) / 255
-            )));
+
+        ColorSpace cie = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
+        ColorSpace srgb = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
+        float[] cieFrom = cie.fromRGB(from.getRGBColorComponents(null));
+        float[] cieTo = cie.fromRGB(to.getRGBColorComponents(null));
+
+        for (int i = 0, l = str.length(); i < l; i++) {
+            // do interpolation in CIE space
+            float[] interpolatedCie = new float[] {
+                    cieFrom[0] + (i * (1.0F / l)) * (cieTo[0] - cieFrom[0]),
+                    cieFrom[1] + (i * (1.0F / l)) * (cieTo[1] - cieFrom[1]),
+                    cieFrom[2] + (i * (1.0F / l)) * (cieTo[2] - cieFrom[2])
+            };
+
+            // we could just pass the CIE value directly into `new Color`, but it seems the ChatColor API expects the
+            // conversion to sRGB to be pre-computed, so it fails
+            float[] interpolatedSrgb = srgb.fromCIEXYZ(interpolatedCie);
+            sb.append(ChatColor.of(new Color(interpolatedSrgb[0], interpolatedSrgb[1], interpolatedSrgb[2])));
             sb.append(str.charAt(i));
         }
         return sb.toString();
