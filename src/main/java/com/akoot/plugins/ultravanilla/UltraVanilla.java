@@ -121,10 +121,6 @@ public final class UltraVanilla extends JavaPlugin {
         return ignored.contains(target.getUniqueId().toString());
     }
 
-    public static ChatColor getNameColor(OfflinePlayer player) {
-        return ChatColor.valueOf(UltraVanilla.getConfig(player).getString("name-color", "RESET"));
-    }
-
     public void loadConfigs() {
         init("join.txt", false);
         getConfig("config.yml", false);
