@@ -3,6 +3,7 @@ player:
   removed: []
   fixed:
     - "/afk only showing \"is no longer afk\""
+    - "lore items not showing in death messages"
   changed:
     - "the way gradients look (thank you &dlordpipe&7!)"
   broke: []

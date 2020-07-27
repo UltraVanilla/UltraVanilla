@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class EventListener implements Listener {
 
-    private UltraVanilla plugin;
+    private final UltraVanilla plugin;
 
     public EventListener(UltraVanilla instance) {
         this.plugin = instance;
@@ -39,7 +39,7 @@ public class EventListener implements Listener {
             if (event.getCause().name().equals("COMMAND") || event.getCause().name().equals("SPECTATE")) {
                 for (Player p : plugin.getServer().getOnlinePlayers()) {
                     if (p.getLocation().equals(event.getTo())) {
-                        YamlConfiguration config = plugin.getConfig(p.getUniqueId());
+                        YamlConfiguration config = UltraVanilla.getConfig(p.getUniqueId());
                         if (config != null && config.getBoolean(Users.TP_DISABLED, false)) {
                             event.setCancelled(true);
                         }
@@ -129,7 +129,6 @@ public class EventListener implements Listener {
                 event.setDeathMessage(message);
             }
         }
-        event.setDeathMessage(event.getDeathMessage().replace(player.getName(), player.getDisplayName() + ChatColor.RESET));
     }
 
     @EventHandler
