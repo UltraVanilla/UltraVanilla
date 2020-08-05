@@ -1,7 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
-import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.stuff.ChannelHandler;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,9 +24,10 @@ public class ReplyCommand extends UltraCommand implements CommandExecutor, TabEx
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (Users.REPLIES.containsKey(sender.getName())) {
-            String to = Users.REPLIES.get(sender.getName());
-            if (to.equalsIgnoreCase("console")) {
+        String name = sender.getName();
+        if (ChannelHandler.getChannels().containsKey(name)) {
+            String to = ChannelHandler.getChannels().get(name);
+            if (to.equals("CONSOLE")) {
                 MsgCommand.msg(sender, Bukkit.getConsoleSender(), getArg(args));
             } else {
                 Player player = plugin.getServer().getPlayer(to);

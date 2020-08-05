@@ -6,7 +6,6 @@ import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
-import com.akoot.plugins.ultravanilla.stuff.Channel;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -239,11 +238,15 @@ public final class UltraVanilla extends JavaPlugin {
         player.setPlayerListName((displayName != null ? displayName : player.getName()) + (Users.isAFK(player) ? " §7§o(AFK)" : ""));
     }
 
-    public void ping(CommandSender player, Player target) {
-        if (Users.isAFK(target)) {
-            player.sendMessage(target.getName() + " is AFK");
-        }
+    public void ping(Player target) {
         target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.5F);
+    }
+
+    public void ping(CommandSender sender, Player target) {
+        if (Users.isAFK(target)) {
+            sender.sendMessage(target.getName() + " is AFK");
+        }
+        ping(target);
     }
 
     public ProtocolManager getProtocolManager() {
@@ -321,7 +324,13 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("namecolor").setExecutor(new NameColorCommand(instance));
         getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
         getCommand("whois").setExecutor(new WhoIsCommand(instance));
-//        getCommand("votekick").setExecutor(new VoteKickCommand(instance));
+        MuteCommand muteCommand = new MuteCommand(instance);
+        getCommand("mute").setExecutor(muteCommand);
+        getCommand("smute").setExecutor(muteCommand);
+        getCommand("unmute").setExecutor(muteCommand);
+        getCommand("sunmute").setExecutor(muteCommand);
+        getCommand("mcolor").setExecutor(new McolorCommand(instance));
+
     }
 
     private void setRandomMOTD() {
@@ -377,14 +386,6 @@ public final class UltraVanilla extends JavaPlugin {
             if (player.hasPermission(permission)) {
                 player.sendMessage(message);
             }
-        }
-    }
-
-    public void getChannels() {
-        List<Map<?, ?>> maps = getStorage().getMapList("chat.channels");
-        List<Channel> channels = new ArrayList<>();
-        for (Map<?, ?> map : maps) {
-            Channel channel = new Channel(map.get("id").toString());
         }
     }
 

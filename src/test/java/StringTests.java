@@ -16,6 +16,13 @@ public class StringTests {
         assertEquals(ChatColor.of(color) + text, testText);
     }
 
+    @Test
+    public void hexTest() {
+        color = "#00bae7";
+        ChatColor col = ChatColor.of(color);
+        assertEquals(color, Palette.getHex(col));
+    }
+
 //    @Test
 //    public void colorTestChar() {
 //        Color c = Color.decode("#00AAAA");

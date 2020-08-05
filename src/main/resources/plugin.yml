@@ -2,7 +2,7 @@ name: UltraVanilla
 version: ${project.version}
 main: com.akoot.plugins.ultravanilla.UltraVanilla
 api-version: 1.13
-prefix: UltraVanilla
+prefix: UV
 authors: [Akoot_]
 description: Official plugin for UltraVanilla Minecraft server
 website: ultravanilla.net
@@ -159,10 +159,38 @@ commands:
     aliases: [whomis]
     description: Find out who is behind that extravagant nickname
     usage: /whois <name>
-#  votekick:
-#    description: Vote for things
-#    permission: ultravanilla.command.votekick
-#    usage: /votekick <player>
+  sunmute:
+    description: Silently un-mute a player.
+    usage: /sunmute <player>
+    permission: ultravanilla.command.mute
+  smute:
+    description: Silently mute a player.
+    usage: /smute <player>
+    permission: ultravanilla.command.mute
+  unmute:
+    description: Unmute a player.
+    usage: /unmute <player>
+    permission: ultravanilla.command.mute
+  mute:
+    description: Mute a player.
+    usage: /mute <player>
+    permission: ultravanilla.command.mute
+  mcolor:
+    aliases: [mcol, mc, wcolor, wcol, wc, tcolor, tcol, tc]
+    description: Change your message thread color
+    usage: |
+    /mcolor <player> <color>
+    /mcolor -disable
+    permission: ultravanilla.command.mcolor
+#  mail:
+#    description: Send mail to a player
+#    usage: |
+#    /mail send <player>
+#    /mail read
+#    /mail clear
+#    /mail delete <id>
+#    /mail reply <id> <message>
+#    permission: ultravanilla.command.mail
 permissions:
   ultravanilla.donator:
     description: Donator permissions

@@ -1,0 +1,90 @@
+{
+  "classes": {
+    "noun": "#3772ff",
+    "noun-alt": "#6a7fdb",
+    "number": "#faa916",
+    "number-alt": "#fbbf49",
+    "object": "#b8dbd9",
+    "object-alt": "#658e9c",
+    "true": "#8cba80",
+    "false": "#dd2d4a",
+    "right": "#cacf85",
+    "wrong": "#880d1e"
+  },
+  "palette": {
+    "black": "#000000",
+    "dark_blue": "#0000aa",
+    "dark_green": "#0aa00",
+    "dark_aqua": "#00aaaa",
+    "dark_red": "#a0000",
+    "dark_purple": "#aa00aa",
+    "gold": "#ffaa00",
+    "gray": "#aaaaaa",
+    "dark_gray": "#555555",
+    "blue": "#5555ff",
+    "green": "#55ff55",
+    "aqua": "#55ffff",
+    "red": "#ff5555",
+    "light_purple": "#ff55ff",
+    "yellow": "#ffff55",
+    "white": "#ffffff",
+    "orange": "#f48e09",
+    "dark_orange": "#f45409",
+    "deep_red": "#f42424",
+    "salmon": "#ea543c",
+    "lavender": "#c16ee5",
+    "light_lavender": "#ce8ad8",
+    "purple": "#7e47e5",
+    "blue_purple": "#6635ea",
+    "sky_blue": "#abd5fc",
+    "cyan": "389eff",
+    "cyanide": "#2de6ff",
+    "light_cyanide": "#98eef9",
+    "seafoam_green": "#84edd1",
+    "patel_brown": "#dbb592",
+    "light_buttercream": "#fcf094",
+    "buttercream": "#f7e667",
+    "lime": "#88f931",
+    "lemon": "#f4f430",
+    "ezek_teal": "#55f4b7",
+    "akoot_blue": "#40a6f8",
+    "mokono_brown": "#f7e259",
+    "apricot": "#f18d2f",
+    "pumpkin": "#fc7e00"
+  },
+  "chat": {
+    "ping": {
+      "everyone": "aqua",
+      "player": "light_purple"
+    },
+    "name": {
+      "brackets": "gray",
+      "default": "#f2f2f2"
+    },
+    "roles": {
+      "brackets": "gray",
+      "base": {
+        "veteran": "#e67e22",
+        "founder": "#1f8b4c",
+        "head-admin": "#c72121",
+        "admin": "#e74c3c",
+        "moderator": "#1f8b4c",
+        "intern": "#8a7189",
+        "discord-mod": "#b38866",
+        "sage": "#e0606e",
+        "grandmaster": "#7692d1",
+        "elder": "#bac0d3",
+        "master": "#f3db50",
+        "pro": "#1abc9c",
+        "loyalist": "#86db59",
+        "member": "#8de0ba",
+        "default": "white"
+      },
+      "extra": {
+        "brackets": "gray",
+        "donator": "#ba73dd",
+        "sage": "#4db794"
+      }
+    }
+  }
+}

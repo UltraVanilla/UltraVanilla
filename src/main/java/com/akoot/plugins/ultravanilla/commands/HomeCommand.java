@@ -331,7 +331,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                             TextComponent textComponent = new TextComponent();
                             for (Position home : homes) {
                                 TextComponent component = new TextComponent();
-                                component.setText(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\\n");
+                                component.setText(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\n");
                                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, home.getTpCommand()));
                                 textComponent.addExtra(component);
                             }

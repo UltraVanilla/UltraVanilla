@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla.commands;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.stuff.ChannelHandler;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,23 +25,62 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
     }
 
     public static void msg(CommandSender from, CommandSender to, String message) {
+
+        ChatColor fromChannelColor = Palette.random();
+        ChatColor toChannelColor = Palette.random();
+        ChatColor channelColor;
+
+        if (to instanceof Player) {
+            Player player = (Player) to;
+            if (!UltraVanilla.getConfig(player).getBoolean("channels.direct-disabled", false)) {
+                String path = "channels.direct." + from.getName();
+                String color = UltraVanilla.getConfig(player).getString(path);
+                if (color == null) {
+                    UltraVanilla.set(player, path, Palette.getHex(toChannelColor));
+                } else {
+                    toChannelColor = ChatColor.of(color);
+                }
+
+                if (Users.isAFK((Player) to)) {
+                    from.sendMessage(Palette.NOUN + to.getName() + COLOR + " is currently AFK");
+                }
+            } else {
+                toChannelColor = ChatColor.GRAY;
+            }
+        }
+
+        if (from instanceof Player) {
+            Player player = (Player) from;
+            if (!UltraVanilla.getConfig(player).getBoolean("channels.direct-disabled", false)) {
+                String path = "channels.direct." + to.getName();
+                String color = UltraVanilla.getConfig(player).getString(path);
+                if (color == null) {
+                    UltraVanilla.set(player, path, Palette.getHex(fromChannelColor));
+                } else {
+                    fromChannelColor = ChatColor.of(color);
+                }
+                channelColor = fromChannelColor;
+            } else {
+                fromChannelColor = ChatColor.GRAY;
+                channelColor = ChatColor.GRAY;
+            }
+        } else {
+            channelColor = toChannelColor;
+        }
+
         UltraVanilla plugin = UltraVanilla.getInstance();
         String fromFormat = plugin.getString("command.message.format.from");
         String toFormat = plugin.getString("command.message.format.to");
         String spyFormat = plugin.getString("command.message.format.spy");
 
         from.sendMessage(Palette.translate(toFormat
+                .replace("&:", fromChannelColor + "")
                 .replace("{message}", message)
                 .replace("{recipient}", to.getName())
         ));
 
-        if (to instanceof Player) {
-            if (Users.isAFK((Player) to)) {
-                from.sendMessage(Palette.NOUN + to.getName() + COLOR + " is currently AFK");
-            }
-        }
-
         to.sendMessage(Palette.translate(fromFormat
+                .replace("&:", toChannelColor + "")
                 .replace("{message}", message)
                 .replace("{player}", from.getName())
         ));
@@ -50,6 +90,7 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
                     && !(player.getName().equals(from.getName())
                     || player.getName().equals(to.getName()))) {
                 player.sendMessage(Palette.translate(spyFormat
+                        .replace("&:", channelColor + "")
                         .replace("{message}", message)
                         .replace("{player}", from.getName())
                         .replace("{recipient}", to.getName())
@@ -57,8 +98,10 @@ public class MsgCommand extends UltraCommand implements CommandExecutor, TabExec
             }
         }
 
-        Users.REPLIES.put(from.getName(), to.getName());
-        Users.REPLIES.put(to.getName(), from.getName());
+        ChannelHandler.getChannels().put(from.getName(), to.getName());
+        ChannelHandler.getChannels().put(to.getName(), from.getName());
+
+
     }
 
     @Override

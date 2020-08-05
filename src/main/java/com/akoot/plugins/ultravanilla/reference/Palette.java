@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Palette {
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
     public static String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[a-f0-9])";
@@ -24,6 +24,10 @@ public class Palette {
     public static final ChatColor RIGHT = ChatColor.GREEN;
     public static final ChatColor TRUE = ChatColor.DARK_AQUA;
     public static final ChatColor FALSE = ChatColor.DARK_RED;
+
+    public static ChatColor random() {
+        return ChatColor.of(Color.getHSBColor(random.nextFloat(), 0.6f, 0.95f));
+    }
 
     public static String BOOLEAN(boolean bool) {
         return (bool ? Palette.TRUE : Palette.FALSE) + "" + bool;
@@ -128,10 +132,7 @@ public class Palette {
         return rainbow;
     }
 
-    public static String getRegex(String regex, String data) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(data);
-        if (matcher.find()) data = matcher.group(0);
-        return data;
+    public static String getHex(ChatColor color) {
+        return String.format("#%06x", color.getColor().getRGB() & 0xffffff);
     }
 }

@@ -1,14 +1,15 @@
 player:
   added: []
   removed: []
-  fixed:
-    - "/afk only showing \"is no longer afk\""
-    - "lore items not showing in death messages"
-  changed:
-    - "the way gradients look (thank you &dlordpipe&7!)"
+  fixed: []
+  changed: []
   broke: []
 staff:
-  added: []
+  added:
+    - "/mute - mute a player."
+    - "/smute - mute a player (silently)."
+    - "/unmute - un-mute a player."
+    - "/sunmute - un-mute a player (silently)."
   removed: []
   fixed: []
   changed: []

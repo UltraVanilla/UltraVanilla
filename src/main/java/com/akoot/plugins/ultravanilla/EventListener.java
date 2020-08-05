@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla;
 
 import com.akoot.plugins.ultravanilla.commands.AfkCommand;
+import com.akoot.plugins.ultravanilla.commands.MuteCommand;
 import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
@@ -15,6 +16,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EventListener implements Listener {
 
@@ -140,8 +143,9 @@ public class EventListener implements Listener {
         YamlConfiguration config = UltraVanilla.getConfig(player.getUniqueId());
 
         if (config.getBoolean("muted", false)) {
-            player.sendMessage(Palette.WRONG + "You are muted.");
+            player.sendMessage(MuteCommand.COLOR + "You are muted.");
             event.setCancelled(true);
+            plugin.getLogger().info(player.getName() + " tried to say: " + event.getMessage());
             return;
         }
 
@@ -154,30 +158,22 @@ public class EventListener implements Listener {
         }
 
         // Pings
-        for (Player p : plugin.getServer().getOnlinePlayers()) {
-            String username = p.getName().toLowerCase();
-            String name = ChatColor.stripColor(p.getDisplayName()).toLowerCase();
-            boolean canPing = UltraVanilla.getConfig(p.getUniqueId()).getBoolean(Users.PING_ENABLED, true);
-            for (String word : message.split(" ")) {
-                if (word.startsWith("@") && word.length() >= 2) {
-
-                    if (player.hasPermission("ultravanilla.chat.everyone") && word.equalsIgnoreCase("@everyone")) {
-                        if (canPing) {
-                            plugin.ping(player, p);
-                            message = message.replace("@everyone",
-                                    ChatColor.of(plugin.getConfig().getString("color.chat.ping.everyone"))
-                                            + "@everyone" + ChatColor.RESET);
-                        }
-                    } else {
-                        word = word.substring(1);
-                        word = word.replaceAll("[^a-zA-Z0-9-_]+", "");
-                        if (username.contains(word.toLowerCase()) || name.contains(word.toLowerCase())) {
-                            if (canPing || UltraVanilla.isIgnored(player, p)) {
-                                String at = ChatColor.of(plugin.getConfig().getString("color.chat.ping.user"))
-                                        + word + ChatColor.RESET;
-                                plugin.ping(player, p);
-                                message = message.replace("@" + word, at);
-                            }
+        if (message.contains("@")) {
+            Pattern p = Pattern.compile("@([a-zA-Z0-9]{2,})");
+            Matcher m = p.matcher(message);
+            while (m.find()) {
+                String match = m.group(0);
+                String name = m.group(1);
+                if (name.equals("everyone") && player.hasPermission("ultravanilla.chat.everyone")) {
+                    for (Player recipient : event.getRecipients()) {
+                        message = message.replace(match, ChatColor.of(plugin.getConfig().getString("color.chat.ping.everyone")) + match + ChatColor.RESET);
+                        plugin.ping(recipient);
+                    }
+                } else {
+                    for (Player recipient : event.getRecipients()) {
+                        if (recipient.getName().toLowerCase().contains(name) || ChatColor.stripColor(recipient.getDisplayName()).toLowerCase().contains(name)) {
+                            message = message.replace(match, ChatColor.of(plugin.getConfig().getString("color.chat.ping.user")) + name + ChatColor.RESET);
+                            plugin.ping(player, recipient);
                         }
                     }
                 }
@@ -199,21 +195,18 @@ public class EventListener implements Listener {
         String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
         String group = plugin.getPermissions().getPrimaryGroup(player);
         String rankColor = ChatColor.of(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
-        String abbreviation = group.substring(0, 1).toUpperCase();
-        String rest = group.substring(1);
-
-        String rank = rankColor + abbreviation + rest;
+        String rank = plugin.getConfig().getString("rename-groups." + group, group.substring(0, 1).toUpperCase() + group.substring(1));
 
         String donatorBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.donator")) + "";
         String rankBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.rank")) + "";
         String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
         String defaultNameColor = ChatColor.of(plugin.getConfig().getString("color.chat.default-name-color")) + "";
 
-        String format = String.format("%s%s[%s%s] %s<%s%s> %s%s",
+        String format = String.format("%s%s[%s%s§r%s] %s<%s§r%s> %s%s",
                 (donator ? String.format("%s[%sD%s] ",
                         donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
                         : ""),
-                rankBracketsColor, rank, rankBracketsColor,
+                rankBracketsColor, rankColor, rank, rankBracketsColor,
                 nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,
                 textPrefix, "%2$s");
 
