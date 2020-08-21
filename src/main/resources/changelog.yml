@@ -1,15 +1,14 @@
 player:
-  added: []
+  added:
+    - "/sign"
   removed: []
-  fixed: []
+  fixed:
+    - "player pings"
+    - "dark_red and dark_green when using /nc or using gradients"
   changed: []
   broke: []
 staff:
-  added:
-    - "/mute - mute a player."
-    - "/smute - mute a player (silently)."
-    - "/unmute - un-mute a player."
-    - "/sunmute - un-mute a player (silently)."
+  added: []
   removed: []
   fixed: []
   changed: []

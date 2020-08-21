@@ -13,8 +13,8 @@ public class Palette {
     private static final Random random = new Random();
 
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
-    public static String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[a-f0-9])";
-    public static String MIX_SYMBOL = "+";
+    public static final String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[0-9a-fA-F])";
+    public static final String MIX_SYMBOL = "+";
 
     public static final ChatColor NOUN = ChatColor.LIGHT_PURPLE;
     public static final ChatColor VERB = ChatColor.ITALIC;

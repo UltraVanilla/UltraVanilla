@@ -179,9 +179,18 @@ commands:
     aliases: [mcol, mc, wcolor, wcol, wc, tcolor, tcol, tc]
     description: Change your message thread color
     usage: |
-    /mcolor <player> <color>
-    /mcolor -disable
+      /mcolor <player> <color>
+      /mcolor -disable
+      /mcolor -enable
     permission: ultravanilla.command.mcolor
+  sign:
+    description: Modify a sign via command
+    usage: |
+      /sign color [line] <color|gradient>
+      /sign setline <line> <text>
+      /sign rewrite <line1>[|line2|line3|line4]
+      /sign edit
+      /sign clear
 #  mail:
 #    description: Send mail to a player
 #    usage: |

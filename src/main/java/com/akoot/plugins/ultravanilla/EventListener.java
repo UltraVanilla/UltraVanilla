@@ -53,6 +53,11 @@ public class EventListener implements Listener {
         UltraVanilla.set(event.getPlayer(), "last-teleport", new Position(event.getFrom()));
     }
 
+//    @EventHandler
+//    public void onCommandType(PlayerCommandPreprocessEvent e) {
+//        //TODO: handle replacing placeholders in commands
+//    }
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -139,18 +144,16 @@ public class EventListener implements Listener {
 
         Player player = event.getPlayer();
         unsetAfk(player);
-
         YamlConfiguration config = UltraVanilla.getConfig(player.getUniqueId());
+        String message = event.getMessage();
 
+        // Mute
         if (config.getBoolean("muted", false)) {
             player.sendMessage(MuteCommand.COLOR + "You are muted.");
             event.setCancelled(true);
-            plugin.getLogger().info(player.getName() + " tried to say: " + event.getMessage());
+            plugin.getLogger().info(player.getName() + " tried to say: " + message);
             return;
         }
-
-        // Chat message
-        String message = event.getMessage();
 
         // Chat color
         if (player.hasPermission("ultravanilla.chat.color")) {
@@ -159,7 +162,7 @@ public class EventListener implements Listener {
 
         // Pings
         if (message.contains("@")) {
-            Pattern p = Pattern.compile("@([a-zA-Z0-9]{2,})");
+            Pattern p = Pattern.compile("@([a-zA-Z0-9_]{2,})");
             Matcher m = p.matcher(message);
             while (m.find()) {
                 String match = m.group(0);
@@ -171,7 +174,7 @@ public class EventListener implements Listener {
                     }
                 } else {
                     for (Player recipient : event.getRecipients()) {
-                        if (recipient.getName().toLowerCase().contains(name) || ChatColor.stripColor(recipient.getDisplayName()).toLowerCase().contains(name)) {
+                        if (recipient.getName().toLowerCase().contains(name.toLowerCase()) || ChatColor.stripColor(recipient.getDisplayName()).toLowerCase().contains(name)) {
                             message = message.replace(match, ChatColor.of(plugin.getConfig().getString("color.chat.ping.user")) + name + ChatColor.RESET);
                             plugin.ping(player, recipient);
                         }
@@ -202,7 +205,7 @@ public class EventListener implements Listener {
         String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
         String defaultNameColor = ChatColor.of(plugin.getConfig().getString("color.chat.default-name-color")) + "";
 
-        String format = String.format("%s%s[%s%s§r%s] %s<%s§r%s> %s%s",
+        String format = String.format("%s%s[%s%s%s] %s<%s%s> %s%s",
                 (donator ? String.format("%s[%sD%s] ",
                         donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
                         : ""),
@@ -210,8 +213,6 @@ public class EventListener implements Listener {
                 nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,
                 textPrefix, "%2$s");
 
-
-        // Replace all of the placeholders
         String formatted = Palette.translate(format);
         event.setFormat(formatted);
     }

@@ -35,9 +35,9 @@ public class LegacyColors {
 
         BLACK("#000000"),
         DARK_BLUE("#0000AA"),
-        DARK_GREE("#0AA00"),
+        DARK_GREEN("#00AA00"),
         DARK_AQUA("#00AAAA"),
-        DARK_RE("#A0000"),
+        DARK_RED("#AA0000"),
         DARK_PURPLE("#AA00AA"),
         GOLD("#FFAA00"),
         GRAY("#AAAAAA"),

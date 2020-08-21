@@ -330,6 +330,9 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("unmute").setExecutor(muteCommand);
         getCommand("sunmute").setExecutor(muteCommand);
         getCommand("mcolor").setExecutor(new McolorCommand(instance));
+        SignCommand signCommand = new SignCommand(instance);
+        getCommand("sign").setExecutor(signCommand);
+        getServer().getPluginManager().registerEvents(signCommand, instance);
 
     }
 
