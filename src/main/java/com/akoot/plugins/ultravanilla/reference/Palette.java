@@ -16,14 +16,14 @@ public class Palette {
     public static final String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[0-9a-fA-F])";
     public static final String MIX_SYMBOL = "+";
 
-    public static final ChatColor NOUN = ChatColor.LIGHT_PURPLE;
     public static final ChatColor VERB = ChatColor.ITALIC;
-    public static final ChatColor NUMBER = ChatColor.GOLD;
-    public static final ChatColor OBJECT = ChatColor.AQUA;
-    public static final ChatColor WRONG = ChatColor.RED;
-    public static final ChatColor RIGHT = ChatColor.GREEN;
-    public static final ChatColor TRUE = ChatColor.DARK_AQUA;
-    public static final ChatColor FALSE = ChatColor.DARK_RED;
+    public static final ChatColor NOUN = ChatColor.of("#3772ff");
+    public static final ChatColor NUMBER = ChatColor.of("#faa916");
+    public static final ChatColor OBJECT = ChatColor.of("#b8dbd9");
+    public static final ChatColor TRUE = ChatColor.of("#8cba80");
+    public static final ChatColor FALSE = ChatColor.of("#dd2d4a");
+    public static final ChatColor RIGHT = ChatColor.of("#cacf85");
+    public static final ChatColor WRONG = ChatColor.of("#880d1e");
 
     public static ChatColor random() {
         return ChatColor.of(Color.getHSBColor(random.nextFloat(), 0.6f, 0.95f));
@@ -31,6 +31,17 @@ public class Palette {
 
     public static String BOOLEAN(boolean bool) {
         return (bool ? Palette.TRUE : Palette.FALSE) + "" + bool;
+    }
+
+    public static String untranslate(String str) {
+        str = str.replaceAll("§", "&");
+        Pattern pattern = Pattern.compile("&x((&[a-zA-Z0-9]){6})");
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            String line = "&#" + matcher.group(1).replaceAll("&", "").toLowerCase();
+            str = str.replaceAll(matcher.group(0), line);
+        }
+        return str;
     }
 
     public static String translate(String text) {

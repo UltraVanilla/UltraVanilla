@@ -21,8 +21,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SignCommand extends UltraCommand implements TabExecutor, Listener {
 
@@ -40,17 +38,6 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
 
     public static boolean canColor(Player player) {
         return player.hasPermission("ultravanilla.sign.color");
-    }
-
-    public static String getColoredString(String lines) {
-        lines = lines.replaceAll("§", "&");
-        Pattern pattern = Pattern.compile("&x((&[a-zA-Z0-9]){6})");
-        Matcher matcher = pattern.matcher(lines);
-        while (matcher.find()) {
-            String line = "&#" + matcher.group(1).replaceAll("&", "").toLowerCase();
-            lines = lines.replaceAll(matcher.group(0), line);
-        }
-        return lines;
     }
 
     public static boolean isValid(String arg) {
@@ -118,7 +105,7 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                     String lines = String.join("\n", sign.getLines())
                             .replaceAll("\\|", "\\\\|")
                             .replaceAll("\n", " | ");
-                    lines = getColoredString(lines);
+                    lines = Palette.untranslate(lines);
 
                     TextComponent editButton = new TextComponent("Click here to rewrite this sign.");
                     editButton.setColor(RIGHT_COLOR);
@@ -264,7 +251,7 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                     Block block = ((Player) sender).getTargetBlock(3);
                     if (block != null && block.getState() instanceof Sign) {
                         String line = ((Sign) block.getState()).getLine(Integer.parseInt(args[1]) - 1);
-                        suggestions.add(getColoredString(line));
+                        suggestions.add(Palette.untranslate(line));
                     }
                 }
             }

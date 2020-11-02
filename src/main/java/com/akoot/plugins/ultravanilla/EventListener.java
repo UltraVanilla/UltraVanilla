@@ -7,6 +7,7 @@ import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,10 +54,79 @@ public class EventListener implements Listener {
         UltraVanilla.set(event.getPlayer(), "last-teleport", new Position(event.getFrom()));
     }
 
-//    @EventHandler
-//    public void onCommandType(PlayerCommandPreprocessEvent e) {
-//        //TODO: handle replacing placeholders in commands
-//    }
+    @EventHandler
+    public void onCommandType(PlayerCommandPreprocessEvent e) {
+        String message = e.getMessage();
+        String newMessage = message;
+
+        // ${}
+        Pattern pattern = Pattern.compile("\\$\\{([\\w]+)\\.([\\w-.]+)}");
+        Matcher matcher = pattern.matcher(message);
+        while (matcher.find()) {
+            newMessage = message.replaceAll(Pattern.quote(matcher.group()),
+                    getValue(matcher.group(1), matcher.group(2).toLowerCase().split("\\.")));
+        }
+
+        // --as
+        if (newMessage.contains("--as ")) {
+            String command = newMessage.substring(1, newMessage.indexOf("--as ") - 1);
+            String target = newMessage.substring(newMessage.indexOf("--as ") + "--as ".length());
+            newMessage = "/make " + target + " do " + command;
+        }
+
+        // --at
+        if (newMessage.contains("--at ")) {
+            String command = newMessage.substring(1, newMessage.indexOf("--at ") - 1);
+            String location = newMessage.substring(newMessage.indexOf("--at ") + "--at ".length());
+            newMessage = "/execute at " + location + " run " + command;
+        }
+
+        // --in
+        if (newMessage.contains("--in ")) {
+            String command = newMessage.substring(1, newMessage.indexOf("--in ") - 1);
+            String world = newMessage.substring(newMessage.indexOf("--in ") + "--in ".length());
+            newMessage = "/execute in " + world + " run " + command;
+        }
+
+        e.setMessage(newMessage);
+    }
+
+    public String getValue(String parent, String[] children) {
+        if (parent.equals("player")) {
+            if (children.length == 2) {
+                OfflinePlayer player = plugin.getServer().getOfflinePlayer(children[0]);
+                if (player.hasPlayedBefore()) {
+                    if (children[1].matches("(nick|display|custom)[-_]?name")) {
+                        if (UltraVanilla.getConfig(player).contains("display-name")) {
+                            return UltraVanilla.getConfig(player).getString("display-name");
+                        }
+                    } else if (children[1].matches("role|rank|group")) {
+                        return plugin.getRole(player);
+                    } else if (children[1].matches("next[_-]?(role|rank|group)")) {
+                        return plugin.getNextRole(player);
+                    } else if (children[1].equals("uuid")) {
+                        return player.getUniqueId().toString();
+                    }
+                }
+            }
+        } else if (parent.equals("color")) {
+            if (children.length == 2) {
+                String theClass = children[0];
+                if (theClass.matches("rank|role|group")) {
+                    ChatColor roleColor = plugin.getRoleColor(children[1]);
+                    if (roleColor != null) {
+                        return Palette.untranslate(roleColor + "");
+                    }
+                }
+            } else if (children.length == 1) {
+                ChatColor color = ChatColor.of(children[0]);
+                if (color != null) {
+                    return Palette.untranslate(color + "");
+                }
+            }
+        }
+        return parent + "." + String.join(".", children);
+    }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -106,7 +176,7 @@ public class EventListener implements Listener {
             String role = roles[i];
             String nextRole = roles[i + 1];
             if (plugin.getPermissions().getPrimaryGroup(player).equals(role)) {
-                if (UltraVanilla.getPlayTime(player) / 60000L >= plugin.getConfig().getInt("times." + nextRole)) {
+                if (System.currentTimeMillis() <= player.getFirstPlayed() + plugin.getConfig().getLong("times." + nextRole)) {
                     for (Player p : plugin.getServer().getOnlinePlayers()) {
                         if (p.hasPermission("ultravanilla.moderator")) {
                             p.sendMessage(String.format(Palette.translate("&d%s&6 should be a &7%s&6 by now!"), player.getName(), nextRole));
@@ -197,7 +267,7 @@ public class EventListener implements Listener {
         boolean donator = player.hasPermission("ultravanilla.donator");
         String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
         String group = plugin.getPermissions().getPrimaryGroup(player);
-        String rankColor = ChatColor.of(plugin.getConfig().getString("color.rank." + group, "RESET")) + "";
+        String rankColor = plugin.getRoleColor(group) + "";
         String rank = plugin.getConfig().getString("rename-groups." + group, group.substring(0, 1).toUpperCase() + group.substring(1));
 
         String donatorBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.donator")) + "";

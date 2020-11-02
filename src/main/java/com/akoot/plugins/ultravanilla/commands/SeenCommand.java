@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
@@ -22,7 +23,7 @@ import java.util.TimeZone;
 
 public class SeenCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.YELLOW;
+    public static final ChatColor COLOR = ChatColor.of("#fce192");
 
     public SeenCommand(UltraVanilla instance) {
         super(instance);
@@ -47,7 +48,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                     sender.sendMessage(format(command, "format.seen.last", "{player}", player.getName(), "{date}", getDate(lastJoin, timezone)));
                 } else if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("first")) {
-                        long firstJoin = UltraVanilla.getConfig(player.getUniqueId()).getLong(Users.FIRST_LOGIN);
+                        long firstJoin = player.getFirstPlayed();
                         sender.sendMessage(format(command, "format.seen.first", "{player}", player.getName(), "{date}", getDate(firstJoin, timezone)));
                     } else {
                         return false;
@@ -57,17 +58,33 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                 }
                 if (sender.hasPermission("ultravanilla.permission.admin")) {
                     Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
-                    String locationText = color + "Last Location: " + ChatColor.RESET + position.toStringTrimmed();
-                    if (sender instanceof Player) {
-                        TextComponent textComponent = new TextComponent();
+                    TimeZone finalTimezone = timezone;
+                    plugin.async(() -> {
+                        String nextRole = plugin.getNextRole(player);
+                        if (nextRole != null) {
+                            sender.sendMessage(String.format(
+                                    "%sNext promotion: %s%s",
+                                    COLOR,
+                                    Palette.OBJECT, getDate(plugin.getNextRoleDate(player.getFirstPlayed(), nextRole), finalTimezone)
+                            ));
+                            if (!plugin.getRole(player).equals(nextRole)) {
+                                sender.sendMessage(String.format(
+                                        "%sThey should be %s%s %sby now!",
+                                        COLOR,
+                                        plugin.getRoleColor(nextRole), nextRole,
+                                        COLOR
+                                ));
+                            }
+                        }
+                        TextComponent textComponent = new TextComponent("Last logout location: ");
+                        textComponent.setColor(COLOR);
                         TextComponent component = new TextComponent();
-                        component.setText(locationText);
+                        component.setColor(ChatColor.WHITE);
+                        component.setText(position.toStringTrimmed());
                         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand()));
                         textComponent.addExtra(component);
                         sender.sendMessage(textComponent);
-                    } else {
-                        sender.sendMessage(locationText);
-                    }
+                    });
                 }
             } else {
                 sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));

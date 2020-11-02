@@ -48,7 +48,7 @@ public class MakeCommand extends UltraCommand implements CommandExecutor, TabCom
                 }
                 sender.sendMessage(format(command, "message.made", "{player}", playerList(players), "{verb}", subCommand, "{action}", message));
             } else {
-                sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));
+                sender.sendMessage(plugin.getString("player-offline", "{player}", args[2]));
             }
             return true;
         }

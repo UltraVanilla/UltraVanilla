@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -392,6 +393,23 @@ public final class UltraVanilla extends JavaPlugin {
         }
     }
 
+    public void removeFromStorage(String key, String value) {
+        List<String> list = storage.getStringList(key);
+        list.remove(value);
+        storage.set(key, list);
+    }
+
+    public void addToStorage(String key, String value) {
+        List<String> list = storage.getStringList(key);
+        list.add(value);
+        storage.set(key, list);
+    }
+
+    public void store(String key, Object value) {
+        storage.set(key, value);
+        saveConfig(storage, "storage.yml");
+    }
+
     private void saveStorage() {
 
         // Tickets
@@ -408,5 +426,41 @@ public final class UltraVanilla extends JavaPlugin {
         storage.set("tickets", ticketMaps);
 
         saveConfig(storage, "storage.yml");
+    }
+
+    public String getNextRole(OfflinePlayer player) {
+        String[] roles = ((MemorySection) getConfig().get("times")).getKeys(false).toArray(new String[0]);
+        for (int i = 0; i < roles.length - 1; i++) {
+            String role = roles[i];
+            String nextRole = roles[i + 1];
+            if (getRole(player).equals(role)) {
+                return nextRole;
+            }
+        }
+        return roles[0];
+    }
+
+    public long getNextRoleDate(OfflinePlayer player) {
+        return getNextRoleDate(player.getFirstPlayed(), getNextRole(player));
+    }
+
+    public long getNextRoleDate(long firstPlayed, String nextRole) {
+        return firstPlayed + getConfig().getLong("times." + nextRole);
+    }
+
+    public String getRole(OfflinePlayer player) {
+        if (player.isOnline()) {
+            return getPermissions().getPrimaryGroup((Player) player);
+        } else {
+            return getPermissions().getPrimaryGroup(null, player);
+        }
+    }
+
+    public void async(Runnable task) {
+        Bukkit.getScheduler().runTaskAsynchronously(this, task);
+    }
+
+    public ChatColor getRoleColor(String group) {
+        return ChatColor.of(getConfig().getString("color.rank." + group, "RESET"));
     }
 }
