@@ -1,9 +1,9 @@
 player:
   added: [ ]
   removed: [ ]
-  fixed: [ ]
-  changed:
-    - "the palette a lil"
+  fixed:
+    - "some things ;)"
+  changed: [ ]
   broke: [ ]
 staff:
   added:
@@ -14,5 +14,6 @@ staff:
   fixed:
     - "next promote dates"
     - "/make saying the wrong things!"
+    - "[1.18.1] promote text at wrong times"
   changed: [ ]
   broke: [ ]

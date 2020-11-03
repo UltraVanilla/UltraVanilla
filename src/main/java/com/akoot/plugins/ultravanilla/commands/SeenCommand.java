@@ -60,14 +60,14 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
                     Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
                     TimeZone finalTimezone = timezone;
                     plugin.async(() -> {
-                        String nextRole = plugin.getNextRole(player);
+                        String nextRole = plugin.getRoleShouldHave(player);
                         if (nextRole != null) {
                             sender.sendMessage(String.format(
                                     "%sNext promotion: %s%s",
                                     COLOR,
-                                    Palette.OBJECT, getDate(plugin.getNextRoleDate(player.getFirstPlayed(), nextRole), finalTimezone)
+                                    Palette.OBJECT, getDate(plugin.getNextRoleDate(player), finalTimezone)
                             ));
-                            if (!plugin.getRole(player).equals(nextRole)) {
+                            if (!plugin.hasRightRole(player)) {
                                 sender.sendMessage(String.format(
                                         "%sThey should be %s%s %sby now!",
                                         COLOR,

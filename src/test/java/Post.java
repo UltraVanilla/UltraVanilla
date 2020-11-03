@@ -23,7 +23,7 @@ public class Post {
             String keyFinal = key.substring(key.lastIndexOf(".") + 1);
             keyFinal = String.valueOf(keyFinal.charAt(0)).toUpperCase() + keyFinal.substring(1);
             value = value
-                    .replaceAll("\\/[\\w-]+", "`$0`");
+                    .replaceAll("/[\\w-]+", "`$0`");
             value = Palette.translate(value);
             value = ChatColor.stripColor(value);
             System.out.println("* " + keyFinal + " " + value);

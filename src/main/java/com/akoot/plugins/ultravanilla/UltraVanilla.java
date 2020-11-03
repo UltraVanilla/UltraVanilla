@@ -429,7 +429,7 @@ public final class UltraVanilla extends JavaPlugin {
     }
 
     public String getNextRole(OfflinePlayer player) {
-        String[] roles = ((MemorySection) getConfig().get("times")).getKeys(false).toArray(new String[0]);
+        String[] roles = getAllTimedRoles();
         for (int i = 0; i < roles.length - 1; i++) {
             String role = roles[i];
             String nextRole = roles[i + 1];
@@ -441,11 +441,7 @@ public final class UltraVanilla extends JavaPlugin {
     }
 
     public long getNextRoleDate(OfflinePlayer player) {
-        return getNextRoleDate(player.getFirstPlayed(), getNextRole(player));
-    }
-
-    public long getNextRoleDate(long firstPlayed, String nextRole) {
-        return firstPlayed + getConfig().getLong("times." + nextRole);
+        return player.getFirstPlayed() + getConfig().getLong("times." + getNextRole(player));
     }
 
     public String getRole(OfflinePlayer player) {
@@ -462,5 +458,27 @@ public final class UltraVanilla extends JavaPlugin {
 
     public ChatColor getRoleColor(String group) {
         return ChatColor.of(getConfig().getString("color.rank." + group, "RESET"));
+    }
+
+    public String[] getAllTimedRoles() {
+        return ((MemorySection) getConfig().get("times")).getKeys(false).toArray(new String[0]);
+    }
+
+    public boolean hasRightRole(OfflinePlayer player) {
+        return getRole(player).equals(getRoleShouldHave(player));
+    }
+
+    public String getRoleShouldHave(OfflinePlayer player) {
+        String[] roles = getAllTimedRoles();
+        String role = roles[0];
+        long timePlayed = System.currentTimeMillis() - player.getFirstPlayed();
+        for (String key : roles) {
+            long roleTime = getConfig().getLong("times." + key);
+            System.out.printf("[%s] time played: %d, role time: %d, difference: %d\n", key, timePlayed, roleTime, roleTime - timePlayed);
+            if (timePlayed >= roleTime) {
+                role = key;
+            }
+        }
+        return role;
     }
 }
