@@ -474,7 +474,6 @@ public final class UltraVanilla extends JavaPlugin {
         long timePlayed = System.currentTimeMillis() - player.getFirstPlayed();
         for (String key : roles) {
             long roleTime = getConfig().getLong("times." + key);
-            System.out.printf("[%s] time played: %d, role time: %d, difference: %d\n", key, timePlayed, roleTime, roleTime - timePlayed);
             if (timePlayed >= roleTime) {
                 role = key;
             }

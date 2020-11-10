@@ -1,19 +1,13 @@
 player:
   added: [ ]
   removed: [ ]
-  fixed:
-    - "some things ;)"
+  fixed: [ ]
   changed: [ ]
   broke: [ ]
 staff:
-  added:
-    - "next promote date on /seen"
-    - "the ability to use variables in commands using &6${}&7\nExample: &b${player.Akoot_.role}&7 will be replaced with &bdev"
-    - "the ability to append &6--at&7, &6--as&7, and &6--in&7, at the end of commands.\nExample: &b/print hi :) --as Akoot_ &7= &b/make Akoot_ do print hi :)"
+  added: [ ]
   removed: [ ]
   fixed:
-    - "next promote dates"
-    - "/make saying the wrong things!"
-    - "[1.18.1] promote text at wrong times"
+    - "console spam"
   changed: [ ]
   broke: [ ]

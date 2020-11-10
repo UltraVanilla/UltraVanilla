@@ -169,22 +169,6 @@ public class EventListener implements Listener {
             player.performCommand("changelog");
         }
         UltraVanilla.set(player, "last-version", thisVersion);
-
-        // suggest their role automatically (Boss HATES it!!!)
-//        if (!plugin.hasRightRole(player)) {
-//            for (Player p : plugin.getServer().getOnlinePlayers()) {
-//                if (p.hasPermission("ultravanilla.moderator")) {
-//                    String nextRole = plugin.getRoleShouldHave(player);
-//                    p.sendMessage(String.format(
-//                            "%s%s %sshould be %s%s %sby now!",
-//                            Palette.NOUN, player.getName(),
-//                            ChatColor.GRAY,
-//                            plugin.getRoleColor(nextRole), nextRole,
-//                            ChatColor.GRAY
-//                    ));
-//                }
-//            }
-//        }
     }
 
     @EventHandler
