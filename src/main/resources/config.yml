@@ -168,6 +168,10 @@ strings:
         seen:
           last: '$noun{player} $color was last seen on $object{date}'
           first: '$noun{player} $color was first seen on $object{date}'
+    promote:
+      format:
+        did-not-promote: 'Did not promote $noun{player}'
+        promoted: 'Promoted $noun{player} to $object{rank}'
     spawn:
       message:
         set: 'Spawn set to your location'
