@@ -1,26 +1,22 @@
 
 package com.akoot.plugins.ultravanilla.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.akoot.plugins.ultravanilla.UltraVanilla;
-
-
+import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.permission.Permission;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PromoteCommand extends UltraCommand implements TabExecutor {
     public static final ChatColor COLOR = ChatColor.GREEN;
-    private Permission permissions;
+    private final Permission permissions;
 
     public PromoteCommand(UltraVanilla instance) {
         super(instance);
@@ -65,6 +61,10 @@ public class PromoteCommand extends UltraCommand implements TabExecutor {
     }
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        if (args.length == 1) {
+            return null;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
