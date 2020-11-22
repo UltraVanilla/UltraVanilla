@@ -11,5 +11,6 @@ staff:
   removed: [ ]
   fixed:
     - "console spam"
+    - "/promote (don't ask)"
   changed: [ ]
   broke: [ ]
