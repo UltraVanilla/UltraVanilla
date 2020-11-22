@@ -7,7 +7,8 @@ player:
   broke: [ ]
 staff:
   added:
-    - "the ability to teleport to a player's &b/home bed"
+    - "the ability to teleport to a player's &b/home bed\n   &7Example: &b/home list <player>"
+    - "the ability to add delays to your /do commands\n   &7Example: &b/do &cdelay:<seconds>&b [commands...]"
   removed: [ ]
   fixed:
     - "console spam"

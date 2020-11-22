@@ -34,7 +34,7 @@ public class UltraCommand {
     }
 
     protected String[] refinedArgs(String[] args) {
-        Pattern pattern = Pattern.compile("\"[^\"]+\"|[-\\w]+");
+        Pattern pattern = Pattern.compile("\"[^\"]+\"|[-\\w:.]+");
         Matcher matcher = pattern.matcher(String.join(" ", args));
         List<String> refined = new ArrayList<>();
         while (matcher.find()) {
