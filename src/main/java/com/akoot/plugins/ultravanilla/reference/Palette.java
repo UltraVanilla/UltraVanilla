@@ -4,6 +4,8 @@ import net.md_5.bungee.api.ChatColor;
 
 import java.awt.*;
 import java.awt.color.ColorSpace;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +44,22 @@ public class Palette {
             str = str.replaceAll(matcher.group(0), line);
         }
         return str;
+    }
+
+    public static List<String> untranslate(List<String> list) {
+        List<String> newList = new ArrayList<>();
+        for (String line : list) {
+            newList.add(untranslate(line));
+        }
+        return newList;
+    }
+
+    public static List<String> translate(List<String> list) {
+        List<String> newList = new ArrayList<>();
+        for (String line : list) {
+            newList.add(translate(line));
+        }
+        return newList;
     }
 
     public static String translate(String text) {

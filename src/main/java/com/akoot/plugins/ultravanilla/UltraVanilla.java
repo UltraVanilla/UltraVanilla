@@ -3,6 +3,7 @@ package com.akoot.plugins.ultravanilla;
 import com.akoot.plugins.ultravanilla.commands.*;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
@@ -277,6 +278,7 @@ public final class UltraVanilla extends JavaPlugin {
         ConfigurationSerialization.registerClass(Position.class);
         ConfigurationSerialization.registerClass(Powertool.class);
         ConfigurationSerialization.registerClass(Title.class);
+        ConfigurationSerialization.registerClass(LoreItem.class, "LoreItem");
 
         getDataFolder().mkdir();
         Users.DIR.mkdir();
@@ -285,6 +287,7 @@ public final class UltraVanilla extends JavaPlugin {
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
 
+        loadConfig(storage, "storage.yml");
         for (Map<?, ?> map : storage.getMapList("tickets")) {
             Ticket ticket = new Ticket(this);
             ticket.load((Map<String, Object>) map);
@@ -335,6 +338,15 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("sign").setExecutor(signCommand);
         getServer().getPluginManager().registerEvents(signCommand, instance);
 
+    }
+
+    public void loadConfig(YamlConfiguration config, String file) {
+        File configFile = new File(getDataFolder(), file);
+        try {
+            config.load(configFile);
+        } catch (IOException | InvalidConfigurationException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void setRandomMOTD() {

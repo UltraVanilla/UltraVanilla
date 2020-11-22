@@ -5,18 +5,27 @@ import com.akoot.plugins.ultravanilla.commands.MuteCommand;
 import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
+import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,6 +199,43 @@ public class EventListener implements Listener {
                 message = plugin.getRandomString("suicide-messages", "{player}", player.getDisplayName(), "$color", SuicideCommand.COLOR + "");
                 event.setDeathMessage(message);
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        Location location = block.getLocation();
+        List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
+        if (loreItems != null && !loreItems.isEmpty()) {
+            for (LoreItem loreItem : loreItems) {
+                if (loreItem != null && loreItem.getPosition().equals(location)) {
+                    event.setDropItems(false);
+                    ItemStack itemStack = block.getDrops().iterator().next();
+                    ItemMeta meta = itemStack.getItemMeta();
+                    meta.setDisplayName(loreItem.getName());
+                    meta.setLore(loreItem.getLore());
+                    itemStack.setItemMeta(meta);
+                    block.getWorld().dropItem(event.getBlock().getLocation(), itemStack);
+                    loreItems.remove(loreItem);
+                    plugin.store("lore-items", loreItems);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        ItemMeta meta = event.getItemInHand().getItemMeta();
+        if (meta != null && (!meta.getDisplayName().isEmpty() || (meta.getLore() != null && meta.getLore().isEmpty()))) {
+            LoreItem item = new LoreItem(meta.getDisplayName(), meta.getLore(), new Position(event.getBlockPlaced().getLocation()));
+            List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
+            if (loreItems == null) {
+                loreItems = new ArrayList<>();
+            }
+            loreItems.add(item);
+            plugin.store("lore-items", loreItems);
         }
     }
 

@@ -7,6 +7,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Position implements ConfigurationSerializable {
 
@@ -143,5 +145,33 @@ public class Position implements ConfigurationSerializable {
 
     public String toStringTrimmed() {
         return String.format("%s, %s, %s, %s", (int) Math.round(x), (int) Math.round(y), (int) Math.round(z), Bukkit.getWorld(world).getName());
+    }
+
+    public static Position of(String string) {
+        Pattern p = Pattern.compile("([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) (.+)");
+        Matcher m = p.matcher(string);
+        if (m.matches()) {
+            return new Position("",
+                    Bukkit.getWorld(m.group(6)).getUID(),
+                    Double.parseDouble(m.group(1)),
+                    Double.parseDouble(m.group(2)),
+                    Double.parseDouble(m.group(3)),
+                    Float.parseFloat(m.group(4)),
+                    Float.parseFloat(m.group(5))
+            );
+        }
+        return null;
+    }
+
+    public String toStringLite() {
+        return String.format("%s %s %s %s %s %s",
+                x, y, z, pitch, yaw, Bukkit.getWorld(world).getName());
+    }
+
+    public boolean equals(Location location) {
+        return location.getX() == getX() &&
+                location.getY() == getY() &&
+                location.getZ() == getZ() &&
+                location.getWorld().getUID().equals(location.getWorld().getUID());
     }
 }

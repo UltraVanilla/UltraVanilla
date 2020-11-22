@@ -233,12 +233,14 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 // /home list
                 else if (args[0].equalsIgnoreCase("list")) {
 
+                    Location bed = ((Player) sender).getBedSpawnLocation();
+
                     // Check if the user has homes
-                    if (!homes.isEmpty()) {
+                    if (!homes.isEmpty() || bed != null) {
 
                         // Print out all of the home names
                         sender.sendMessage(plugin.getTitle(format(command, "format.list.title"), color));
-                        if (((Player) sender).getBedSpawnLocation() != null) {
+                        if (bed != null) {
                             sender.sendMessage(format(command, "format.list.item", "{name}", "bed"));
                         }
                         for (Position home : homes) {
@@ -323,16 +325,28 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         sender.sendMessage(format(command, "message.error.not-found.misc", "{name}", homeName));
                     }
                     return true;
-                } else if (args[0].equalsIgnoreCase("list")) {
+                }
+                // /home list Mplayer>
+                else if (args[0].equalsIgnoreCase("list")) {
                     if (sender.hasPermission("ultravanilla.permission.admin")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
                         if (target.hasPlayedBefore()) {
                             homes = getHomes(target);
                             TextComponent textComponent = new TextComponent();
-                            for (Position home : homes) {
+                            if (homes != null && !homes.isEmpty()) {
+                                for (Position home : homes) {
+                                    TextComponent component = new TextComponent();
+                                    component.setText(Palette.OBJECT + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\n");
+                                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, home.getTpCommand()));
+                                    textComponent.addExtra(component);
+                                }
+                            }
+                            Location bed = target.getBedSpawnLocation();
+                            if (bed != null) {
+                                Position bedPos = new Position(bed);
                                 TextComponent component = new TextComponent();
-                                component.setText(ChatColor.GOLD + home.getName() + ": " + ChatColor.RESET + home.toStringTrimmed() + "\n");
-                                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, home.getTpCommand()));
+                                component.setText(ChatColor.GOLD + "bed: " + ChatColor.RESET + bedPos.toStringTrimmed() + "\n");
+                                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, bedPos.getTpCommand()));
                                 textComponent.addExtra(component);
                             }
                             sender.sendMessage(plugin.getTitle(Palette.NOUN + target.getName() + color + "'s homes", color));

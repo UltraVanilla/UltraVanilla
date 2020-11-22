@@ -6,7 +6,7 @@
 
     <groupId>com.akoot.plugins</groupId>
     <artifactId>UltraVanilla</artifactId>
-    <version>1.18.1</version>
+    <version>1.18.2</version>
     <packaging>jar</packaging>
 
     <name>Ultravanilla</name>

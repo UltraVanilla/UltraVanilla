@@ -1,11 +1,13 @@
 player:
   added: [ ]
   removed: [ ]
-  fixed: [ ]
+  fixed:
+    - "player heads from losing lore when placed/broken"
   changed: [ ]
   broke: [ ]
 staff:
-  added: [ ]
+  added:
+    - "the ability to teleport to a player's &b/home bed"
   removed: [ ]
   fixed:
     - "console spam"
