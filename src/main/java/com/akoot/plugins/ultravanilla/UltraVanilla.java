@@ -334,6 +334,7 @@ public final class UltraVanilla extends JavaPlugin {
         SignCommand signCommand = new SignCommand(instance);
         getCommand("sign").setExecutor(signCommand);
         getServer().getPluginManager().registerEvents(signCommand, instance);
+        getCommand("promote").setExecutor(new PromoteCommand(instance));
 
     }
 
