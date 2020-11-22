@@ -213,8 +213,13 @@ public class EventListener implements Listener {
                     event.setDropItems(false);
                     ItemStack itemStack = block.getDrops().iterator().next();
                     ItemMeta meta = itemStack.getItemMeta();
-                    meta.setDisplayName(loreItem.getName());
-                    meta.setLore(loreItem.getLore());
+
+                    String name = loreItem.getName();
+                    if (!name.isEmpty()) meta.setDisplayName(name);
+
+                    List<String> lore = loreItem.getLore();
+                    if (lore != null) meta.setLore(lore);
+
                     itemStack.setItemMeta(meta);
                     block.getWorld().dropItem(event.getBlock().getLocation(), itemStack);
                     loreItems.remove(loreItem);
@@ -228,7 +233,8 @@ public class EventListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemMeta meta = event.getItemInHand().getItemMeta();
-        if (meta != null && (!meta.getDisplayName().isEmpty() || (meta.getLore() != null && meta.getLore().isEmpty()))) {
+
+        if (meta != null && !(meta.getDisplayName().isEmpty() && (meta.getLore() != null && meta.getLore().isEmpty()))) {
             LoreItem item = new LoreItem(meta.getDisplayName(), meta.getLore(), new Position(event.getBlockPlaced().getLocation()));
             List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
             if (loreItems == null) {

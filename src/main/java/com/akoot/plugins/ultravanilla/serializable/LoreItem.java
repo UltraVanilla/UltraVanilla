@@ -4,6 +4,7 @@ import com.akoot.plugins.ultravanilla.reference.Palette;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,9 @@ public class LoreItem implements ConfigurationSerializable {
         this.name = name;
         this.lore = lore;
         this.position = position;
+
+        if (this.lore == null) this.lore = new ArrayList<>();
+        if (this.name == null) this.name = "";
     }
 
     public static LoreItem deserialize(Map<String, Object> map) {
