@@ -9,6 +9,7 @@ import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -207,24 +208,26 @@ public class EventListener implements Listener {
         Block block = event.getBlock();
         Location location = block.getLocation();
         List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
-        if (loreItems != null && !loreItems.isEmpty()) {
-            for (LoreItem loreItem : loreItems) {
-                if (loreItem != null && loreItem.getPosition().equals(location)) {
-                    event.setDropItems(false);
-                    ItemStack itemStack = block.getDrops().iterator().next();
-                    ItemMeta meta = itemStack.getItemMeta();
+        if (block.getState().getType() == Material.PLAYER_HEAD) {
+            if (loreItems != null && !loreItems.isEmpty()) {
+                for (LoreItem loreItem : loreItems) {
+                    if (loreItem != null && loreItem.getPosition().equals(location)) {
+                        event.setDropItems(false);
+                        ItemStack itemStack = block.getDrops().iterator().next();
+                        ItemMeta meta = itemStack.getItemMeta();
 
-                    String name = loreItem.getName();
-                    if (!name.isEmpty()) meta.setDisplayName(name);
+                        String name = loreItem.getName();
+                        if (!name.isEmpty()) meta.setDisplayName(name);
 
-                    List<String> lore = loreItem.getLore();
-                    if (lore != null) meta.setLore(lore);
+                        List<String> lore = loreItem.getLore();
+                        if (lore != null) meta.setLore(lore);
 
-                    itemStack.setItemMeta(meta);
-                    block.getWorld().dropItem(event.getBlock().getLocation(), itemStack);
-                    loreItems.remove(loreItem);
-                    plugin.store("lore-items", loreItems);
-                    return;
+                        itemStack.setItemMeta(meta);
+                        block.getWorld().dropItem(event.getBlock().getLocation(), itemStack);
+                        loreItems.remove(loreItem);
+                        plugin.store("lore-items", loreItems);
+                        return;
+                    }
                 }
             }
         }
@@ -234,14 +237,16 @@ public class EventListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemMeta meta = event.getItemInHand().getItemMeta();
 
-        if (meta != null && !(meta.getDisplayName().isEmpty() && (meta.getLore() != null && meta.getLore().isEmpty()))) {
-            LoreItem item = new LoreItem(meta.getDisplayName(), meta.getLore(), new Position(event.getBlockPlaced().getLocation()));
-            List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
-            if (loreItems == null) {
-                loreItems = new ArrayList<>();
+        if (event.getItemInHand().getType() == Material.PLAYER_HEAD) {
+            if (meta != null && !(meta.getDisplayName().isEmpty() && (meta.getLore() != null && meta.getLore().isEmpty()))) {
+                LoreItem item = new LoreItem(meta.getDisplayName(), meta.getLore(), new Position(event.getBlockPlaced().getLocation()));
+                List<LoreItem> loreItems = (List<LoreItem>) plugin.getStorage().getList("lore-items");
+                if (loreItems == null) {
+                    loreItems = new ArrayList<>();
+                }
+                loreItems.add(item);
+                plugin.store("lore-items", loreItems);
             }
-            loreItems.add(item);
-            plugin.store("lore-items", loreItems);
         }
     }
 
@@ -301,6 +306,7 @@ public class EventListener implements Listener {
 
         // Chat formatter
         boolean donator = player.hasPermission("ultravanilla.donator");
+        boolean staff = player.hasPermission("ultravanilla.staff-custom");
         String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
         String group = plugin.getPermissions().getPrimaryGroup(player);
         String rankColor = plugin.getRoleColor(group) + "";
@@ -310,10 +316,15 @@ public class EventListener implements Listener {
         String rankBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.rank")) + "";
         String nameBracketsColor = ChatColor.of(plugin.getConfig().getString("color.chat.brackets.name")) + "";
         String defaultNameColor = ChatColor.of(plugin.getConfig().getString("color.chat.default-name-color")) + "";
+        String staffColor = ChatColor.of(plugin.getConfig().getString("color.rank.staff")) + "";
 
-        String format = String.format("%s%s[%s%s%s] %s<%s%s> %s%s",
-                (donator ? String.format("%s[%sD%s] ",
-                        donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
+        String format = String.format("%s%s%s[%s%s%s] %s<%s%s> %s%s",
+                (donator ?
+                        String.format("%s[%sD%s] ",
+                                donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
+                        : ""),
+                (staff ?
+                        String.format("%s[%sStaff%s] ", rankBracketsColor, staffColor, rankBracketsColor)
                         : ""),
                 rankBracketsColor, rankColor, rank, rankBracketsColor,
                 nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,

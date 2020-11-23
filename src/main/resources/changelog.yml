@@ -2,16 +2,13 @@ player:
   added: [ ]
   removed: [ ]
   fixed:
-    - "player heads from losing lore when placed/broken"
+    - "ender chests dropping obsidian with silk touch"
   changed: [ ]
   broke: [ ]
 staff:
   added:
-    - "the ability to teleport to a player's &b/home bed\n   &7Example: &b/home list <player>"
-    - "the ability to add delays to your /do commands\n   &7Example: &b/do &cdelay:<seconds>&b [commands...]"
+    - "[Staff] role for custom roles (optional)"
   removed: [ ]
-  fixed:
-    - "console spam"
-    - "/promote (don't ask)"
+  fixed: [ ]
   changed: [ ]
   broke: [ ]

@@ -22,8 +22,6 @@ public class DoCommand extends UltraCommand implements CommandExecutor, TabExecu
         long timer = 0;
         if (args[0].startsWith("delay:")) {
             timer = (long) (Double.parseDouble(args[0].substring(args[0].indexOf(":") + 1)) * 20.0);
-        } else {
-            System.out.println("[" + args[0] + "]");
         }
         if (timer > 0) {
             for (int i = 1, argsLength = args.length; i < argsLength; i++) {
