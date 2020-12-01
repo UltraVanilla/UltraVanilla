@@ -17,44 +17,57 @@ import java.util.List;
 
 public class CustomizeCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.WHITE;
+    public static final ChatColor COLOR = ChatColor.of("#f4c058");
+    public static final ChatColor WRONG = ChatColor.of("#f47c58");
+    public static final ChatColor RIGHT = ChatColor.of("#f4e258");
 
     public CustomizeCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
     }
 
+    private void rename(Player player, ItemStack item, ItemMeta meta, String[] args, int index) {
+        String newName = Palette.translate(String.join(" ", getArg(args, index)));
+        meta.setDisplayName(ChatColor.RESET + newName);
+        item.setItemMeta(meta);
+        sendFormatted(player, "%sSet this %s%s %sname to: %s%s", COLOR, RIGHT, posessive(item.getType().name().toLowerCase()), COLOR, ChatColor.RESET, newName);
+    }
+
+    private void setLore(Player player, ItemStack item, ItemMeta meta, String[] args, int index) {
+        String[] lore = Palette.translate(getArg(args, index)).split("\\|");
+        for (int i = 0; i < lore.length; i++) {
+            lore[i] = ChatColor.RESET + "" + ChatColor.WHITE + lore[i];
+        }
+        meta.setLore(Arrays.asList(lore));
+        item.setItemMeta(meta);
+        sendFormatted(player, "%sSet this %s%s %slore to:\n%s", COLOR, RIGHT, posessive(item.getType().name().toLowerCase()), COLOR, String.join("\n", lore));
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            ItemStack item = ((Player) sender).getInventory().getItemInMainHand();
+            Player player = (Player) sender;
+            ItemStack item = player.getInventory().getItemInMainHand();
             ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                if (args.length > 1) {
-                    String mode = args[0];
-                    if (mode.equalsIgnoreCase("name")) {
-                        String name = Palette.translate(getArg(args, 2));
-                        meta.setDisplayName(ChatColor.RESET + name);
-                        sender.sendMessage(format(command, "message.set-name", "{item}", item.getType().toString(), "{name}", name));
-                    } else if (mode.equalsIgnoreCase("lore")) {
-                        String[] lore = Palette.translate(getArg(args, 2)).split("\\|");
-                        for (int i = 0; i < lore.length; i++) {
-                            lore[i] = ChatColor.RESET + lore[i];
-                        }
-                        meta.setLore(Arrays.asList(lore));
-                        sender.sendMessage(format(command, "message.set-lore", "{item's}", posessive(item.getType().toString()), "{lore}", String.join("\n", lore)));
-                    } else {
-                        return false;
-                    }
-                    item.setItemMeta(meta);
-                } else {
-                    return false;
-                }
-            } else {
-                sender.sendMessage(format(command, "error.invalid-item", "{item}", item.getType().toString()));
+            if (meta == null) {
+                sendFormatted(player, "%sItem invalid: %s%s", COLOR, WRONG, item.getType().name().toLowerCase());
+                return true;
             }
-        } else {
-            sender.sendMessage(plugin.getString("player-only", "{action}", "customize items"));
+            if (command.getName().equals("rename")) {
+                rename(player, item, meta, args, 1);
+            } else if (command.getName().equals("setlore")) {
+                setLore(player, item, meta, args, 1);
+            } else if (command.getName().equals("customize")) {
+                if (args.length > 1) {
+                    if (args[0].equalsIgnoreCase("name")) {
+                        rename(player, item, meta, args, 2);
+                    } else if (args[0].equalsIgnoreCase("lore")) {
+                        setLore(player, item, meta, args, 2);
+                    } else {
+                        sendFormatted(player, "%sInvalid mode: %s%s", COLOR, WRONG, args[0]);
+                    }
+                }
+            }
         }
         return true;
     }
@@ -62,9 +75,11 @@ public class CustomizeCommand extends UltraCommand implements CommandExecutor, T
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> suggestions = new ArrayList<>();
-        if (args.length == 1) {
-            suggestions.add("name");
-            suggestions.add("lore");
+        if (command.getName().equals("customize")) {
+            if (args.length == 1) {
+                suggestions.add("name");
+                suggestions.add("lore");
+            }
         }
         return suggestions;
     }

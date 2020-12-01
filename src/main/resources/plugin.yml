@@ -126,6 +126,14 @@ commands:
     usage: |
       /customize name <name>
       /customize lore <lore>
+  rename:
+    description: Rename an item in hand
+    permission: ultravanilla.command.customize
+    usage: /rename <new name>
+  setlore:
+    description: Set the lore of an item in hand
+    permission: ultravanilla.command.customize
+    usage: /setlore <lore> (separate lines with '|')
   hat:
     description: Set your hat
     permission: ultravanilla.command.hat

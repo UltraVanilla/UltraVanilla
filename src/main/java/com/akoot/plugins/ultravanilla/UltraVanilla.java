@@ -318,7 +318,10 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("inventory").setExecutor(new InventoryCommand(instance));
         getCommand("lag").setExecutor(new LagCommand(instance));
         getCommand("ticket").setExecutor(new TicketCommand(instance));
-        getCommand("customize").setExecutor(new CustomizeCommand(instance));
+        CustomizeCommand customizeCommand = new CustomizeCommand(instance);
+        getCommand("customize").setExecutor(customizeCommand);
+        getCommand("rename").setExecutor(customizeCommand);
+        getCommand("setlore").setExecutor(customizeCommand);
         getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
         getCommand("timezone").setExecutor(new TimezoneCommand(instance));
         getCommand("hat").setExecutor(new HatCommand(instance));

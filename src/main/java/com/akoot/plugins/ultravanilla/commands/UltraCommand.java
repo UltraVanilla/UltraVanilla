@@ -29,6 +29,10 @@ public class UltraCommand {
         return color + Palette.translate(String.format(message.replace("&:", color + ""), args));
     }
 
+    protected void sendFormatted(CommandSender sender, String message, Object... format) {
+        sender.sendMessage(String.format(message, format));
+    }
+
     protected void sendMessage(CommandSender sender, String message, Object... args) {
         sender.sendMessage(fmt(message, args));
     }
