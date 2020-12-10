@@ -1,4 +1,5 @@
 import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.junit.Test;
 
@@ -21,6 +22,12 @@ public class StringTests {
         color = "#00bae7";
         ChatColor col = ChatColor.of(color);
         assertEquals(color, Palette.getHex(col));
+    }
+
+    @Test
+    public void timeTest() {
+        int time = 2;
+        assertEquals(time, StringUtil.getSeconds("40t"));
     }
 
 //    @Test

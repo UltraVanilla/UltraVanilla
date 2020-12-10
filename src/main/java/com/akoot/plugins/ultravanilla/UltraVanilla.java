@@ -8,8 +8,6 @@ import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -35,7 +33,6 @@ public final class UltraVanilla extends JavaPlugin {
 
     public static UltraVanilla instance;
     private Permission permissions;
-    private ProtocolManager protocolManager;
 
     private YamlConfiguration changelog;
     private YamlConfiguration storage;
@@ -251,10 +248,6 @@ public final class UltraVanilla extends JavaPlugin {
         ping(target);
     }
 
-    public ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
-
     @Override
     public void onEnable() {
         instance = this;
@@ -267,12 +260,6 @@ public final class UltraVanilla extends JavaPlugin {
             getLogger().warning("Vault could not link to a permissions provider.");
         } else {
             permissions = rsp.getProvider();
-        }
-
-        if (getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
-            getLogger().warning("Vault could not link to a permissions provider.");
-        } else {
-            protocolManager = ProtocolLibrary.getProtocolManager();
         }
 
         ConfigurationSerialization.registerClass(Position.class);
@@ -307,7 +294,11 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("motd").setExecutor(new MotdCommand(instance));
         getCommand("ignore").setExecutor(new IgnoreCommand(instance));
         getCommand("home").setExecutor(new HomeCommand(instance));
-        getCommand("seen").setExecutor(new SeenCommand(instance));
+
+        SeenCommand seenCommand = new SeenCommand(instance);
+        getCommand("seen").setExecutor(seenCommand);
+        getCommand("seenfirst").setExecutor(seenCommand);
+
         getCommand("spawn").setExecutor(new SpawnCommand(instance));
         getCommand("print").setExecutor(new PrintCommand(instance));
         getCommand("do").setExecutor(new DoCommand(instance));
@@ -318,10 +309,12 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("inventory").setExecutor(new InventoryCommand(instance));
         getCommand("lag").setExecutor(new LagCommand(instance));
         getCommand("ticket").setExecutor(new TicketCommand(instance));
+
         CustomizeCommand customizeCommand = new CustomizeCommand(instance);
         getCommand("customize").setExecutor(customizeCommand);
         getCommand("rename").setExecutor(customizeCommand);
         getCommand("setlore").setExecutor(customizeCommand);
+
         getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
         getCommand("timezone").setExecutor(new TimezoneCommand(instance));
         getCommand("hat").setExecutor(new HatCommand(instance));
@@ -331,16 +324,21 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("namecolor").setExecutor(new NameColorCommand(instance));
         getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
         getCommand("whois").setExecutor(new WhoIsCommand(instance));
+
         MuteCommand muteCommand = new MuteCommand(instance);
         getCommand("mute").setExecutor(muteCommand);
         getCommand("smute").setExecutor(muteCommand);
         getCommand("unmute").setExecutor(muteCommand);
         getCommand("sunmute").setExecutor(muteCommand);
+
         getCommand("mcolor").setExecutor(new McolorCommand(instance));
+
         SignCommand signCommand = new SignCommand(instance);
         getCommand("sign").setExecutor(signCommand);
         getServer().getPluginManager().registerEvents(signCommand, instance);
+
         getCommand("promote").setExecutor(new PromoteCommand(instance));
+        getCommand("tempban").setExecutor(new TempBanCommand(instance));
 
     }
 

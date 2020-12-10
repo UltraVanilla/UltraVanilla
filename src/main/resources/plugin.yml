@@ -7,7 +7,6 @@ authors: [Akoot_]
 description: Official plugin for UltraVanilla Minecraft server
 website: ultravanilla.net
 depend:
-  - ProtocolLib
   - Vault
 commands:
   suicide:
@@ -65,10 +64,15 @@ commands:
       /home set <name>
       /home remove <name>
   seen:
+    aliases: [ lastseen ]
     description: Check when someone was last seen
     usage: |
       /seen <player>
-      /seen <player> first
+      /seen <player> first (same as /seenfirst)
+  seenfirst:
+    aliases: [ firstseen ]
+    description: Check when someone was first seen
+    usage: /seen <player>
   spawn:
     description: Teleport to spawn
     usage: /spawn
@@ -205,15 +209,19 @@ commands:
     usage: |
       /promote player1
       /promote player1 player2
-#  mail:
-#    description: Send mail to a player
-#    usage: |
-#    /mail send <player>
-#    /mail read
-#    /mail clear
-#    /mail delete <id>
-#    /mail reply <id> <message>
-#    permission: ultravanilla.command.mail
+  tempban:
+    description: Temporarily ban a player
+    permission: ultravanilla.command.tempban
+    usage: /tempban <player> [time]
+  mail:
+    description: Send mail to a player
+    usage: |
+      /mail send <player>
+      /mail read
+      /mail clear
+      /mail delete <id>
+      /mail reply <id> <message>
+    permission: ultravanilla.command.mail
 permissions:
   ultravanilla.donator:
     description: Donator permissions

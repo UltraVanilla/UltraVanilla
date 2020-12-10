@@ -1,70 +1,89 @@
 # 1.16
-votekick:
-  kicks-to-ban: 3
-  percent-to-kick: 0.3
-#1.15
 color:
   chat:
-    default-name-color: "#f2f2f2"
+    default-name-color: '#f2f2f2'
     ping:
-      everyone: aqua
-      user: light_purple
+      everyone: '#6a7fdb'
+      user: '#3772ff'
     brackets:
       donator: gray
       rank: gray
       name: gray
   rank:
+    staff: '#f44429'
+    excavator: '#505866'
+    dev: '#0ed84e'
+    ceo: '#3772ff'
+    owner: '#3772ff'
+    imperator: '#4B0082'
+    friend: '#e67e22'
+    waterboi: '#2e63a9'
+    moose: '#FFDAB9'
+    grandchampion: '#8F5DE5'
+    champion: '#a728f8'
+    veteran: '#f48e09'
+    donator: '#f1b3fc'
+    founder: '#1f8b4c'
+    headadmin: '#c72121'
+    admin: '#e74c3c'
+    moderator: '#02adfc'
+    intern: '#8a7189'
+    discordmod: '#b38866'
+    sage: '#e0606e'
+    grandmaster: '#7692d1'
+    elder: '#ff36f1'
+    master: '#f3db50'
+    pro: '#1abc9c'
+    loyalist: '#86db59'
+    member: '#94dfbd'
     default: white
-    veteran: gold
-    member: yellow
-    loyalist: green
-    donator: light_purple
-    helper: gray
-    moderator: blue
-    admin: red
-    owner: aqua
-# 1.14
 times:
-  member: 5
-  loyalist: 240
-  pro: 720
-  master: 2160
-  elder: 4320
-  grandmaster: 7200
-  sage-1: 8640
-  sage-2: 17280
-# 1.13
+  member: 300000
+  loyalist: 864000000
+  pro: 2592000000
+  master: 7776000000
+  elder: 15552000000
+  grandmaster: 31536000000
+  sage-1: 47336400000
+  sage-2: 63072000000
 suicide-time: 10
 rename-groups:
-  headadmin: "Head Admin"
-  waterboi: "Water Boi"
-# MOTD
+  headadmin: Head Admin
+  waterboi: Water Boi
+  ceo: CEO
+  default: Guest
+  grandchampion: GrandChampion
 motd:
-  server-name: '&6&lUltra&fVanilla'
-  version-color: GRAY
+  server-name: '&#f9c345&lUltra&r&#f7ecd4Vanilla'
+  version-color: '#c94545'
   strings:
-    - '&cI FREAKING LOVE SCIENCE'
-    - '&cI LOVE TESTING MY PLUGIN(S)'
-    - '&cIllegal & badass testing inside...'
-    - "&cYou don't wanna know..."
-
-# Groups
+    - 'The origin of 416 is classified.'
+    - 'Sometimes it rains FISH'
+    - 'Visit Alliance City for capitalism, visit Cara for commuism'
+    - 'HoboNation is tall, Burzum is epic, EverFae is magical'
+    - 'Who is Spaghettatron?'
+    - '&5&lPrism&f is here to&5 &0&l&o&msuck up&5&l&o &d&l&o&ndouble&f your diamonds!'
+    - 'Naval Detroit - High Class Living for High Class Citizens'
+    - 'Your message goes here'
 default-group: default
-
-# Strings
+format:
+  default: '&r<{name-color}{name}&r> {text-color}{message}'
+  prefixed: '&7[{custom-capitalized-rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 strings:
-  title: '$color------ &r{title} $color------'
+  # 1.19
+  permaban-message: '&fYou have been banned for &4%time%&f.'
+  title: $color------ &r{title} $color------
   command:
     afk:
       message:
-        true: '$noun{player}$color is now AFK'
-        false: '$noun{player}$color is no longer AFK'
+        'true': $noun{player}$color is now AFK
+        'false': $noun{player}$color is no longer AFK
     changelog:
       format:
         list:
           title:
-            player: '$object{name} $number{version} $colorChangelog'
-            staff: '$objectStaff Section'
+            player: $object{name} $number{version} $colorChangelog
+            staff: $objectStaff Section
           item:
             fixed: '&e* Fixed $color{message}'
             added: '&a+ Added $color{message}'
@@ -74,124 +93,121 @@ strings:
     gm:
       message:
         set:
-          self: 'Set $nounyour $colorgamemode to $object{gamemode}'
-          other: "Set $noun{player's} $colorgamemode to $object{gamemode}"
+          self: Set $nounyour $colorgamemode to $object{gamemode}
+          other: Set $noun{player's} $colorgamemode to $object{gamemode}
       error:
-        invalid-gamemode: 'Invalid gamemode "$wrong{gamemode}$color"!'
+        invalid-gamemode: Invalid gamemode "$wrong{gamemode}$color"!
         already-in-gamemode:
-          self: 'You are already in $object{gamemode} $colormode!'
-          other: '$noun{player} $coloris already in $object{gamemode} $colormode!'
+          self: You are already in $object{gamemode} $colormode!
+          other: $noun{player} $coloris already in $object{gamemode} $colormode!
     home:
       format:
         list:
-          title: 'Homes'
-          item: '• $object{name}'
+          title: Homes
+          item: • $object{name}
       message:
         teleport:
-          home: 'Teleporting home...'
-          bed: 'Teleporting to your $objectbed$color...'
-          misc: 'Teleporting to "$object{name}$color"...'
+          home: Teleporting home...
+          bed: Teleporting to your $objectbed$color...
+          misc: Teleporting to "$object{name}$color"...
         set:
-          home: 'Home set!'
-          misc: 'Home "$object{name}$color" set!'
+          home: Home set!
+          misc: Home "$object{name}$color" set!
         remove:
-          home: 'Home removed!'
-          misc: 'Home "$object{name}$color" removed!'
-          all: 'All of your homes were cleared!'
+          home: Home removed!
+          misc: Home "$object{name}$color" removed!
+          all: All of your homes were cleared!
       error:
         not-found:
-          misc: 'Home "$object{name}$color" does not exist!'
-          home: 'You do not have a home set!'
-          any: 'You do not have any homes!'
-        limited-homes: '$wrongYou can only set up to 1 home!'
+          misc: Home "$object{name}$color" does not exist!
+          home: You do not have a home set!
+          any: You do not have any homes!
+        limited-homes: $wrongYou can only set up to 1 home!
     ignore:
       format:
         list:
-          title: 'Ignored Players'
-          item: '$noun{player}'
+          title: Ignored Players
+          item: $noun{player}
       message:
-        ignore: 'You are now ignoring $noun{player}'
-        unignore: 'You are no longer ignoring $noun{player}'
+        ignore: You are now ignoring $noun{player}
+        unignore: You are no longer ignoring $noun{player}
       error:
-        ignore-staff: '$wrongYou cannot ignore $noun{player}'
+        ignore-staff: $wrongYou cannot ignore $noun{player}
     lag:
       format:
         list:
           title:
-            current: 'Current Lag'
-            median: 'Median Lag'
-            average: 'Average Lag'
+            current: Current Lag
+            median: Median Lag
+            average: Average Lag
           item:
             ping: 'Ping: $number{ping}ms'
             tps: 'TPS: $number{tps}'
-            percent: 'The server is $number{percent}% $colorlaggy'
+            percent: The server is $number{percent}% $colorlaggy
     make:
       message:
-        made: 'Made $noun{player}$color $verb{verb}&r$color {action}'
+        made: Made $noun{player}$color $verb{verb}&r$color {action}
       error:
-        wrong-verb: "Can't make $noun{player} $color$verb{verb}&r$color anything..."
+        wrong-verb: Can't make $noun{player} $color$verb{verb}&r$color anything...
     motd:
       message:
         set: 'MOTD was set to: &r{motd}'
     message:
       format:
-        to: '&7&oYou whisper to {recipient}: {message}'
-        from: '&7&o{player} whispers to you: {message}'
-        spy: '&8&o{player} whispers to {recipient}: {message}'
+        to: '&:&oYou whisper to {recipient}: &7&o{message}'
+        from: '&:&o{player} whispers to you: &7&o{message}'
+        # spy: '&:{player}->{recipient}: &7&o{message}'
+        spy: '&:[&7&o{player} &:&o-> &7&o{recipient}&:] &7&o{message}'
       error:
         player-offline: '&cNo player was found'
     nick:
       message:
         set:
-          self: 'Your nickname was set to &r{name}&r$color!'
-          other: "$noun{player's} $colornickname was set to &r{name}&r$color!"
+          self: Your nickname was set to &r{name}&r$color!
+          other: $noun{player's} $colornickname was set to &r{name}&r$color!
         clear:
-          self: 'Your nickname was cleared!'
-          other: "$noun{player's} $colornickname was cleared!"
+          self: Your nickname was cleared!
+          other: $noun{player's} $colornickname was cleared!
     ping:
       format:
-        pinged: '$noun{player} $colorpinged you!'
-        ping: 'You pinged $noun{player}$color!'
+        pinged: $noun{player} $colorpinged you!
+        ping: You pinged $noun{player}$color!
       message:
-        enable: 'Ping enabled!'
-        disable: 'Ping disabled!'
-        already-enabled: 'Ping already enabled!'
-        already-disabled: 'Ping already disabled!'
+        enable: Ping enabled!
+        disable: Ping disabled!
+        already-enabled: Ping already enabled!
+        already-disabled: Ping already disabled!
       error:
-        pind-disabled: '$noun{player} $wronghas ping disabled!'
+        pind-disabled: $noun{player} $wronghas ping disabled!
     reply:
       error:
-        no-replies: 'You have no one to reply to...'
+        no-replies: You have no one to reply to...
     seen:
       format:
-        date-format: 'E, M/dd/y G @ h:mma z'
+        date-format: E, M/dd/y, h:mma z
         seen:
-          last: '$noun{player} $color was last seen on $object{date}'
-          first: '$noun{player} $color was first seen on $object{date}'
-    promote:
-      format:
-        did-not-promote: 'Did not promote $noun{player}'
-        promoted: 'Promoted $noun{player} to $object{rank}'
+          last: $noun{player} $colorwas last seen on $object{date}
+          first: $noun{player} $colorwas first seen on $object{date}
     spawn:
       message:
-        set: 'Spawn set to your location'
+        set: Spawn set to your location
       error:
-        not-set: '$wrongSpawn is not set!'
+        not-set: $wrongSpawn is not set!
     suicide:
       message:
-        kill-self: 'You just killed yourself.'
+        kill-self: You died!
         pact:
-          create: 'You are in a suicide pact with $noun{player}'
-          cease: 'You are no longer in a suicide pact with $noun{player}'
+          create: You are in a suicide pact with $noun{player}
+          cease: You are no longer in a suicide pact with $noun{player}
     tptoggle:
       message:
-        toggle: '$object$verb{enabled}$color teleport access'
+        toggle: $object$verb{enabled}$color teleport access
     timezone:
       message:
         display: 'Your time zone: $object{timezone}'
-        set: '$object{timezone} $coloris now your timezone'
+        set: $object{timezone} $coloris now your timezone
       error:
-        not-set: '$wrongYour time zone is not set!'
+        not-set: $wrongYour time zone is not set!
     ticket:
       format:
         read:
@@ -204,44 +220,87 @@ strings:
             self: '$noun{admin} $color replied: "{response}"'
             staff: '$noun{admin} $colorreplied to $noun{author}$color: "{response}"'
         list:
-          title: 'Tickets'
+          title: Tickets
           item:
-            player: '$number#{id} $color"{preview}" ($object{status}$color)'
-            self: '$number#{id}$color:$nounyou $color"{preview}" ($object{status}$color}'
-            staff: '$number#{id}$color:$noun{author} $color"{preview}" ($object{status}$color}"'
+            player: $number#{id} $color"{preview}" ($object{status}$color)
+            self: $number#{id}$color:$nounyou $color"{preview}" ($object{status}$color}
+            staff: $number#{id}$color:$noun{author} $color"{preview}" ($object{status}$color}"
       message:
         create:
-          player: 'Created a new ticket with ID $number#{id}$color!'
-          staff: '$noun{player} $colorhas opened a new ticket ($number#{id}$color)!'
+          player: Created a new ticket with ID $number#{id}$color!
+          staff: $noun{player} $colorhas opened a new ticket ($number#{id}$color)!
         delete:
-          player: 'Deleted ticket $number#{id}$color!'
-          staff: '$noun{player} $color deleted ticket $number#{id}$color!'
+          player: Deleted ticket $number#{id}$color!
+          staff: $noun{player} $color deleted ticket $number#{id}$color!
         close:
-          player: 'Closed ticket $number#{id}$color!'
-          staff: '$noun{player} $color closed ticket $number#{id}$color!'
+          player: Closed ticket $number#{id}$color!
+          staff: $noun{player} $color closed ticket $number#{id}$color!
         reply:
-          author: 'You replied to $noun{admin} $colorand reopened this ticket!'
-          staff: "You replied to $noun{author's} $colorticket ($number#{id}$color)!"
-          player: '$noun{admin} $colorreplied to your ticket ($number#{id}$color)!'
+          author: You replied to $noun{admin} $colorand reopened this ticket!
+          staff: You replied to $noun{author's} $colorticket ($number#{id}$color)!
+          player: $noun{admin} $colorreplied to your ticket ($number#{id}$color)!
       error:
         invalid-id: 'Ticket with ID: $wrong{id} $colordoes not exist!'
-        no-reply: 'Your ticket has not been replied to by an admin yet...'
+        no-reply: Your ticket has not been replied to by an admin yet...
     customize:
       message:
         set-lore: "Set this $object{item's} $colorlore to: \n&r{lore}"
-        set-name: "Renamed this $object{item} $colorto: &r{name}"
+        set-name: 'Renamed this $object{item} $colorto: &r{name}'
       error:
-        invalid-item: 'You cannot customize that $object{item}'
-  not-a-number: '$number{number} $wrongis not a valid number!'
-  player-only: 'You must be a player to {action}'
-  no-permission: '$wrongYou do not have permission to $object{action}$wrong!'
-  player-offline: '$noun{player} $wrongis not online!'
-  player-unknown: '$noun{player} $wronghas never joined the server!'
-  ignored: '$wrongYou are being ignored by $noun{player}'
+        invalid-item: You cannot customize that $object{item}
+  not-a-number: $number{number} $wrongis not a valid number!
+  player-only: You must be a player to {action}
+  no-permission: $wrongYou do not have permission to $object{action}$wrong!
+  player-offline: $noun{player} $wrongis not online!
+  player-unknown: $noun{player} $wronghas never joined the server!
+  ignored: $wrongYou are being ignored by $noun{player}
   suicide-messages:
-    - '$noun{player}$color committed suicide'
-    - '$noun{player}$color took their own life'
-    - "$noun{player}$color couldn't handle it anymore"
-    - 'Life was too stressful for $noun{player}$color so they killed themselves'
-    - '$noun{player}$color pondered for a long time. They wondered and pondered and finally came up with a solution to all of their problems.'
-    - '$noun{player}$color just blew their brains out with a double barrel. Damn...'
+    - "&#3772ff{player}&r&#b22345 freaking died"
+    - "&#3772ff{player}&r&#b22345 stepped on legos and died instantly"
+    - "&#b22345To be or not to be? &#3772ff{player}&r&#b22345 chose not to be"
+    - "&#3772ff{player}&r&#b22345 was sent to the shadow realm"
+    - "&#b22345After years of tax fraud, &#3772ff{player}&r&#b22345 was shot via firing squad by the IRS"
+    - "&#3772ff{player}&r&#b22345 freaking cringed at you so hard and died bro"
+    - "&#3772ff{player}&r&#b22345 tried to out-pizza the hut"
+    - "&#3772ff{player}&r&#b22345 froze to death in &bValhalla"
+    - "&#3772ff{player}&r&#b22345 suffered a heat stroke in &4Terni"
+    - "&#3772ff{player}&r&#b22345 drowned in &9Waterthorn"
+    - "&#3772ff{player}&r&#b22345 tried launching a Cara rocket using imperial measurement units"
+    - "&#b22345Just got a call from &#3772ff{player}&r&#b22345's partner... They just died in their sleep 10 seconds ago... RIP"
+    - "&#3772ff{player}&r&#b22345 contracted 2020 novel prions disease and their whole body crystallized"
+    - "&#3772ff{player}&r&#b22345 went into orbit, the stupid mutt!"
+    - "&#3772ff{player}&r&#b22345 ascended after consuming silica gel"
+    - "&#3772ff{player}&r&#b22345 said the people could eat cake. The people then guillotined them"
+    - "&#3772ff{player}&r&#b22345 was crushed, grinded into tiny pieces, and blasted into oblivion"
+    - "&#3772ff{player}&r&#b22345 got turned into fondue"
+    - "&#3772ff{player}&r&#b22345 tried to rob a bank in &6GOLD SPUR"
+    - "&#3772ff{player}&r&#b22345 fell off a roof in &#6cd1fcHoboNation"
+    - "&#3772ff{player}&r&#b22345 tried to sell something in cara"
+    - "&#3772ff{player}&r&#b22345 refused Robin's gift"
+    - "&#3772ff{player}&r&#b22345 was sanctioned by USUV"
+    - "&#3772ff{player}&r&#b22345 was targetted by &6Alliance City&#b22345 intelligence agents."
+    - "&#3772ff{player}&r&#b22345 made the poor decision to build something shorter than 25 blocks in Alliance City."
+    - "&#3772ff{player}&r&#b22345 forgot to equip elytra before swan diving off a roof in &#6cd1fcHoboNation&#b22345."
+    - "&#3772ff{player}&r&#b22345 was &mscreen&r&#b22345shot while AFK"
+    - "&#b22345This is so sad. They buried what's left of &#3772ff{player}&r&#b22345 in a soup can."
+    - "&#3772ff{player}&r&#b22345 drowned in their own tears as they weren't drawn by Eraxa"
+    - "&#3772ff{player}&r&#b22345 was too lazy to type /home bed"
+    - "&#3772ff{player}&r&#b22345 would like to announce to the whole server that they are teleporting to their bed"
+    - "&#3772ff{player}&r&#b22345 failed to feed Akoot bees"
+    - "&#3772ff{player}&r&#b22345 tried eating bees but forgot they were not Akoot so their face swelled up"
+    - "&#3772ff{player}&r&#b22345 couldn't handle how amazing their house looked and died of shock"
+    - "&#3772ff{player}&r&#b22345 ate a Rambutan with KingMatthew506 in the car. RIP"
+    - "&#3772ff{player}&r&#b22345 failed The FitnessGram™ Pacer Test"
+    - "&#3772ff{player}&r&#b22345 ate the Travis Scott burger"
+    - "&#3772ff{player}&r&#b22345 ate Kellogg's creeper crunch"
+    - "&#3772ff{player}&r&#b22345 fraud,"
+    - "&#3772ff{player}&r&#b22345 died of a pollen allergy in &6WestHaven"
+spawn:
+  ==: com.akoot.plugins.ultravanilla.serializable.Position
+  world: b695bbd9-7776-4cea-90b3-38fd7204634d
+  name: location
+  x: -2002406.62375402
+  y: 68.0
+  z: -1995442.5990120976
+  pitch: -2.681566
+  yaw: -89.60211
