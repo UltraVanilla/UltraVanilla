@@ -8,6 +8,7 @@ staff:
   added:
     - "/tempban"
   removed: [ ]
-  fixed: [ ]
+  fixed:
+    - "/promote"
   changed: [ ]
   broke: [ ]

@@ -8,6 +8,7 @@ import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
+import net.luckperms.api.LuckPerms;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -32,7 +33,12 @@ import java.util.*;
 public final class UltraVanilla extends JavaPlugin {
 
     public static UltraVanilla instance;
-    private Permission permissions;
+    private Permission vault;
+    private LuckPerms luckPerms;
+
+    public LuckPerms getLuckPerms() {
+        return luckPerms;
+    }
 
     private YamlConfiguration changelog;
     private YamlConfiguration storage;
@@ -80,6 +86,14 @@ public final class UltraVanilla extends JavaPlugin {
         }
     }
 
+    public String getRoleCapitalized(String role) {
+        return getConfig().getString("rename-groups." + role, role.substring(0, 1).toUpperCase() + role.substring(1));
+    }
+
+    public String getColoredRole(String role) {
+        return ChatColor.of(getConfig().getString("color.rank." + role, "#ffffff")) + getRoleCapitalized(role);
+    }
+
     private static File getUserFile(UUID uid) {
         File userFile = new File(Users.DIR, uid.toString() + ".yml");
         if (!userFile.exists()) {
@@ -106,8 +120,8 @@ public final class UltraVanilla extends JavaPlugin {
         return random;
     }
 
-    public Permission getPermissions() {
-        return permissions;
+    public Permission getVault() {
+        return vault;
     }
 
     public void setMOTD(String motd) {
@@ -250,16 +264,26 @@ public final class UltraVanilla extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         instance = this;
 
         random = new Random();
         tickets = new ArrayList<>();
 
-        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if (rsp == null) {
-            getLogger().warning("Vault could not link to a permissions provider.");
+        // Vault API
+        RegisteredServiceProvider<Permission> vaultProvider = getServer().getServicesManager().getRegistration(Permission.class);
+        if (vaultProvider == null) {
+            getLogger().warning("Could not link to Vault.");
         } else {
-            permissions = rsp.getProvider();
+            vault = vaultProvider.getProvider();
+        }
+
+        // Add luckperms API
+        RegisteredServiceProvider<LuckPerms> luckPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (luckPermsProvider == null) {
+            getLogger().warning("Could not link to LuckPerms.");
+        } else {
+            luckPerms = luckPermsProvider.getProvider();
         }
 
         ConfigurationSerialization.registerClass(Position.class);
@@ -465,9 +489,9 @@ public final class UltraVanilla extends JavaPlugin {
 
     public String getRole(OfflinePlayer player) {
         if (player.isOnline()) {
-            return getPermissions().getPrimaryGroup((Player) player);
+            return getVault().getPrimaryGroup((Player) player);
         } else {
-            return getPermissions().getPrimaryGroup(null, player);
+            return getVault().getPrimaryGroup(null, player);
         }
     }
 

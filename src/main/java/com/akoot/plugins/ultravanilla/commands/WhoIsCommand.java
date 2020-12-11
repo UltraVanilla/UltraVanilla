@@ -35,7 +35,7 @@ public class WhoIsCommand extends UltraCommand implements CommandExecutor, TabEx
                             sendMessage(sender, "&d%s &:is none other than &r%s&:!", name, displayName);
                         }
                     }
-                    sendMessage(sender, "&d%s &:is a &7%s&:.", name, plugin.getPermissions().getPrimaryGroup(player));
+                    sendMessage(sender, "&d%s &:is a &7%s&:.", name, plugin.getVault().getPrimaryGroup(player));
                     return true;
                 }
             }

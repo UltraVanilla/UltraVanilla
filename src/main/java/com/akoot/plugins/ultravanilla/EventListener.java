@@ -308,7 +308,7 @@ public class EventListener implements Listener {
         boolean donator = player.hasPermission("ultravanilla.donator");
         boolean staff = player.hasPermission("ultravanilla.staff-custom");
         String textPrefix = config.getString("text-prefix", ChatColor.RESET + "");
-        String group = plugin.getPermissions().getPrimaryGroup(player);
+        String group = plugin.getVault().getPrimaryGroup(player);
         String rankColor = plugin.getRoleColor(group) + "";
         String rank = plugin.getConfig().getString("rename-groups." + group, group.substring(0, 1).toUpperCase() + group.substring(1));
 

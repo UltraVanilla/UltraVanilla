@@ -71,9 +71,17 @@ format:
   prefixed: '&7[{custom-capitalized-rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 strings:
   # 1.19
-  permaban-message: '&fYou have been banned for &4%time%&f.'
+  tempban-message: '&fYou have been banned for &4%time%&f.'
   title: $color------ &r{title} $color------
   command:
+    promote:
+      message:
+        promoted:
+          sender: '$noun{player} $colorhas been promoted to $object{group}$color!'
+          player: '$colorYou have been promoted to $object{group}$color!'
+      error:
+        already-promoted: '$noun{player} $coloris already a $object{group}$color!'
+        fail: '$wrongThere was an error trying to promote $false{player}$wrong. Check $falseplayer $wrongtrack in $falseLuckPerms$wrong, or they might not need promotion.'
     afk:
       message:
         'true': $noun{player}$color is now AFK

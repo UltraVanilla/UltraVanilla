@@ -5,9 +5,10 @@ api-version: 1.13
 prefix: UV
 authors: [Akoot_]
 description: Official plugin for UltraVanilla Minecraft server
-website: ultravanilla.net
+website: ultravanilla.world
 depend:
   - Vault
+  - LuckPerms
 commands:
   suicide:
     description: Kill yourself!

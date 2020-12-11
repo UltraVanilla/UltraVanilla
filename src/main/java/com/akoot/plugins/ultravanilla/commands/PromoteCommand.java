@@ -2,58 +2,57 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.context.ImmutableContextSet;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.track.Track;
 import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PromoteCommand extends UltraCommand implements TabExecutor {
     public static final ChatColor COLOR = ChatColor.GREEN;
-    private final Permission permissions;
+    private final LuckPerms luckPerms;
 
     public PromoteCommand(UltraVanilla instance) {
         super(instance);
         this.color = COLOR;
-        permissions = instance.getPermissions();
+        luckPerms = instance.getLuckPerms();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         for (String playerName : args) {
-            String demoteFrom = "default";
-            String promoteTo = null;
 
-            Player player = Bukkit.getPlayer(playerName);
+            Player player = plugin.getServer().getPlayer(playerName);
 
-            if (player != null && !plugin.hasRightRole(player)) {
-                ArrayList<String> roleOrder = new ArrayList<>(Arrays.asList(plugin.getAllTimedRoles()));
-                roleOrder.add(0, "default");
+            if (player != null) {
+                User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
 
-                String existingRole = permissions.getPrimaryGroup(player);
-                int currentPos = roleOrder.indexOf(existingRole);
-
-                // prevents demoting staff and/or special roles
-                if (currentPos == -1) continue;
-
-                promoteTo = roleOrder.get(Math.min(currentPos + 1, roleOrder.size() - 1));
-
-                demoteFrom = existingRole;
-            }
-
-            if (promoteTo != null) {
-                sender.sendMessage(format(command, "format.promoted", "{player}", player.getName(), "{rank}", promoteTo));
-
-                permissions.playerRemoveGroup(player, demoteFrom);
-                permissions.playerAddGroup(player, promoteTo);
-            } else {
-                sender.sendMessage(format(command, "format.did-not-promote", "{player}", playerName));
+                if (!plugin.hasRightRole(player)) {
+                    Track playerTrack = luckPerms.getTrackManager().getTrack("player");
+                    Group currentGroup = luckPerms.getGroupManager().getGroup(user.getPrimaryGroup());
+                    if (playerTrack != null && currentGroup != null) {
+                        String nextGroup = playerTrack.getNext(currentGroup);
+                        if (nextGroup != null) {
+                            playerTrack.promote(user, ImmutableContextSet.empty());
+                            luckPerms.getUserManager().saveUser(user);
+                            sender.sendMessage(format(command, "message.promoted.sender", "{player}", player.getName(), "{group}", plugin.getColoredRole(nextGroup)));
+                            player.sendMessage(format(command, "message.promoted.player", "{group}", plugin.getColoredRole(nextGroup)));
+                        } else {
+                            sender.sendMessage(format(command, "error.fail", "{player}", playerName));
+                        }
+                    } else {
+                        sender.sendMessage(format(command, "error.fail", "{player}", playerName));
+                    }
+                } else {
+                    sender.sendMessage(format(command, "error.already-promoted", "{player}", playerName, "{group}", plugin.getColoredRole(user.getPrimaryGroup())));
+                }
             }
         }
 
@@ -61,10 +60,6 @@ public class PromoteCommand extends UltraCommand implements TabExecutor {
     }
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            return null;
-        } else {
-            return new ArrayList<>();
-        }
+        return null;
     }
 }

@@ -94,5 +94,11 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

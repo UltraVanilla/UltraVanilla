@@ -16,9 +16,9 @@ import java.util.List;
 
 public class TempBanCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.WHITE;
-    public static final ChatColor PLAYER = ChatColor.AQUA;
-    public static final ChatColor TIME = ChatColor.GOLD;
+    public static final ChatColor COLOR = ChatColor.of("#ed521e");
+    public static final ChatColor PLAYER = ChatColor.of("#f7a204");
+    public static final ChatColor TIME = ChatColor.of("#f7d31d");
 
     public TempBanCommand(UltraVanilla instance) {
         super(instance);
@@ -38,8 +38,8 @@ public class TempBanCommand extends UltraCommand implements CommandExecutor, Tab
                         time = StringUtil.getSeconds(args[1]) * 1000L;
                     }
                     String timeString = StringUtil.getTimeString(time);
-                    sender.sendMessage(COLOR + "Temporarily banned " + PLAYER + player.getName() + " for " + TIME + timeString);
-                    player.banPlayer(Palette.translate(plugin.getString("permaban-message", "%time%", timeString)), new Date(System.currentTimeMillis() + time));
+                    sender.sendMessage(COLOR + "Temporarily banned " + PLAYER + player.getName() + COLOR + " for " + TIME + timeString);
+                    player.banPlayer(Palette.translate(plugin.getString("tempban-message", "%time%", timeString)), new Date(System.currentTimeMillis() + time));
                 } else {
                     sender.sendMessage(PLAYER + player.getName() + COLOR + " is already banned!");
                 }
