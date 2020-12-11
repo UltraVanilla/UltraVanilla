@@ -50,7 +50,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
             }
         }
 
-        // Set specified user's value
+        // Get specified user's value
         // user notch get namecolor
         // user notch clear namecolor
         else if (args.length == 3) {

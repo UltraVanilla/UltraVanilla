@@ -1,13 +1,12 @@
 player:
   added: [ ]
   removed: [ ]
-  fixed:
-    - "ender chests dropping obsidian with silk touch"
+  fixed: [ ]
   changed: [ ]
   broke: [ ]
 staff:
   added:
-    - "[Staff] role for custom roles (optional)"
+    - "/tempban"
   removed: [ ]
   fixed: [ ]
   changed: [ ]

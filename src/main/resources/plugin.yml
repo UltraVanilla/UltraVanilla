@@ -213,15 +213,16 @@ commands:
     description: Temporarily ban a player
     permission: ultravanilla.command.tempban
     usage: /tempban <player> [time]
-  mail:
-    description: Send mail to a player
-    usage: |
-      /mail send <player>
-      /mail read
-      /mail clear
-      /mail delete <id>
-      /mail reply <id> <message>
-    permission: ultravanilla.command.mail
+# Scrapped until further notice
+#  mail:
+#    description: Send mail to a player
+#    usage: |
+#      /mail send <player>
+#      /mail read
+#      /mail clear
+#      /mail delete <id>
+#      /mail reply <id> <message>
+#    permission: ultravanilla.command.mail
 permissions:
   ultravanilla.donator:
     description: Donator permissions

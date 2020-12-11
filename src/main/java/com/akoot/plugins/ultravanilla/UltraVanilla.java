@@ -340,6 +340,11 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("promote").setExecutor(new PromoteCommand(instance));
         getCommand("tempban").setExecutor(new TempBanCommand(instance));
 
+        // Scrapped until further notice
+//        MailCommand mailCommand = new MailCommand(instance);
+//        getCommand("mail").setExecutor(mailCommand);
+//        getServer().getPluginManager().registerEvents(mailCommand, instance);
+
     }
 
     public void loadConfig(YamlConfiguration config, String file) {
