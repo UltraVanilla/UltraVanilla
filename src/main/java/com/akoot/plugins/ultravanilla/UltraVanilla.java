@@ -54,6 +54,8 @@ public final class UltraVanilla extends JavaPlugin {
 
     private Random random;
 
+    private StaffActionsRecord staffActionsRecord;
+
     public static UltraVanilla getInstance() {
         return instance;
     }
@@ -262,12 +264,17 @@ public final class UltraVanilla extends JavaPlugin {
         ping(target);
     }
 
+    public StaffActionsRecord getStaffActionsRecord() {
+        return staffActionsRecord;
+    }
+
     @Override
     public void onEnable() {
 
         instance = this;
 
         random = new Random();
+        staffActionsRecord = new StaffActionsRecord(this);
         tickets = new ArrayList<>();
 
         // Vault API
@@ -362,7 +369,15 @@ public final class UltraVanilla extends JavaPlugin {
         getServer().getPluginManager().registerEvents(signCommand, instance);
 
         getCommand("promote").setExecutor(new PromoteCommand(instance));
+
+        // New admin command suite
         getCommand("tempban").setExecutor(new TempBanCommand(instance));
+        getCommand("ban").setExecutor(new BanCommand(instance));
+        getCommand("ban-ip").setExecutor(new BanIpCommand(instance));
+        getCommand("kick").setExecutor(new KickCommand(instance));
+        getCommand("permaban").setExecutor(new PermabanCommand(instance));
+        getCommand("pardon").setExecutor(new PardonCommand(instance));
+        getCommand("warn").setExecutor(new WarnCommand(instance));
 
         // Scrapped until further notice
 //        MailCommand mailCommand = new MailCommand(instance);

@@ -213,7 +213,31 @@ commands:
   tempban:
     description: Temporarily ban a player
     permission: ultravanilla.command.tempban
-    usage: /tempban <player> [time]
+    usage: /tempban <player> <time> <reason>
+  kick:
+    description: Kick a player
+    permission: ultravanilla.command.kick
+    usage: /kick <player> <reason>
+  pardon:
+    description: Pardon a player
+    aliases: [ unban ]
+    usage: /pardon <player>
+  ban:
+    description: Ban a player
+    permission: ultravanilla.command.ban
+    usage: /ban <player> <reason>
+  permaban:
+    description: Permanently ban a player
+    permission: ultravanilla.command.permaban
+    usage: /permaban <player> <reason>
+  ban-ip:
+    description: Ban a player's IP
+    permission: ultravanilla.command.ban-ip
+    usage: /ban-ip <player|ip> <reason>
+  warn:
+    description: Warn a player
+    permission: ultravanilla.command.warn
+    usage: /warn <player> <message>
 # Scrapped until further notice
 #  mail:
 #    description: Send mail to a player
