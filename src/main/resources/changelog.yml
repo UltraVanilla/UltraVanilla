@@ -1,14 +1,20 @@
 player:
-  added: [ ]
+  added:
+    - "some really cool features you don't need to know about!"
   removed: [ ]
   fixed: [ ]
   changed: [ ]
   broke: [ ]
 staff:
   added:
-    - "/tempban"
+    - "&b/warn &7- pings a player and messages them, as well as logs to staff record"
   removed: [ ]
-  fixed:
-    - "/promote"
-  changed: [ ]
+  fixed: [ ]
+  changed:
+    - "&b/ban &7- automatically logs staff record (requires reason now)"
+    - "&b/ban-ip &7- automatically logs staff record (requires reason now)"
+    - "&b/tempban &7- automatically logs staff record (requires reason now)"
+    - "&b/permaban &7- automatically logs staff record (requires reason now)"
+    - "&b/pardon &7- automatically logs staff record"
+    - "&b/pardon-ip &7- automatically logs staff record"
   broke: [ ]

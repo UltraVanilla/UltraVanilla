@@ -1,49 +1,36 @@
 package com.akoot.plugins.ultravanilla;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class StaffAction {
 
-    private final long expires;
+    private long expires;
     private Type type;
-    private List<String> sources;
-    private List<String> targets;
+    private String source;
+    private String target;
     private String description;
-    private List<String> links;
     private long created;
 
-    public StaffAction(Type type, String description, long created) {
-        this(type, description, created, -1);
+    public StaffAction(Type type, String description, String source, String target) {
+        this(type, description, source, target, System.currentTimeMillis(), -1);
+    }
+
+    public StaffAction(Type type, String description, String source, String target, long created, long expires) {
+        this.type = type;
+        this.description = description;
+        this.source = source;
+        this.target = target;
+        this.created = created;
+        this.expires = expires;
+    }
+
+    public long getExpires() {
+        return expires;
     }
 
     public StaffAction(Type type, String description, String source, String target, long created) {
         this(type, description, source, target, created, -1);
     }
 
-    public StaffAction(Type type, String description, long created, long expires) {
-        this.type = type;
-        this.description = description;
-        this.sources = new ArrayList<>();
-        this.targets = new ArrayList<>();
-        this.links = new ArrayList<>();
-        this.created = created;
-        this.expires = expires;
-    }
-
-    public StaffAction(Type type, String description, String source, String target, long created, long expires) {
-        this(type, description, created, expires);
-        sources.add(source);
-        targets.add(target);
-    }
-
-    public StaffAction(Type type, List<String> sources, List<String> targets, String description, List<String> links, long created, long expires) {
-        this.type = type;
-        this.sources = sources;
-        this.targets = targets;
-        this.description = description;
-        this.links = links;
-        this.created = created;
+    public void setExpires(long expires) {
         this.expires = expires;
     }
 
@@ -55,20 +42,20 @@ public class StaffAction {
         this.created = created;
     }
 
-    public List<String> getSources() {
-        return sources;
+    public String getSource() {
+        return source;
     }
 
-    public void setSources(List<String> sources) {
-        this.sources = sources;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    public List<String> getTargets() {
-        return targets;
+    public String getTarget() {
+        return target;
     }
 
-    public void setTargets(List<String> targets) {
-        this.targets = targets;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getDescription() {
@@ -77,14 +64,6 @@ public class StaffAction {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<String> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<String> links) {
-        this.links = links;
     }
 
     public Type getType() {
@@ -96,6 +75,24 @@ public class StaffAction {
     }
 
     public enum Type {
-        PERMA_BAN, IP_BAN, BAN, TEMP_BAN, KICK, WARN, PARDON
+
+        PERMA_BAN("permanently banned"),
+        IP_BAN("IP banned"),
+        BAN("banned"),
+        TEMP_BAN("temporarily banned"),
+        KICK("kicked"),
+        WARN("warned"),
+        PARDON("pardoned"),
+        PARDON_IP("pardoned IP");
+
+        String verb;
+
+        Type(String verb) {
+            this.verb = verb;
+        }
+
+        public String getVerb() {
+            return verb;
+        }
     }
 }

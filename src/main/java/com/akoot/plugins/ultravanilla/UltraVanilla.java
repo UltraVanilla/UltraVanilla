@@ -378,6 +378,7 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("permaban").setExecutor(new PermabanCommand(instance));
         getCommand("pardon").setExecutor(new PardonCommand(instance));
         getCommand("warn").setExecutor(new WarnCommand(instance));
+        getCommand("pardon-ip").setExecutor(new PardonIpCommand(instance));
 
         // Scrapped until further notice
 //        MailCommand mailCommand = new MailCommand(instance);

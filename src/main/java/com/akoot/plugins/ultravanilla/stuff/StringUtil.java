@@ -1,6 +1,8 @@
 package com.akoot.plugins.ultravanilla.stuff;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +22,24 @@ public class StringUtil {
         if (minutes != 0) strings.add(plural(minutes, "minute"));
         if (seconds != 0) strings.add(plural(seconds, "second"));
 
+        return join(" ", strings);
+    }
+
+    public static String getSqlDate(long date) {
+        if (date > 0) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            return "'" + df.format(new Date(date)) + "'";
+        } else {
+            return "NULL";
+        }
+    }
+
+    public static String join(String delimiter, List<String> strings) {
         if (strings.size() > 1) {
             strings.set(strings.size() - 1, "and " + strings.get(strings.size() - 1));
         }
 
-        return String.join(" ", strings);
+        return String.join(delimiter, strings);
     }
 
     public static String plural(long value, String name) {

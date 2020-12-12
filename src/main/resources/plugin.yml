@@ -238,6 +238,10 @@ commands:
     description: Warn a player
     permission: ultravanilla.command.warn
     usage: /warn <player> <message>
+  pardon-ip:
+    description: Pardon an IP address
+    permission: ultravanilla.command.pardon-ip
+    usage: /pardon-ip <address>
 # Scrapped until further notice
 #  mail:
 #    description: Send mail to a player

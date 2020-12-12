@@ -7,9 +7,10 @@ import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
-import com.akoot.plugins.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,7 +26,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -189,25 +189,6 @@ public class EventListener implements Listener {
         UltraVanilla.updatePlaytime(player);
 
         event.setQuitMessage(event.getQuitMessage().replace(player.getName(), player.getDisplayName() + ChatColor.YELLOW));
-
-        if (player.isBanned()) {
-            for (Player target : player.getServer().getOnlinePlayers()) {
-                if (target.hasPermission("ultravanilla.mod")) {
-                    BanEntry entry = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(player.getUniqueId().toString());
-                    if (entry != null) {
-                        String bannedPlayer = player.getName();
-                        String staffMember = entry.getSource();
-                        Date time = entry.getExpiration();
-                        Date from = entry.getCreated();
-                        long timeBanned = time != null ? time.getTime() - from.getTime() : 0;
-                        String reason = ChatColor.stripColor(entry.getReason());
-                        target.sendMessage(Palette.NOUN + staffMember + ChatColor.GRAY + " banned " + Palette.NOUN + bannedPlayer +
-                                (reason == null || reason.equals("Banned by an operator.") ? "" : ChatColor.GRAY + " for " + ChatColor.WHITE + reason) +
-                                (time != null ? ChatColor.GRAY + " for " + Palette.NUMBER + StringUtil.getTimeString(timeBanned) : "") + ChatColor.GRAY + ".");
-                    }
-                }
-            }
-        }
     }
 
     @EventHandler

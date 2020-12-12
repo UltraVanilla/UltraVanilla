@@ -1,30 +1,44 @@
 package com.akoot.plugins.ultravanilla.commands;
 
+import com.akoot.plugins.ultravanilla.StaffAction;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.BanList;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PardonCommand extends UltraCommand implements CommandExecutor, TabExecutor {
-
-    public static final ChatColor COLOR = ChatColor.WHITE;
+public class PardonCommand extends AdminCommand implements CommandExecutor, TabExecutor {
 
     public PardonCommand(UltraVanilla instance) {
         super(instance);
-        this.color = COLOR;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return false;
+        for (String name : args) {
+            OfflinePlayer target = plugin.getServer().getOfflinePlayer(name);
+            if (target.isBanned()) {
+                plugin.getServer().getBanList(BanList.Type.NAME).pardon(target.getUniqueId().toString());
+                StaffAction staffAction = new StaffAction(StaffAction.Type.PARDON, "", sender.getName(), target.getName());
+                announce(staffAction);
+            } else {
+                sender.sendMessage(PLAYER + target.getName() + COLOR + " is not banned.");
+            }
+        }
+        return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        List<String> bannedPlayers = new ArrayList<>();
+        for (OfflinePlayer bannedPlayer : plugin.getServer().getBannedPlayers()) {
+            bannedPlayers.add(bannedPlayer.getName());
+        }
+        return bannedPlayers;
     }
 }

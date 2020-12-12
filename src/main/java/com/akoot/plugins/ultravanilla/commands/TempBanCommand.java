@@ -9,44 +9,35 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TempBanCommand extends UltraCommand implements CommandExecutor, TabExecutor {
-
-    public static final ChatColor COLOR = ChatColor.of("#ed521e");
-    public static final ChatColor PLAYER = ChatColor.of("#f7a204");
-    public static final ChatColor TIME = ChatColor.of("#f7d31d");
+public class TempBanCommand extends AdminCommand implements CommandExecutor {
 
     public TempBanCommand(UltraVanilla instance) {
         super(instance);
-        this.color = COLOR;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 3) {
-            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-            if (UltraVanilla.getConfig(player.getUniqueId()) != null) {
-                if (!player.isBanned()) {
+            OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[0]);
+            if (UltraVanilla.getConfig(target.getUniqueId()) != null) {
+                if (!target.isBanned()) {
                     long time = StringUtil.getSeconds(args[1]) * 1000L;
                     long now = System.currentTimeMillis();
                     long expires = now + time;
-                    String timeString = StringUtil.getTimeString(time);
                     String reason = getArg(args, 3);
-                    sender.sendMessage(COLOR + "Temporarily banned " + PLAYER + player.getName() + COLOR + " for " + TIME + timeString);
-
-                    player.banPlayer(ChatColor.DARK_RED + Palette.translate(reason) + ChatColor.RESET + ChatColor.RED, new Date(expires), sender.getName());
-                    StaffAction staffAction = new StaffAction(StaffAction.Type.TEMP_BAN, reason, sender.getName(), player.getName(), now, expires);
-                    plugin.getStaffActionsRecord().log(staffAction);
+                    target.banPlayer(ChatColor.DARK_RED + Palette.translate(reason) + ChatColor.RESET + ChatColor.RED, new Date(expires), sender.getName());
+                    StaffAction staffAction = new StaffAction(StaffAction.Type.TEMP_BAN, reason, sender.getName(), target.getName(), now, expires);
+                    announce(staffAction);
                 } else {
-                    sender.sendMessage(PLAYER + player.getName() + COLOR + " is already banned!");
+                    sender.sendMessage(PLAYER + target.getName() + COLOR + " is already banned!");
                 }
             } else {
-                sender.sendMessage(PLAYER + player.getName() + COLOR + " has not played before.");
+                sender.sendMessage(PLAYER + target.getName() + COLOR + " has not played before.");
             }
             return true;
         }
@@ -55,17 +46,13 @@ public class TempBanCommand extends UltraCommand implements CommandExecutor, Tab
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> suggestions = new ArrayList<>();
-        if (args.length == 2) {
-            return suggestions;
+        if (args.length == 1) {
+            return null;
+        } else if (args.length == 2) {
+            return new ArrayList<>();
         } else if (args.length == 3) {
-            suggestions.add("Griefing");
-            suggestions.add("Stealing");
-            suggestions.add("Non-consensual PVP");
-            suggestions.add("Spamming");
-            suggestions.add("Being too NSFW");
-            suggestions.add("Hacking");
+            return getSuggestions(suggestions, args);
         }
-        return null;
+        return new ArrayList<>();
     }
 }
