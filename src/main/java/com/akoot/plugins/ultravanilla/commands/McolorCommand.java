@@ -46,7 +46,7 @@ public class McolorCommand extends UltraCommand implements CommandExecutor, TabE
                 String newColorString = args[1];
                 ChatColor newColor = ChatColor.of(newColorString);
                 OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(args[0]);
-                if (!offlinePlayer.hasPlayedBefore()) {
+                if (!(offlinePlayer.hasPlayedBefore() || offlinePlayer.isOnline())) {
                     sender.sendMessage(WRONG_COLOR + args[0] + COLOR + " has never played here before.");
                     return true;
                 }
@@ -72,7 +72,9 @@ public class McolorCommand extends UltraCommand implements CommandExecutor, TabE
                 suggestions.add("-enable");
             }
         } else if (args.length == 2) {
-            if (!(args[0].matches("-(en|dis)able") || !plugin.getServer().getOfflinePlayer(args[0]).hasPlayedBefore())) {
+            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
+
+            if (!(args[0].matches("-(en|dis)able") || !(player.hasPlayedBefore() || player.isOnline()))) {
                 suggestions = Arrays.asList(LegacyColors.listNames());
             }
         }

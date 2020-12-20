@@ -291,7 +291,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 if (args[0].equals("copy")) {
                     if (sender.hasPermission("ultravanilla.command.home.copy")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
-                        if (target.hasPlayedBefore()) {
+                        if (target.hasPlayedBefore() || target.isOnline()) {
                             homes = getHomes(target);
                             sender.sendMessage(COLOR + "Copied " + Palette.NOUN + posessive(target.getName()) + COLOR + " homes");
                         } else {
@@ -330,7 +330,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 else if (args[0].equalsIgnoreCase("list")) {
                     if (sender.hasPermission("ultravanilla.permission.admin")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
-                        if (target.hasPlayedBefore()) {
+                        if (target.hasPlayedBefore() || target.isOnline()) {
                             homes = getHomes(target);
                             TextComponent textComponent = new TextComponent();
                             if (homes != null && !homes.isEmpty()) {

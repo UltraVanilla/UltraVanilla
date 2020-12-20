@@ -105,7 +105,7 @@ public class EventListener implements Listener {
         if (parent.equals("player")) {
             if (children.length == 2) {
                 OfflinePlayer player = plugin.getServer().getOfflinePlayer(children[0]);
-                if (player.hasPlayedBefore()) {
+                if (player.hasPlayedBefore() || player.isOnline()) {
                     if (children[1].matches("(nick|display|custom)[-_]?name")) {
                         if (UltraVanilla.getConfig(player).contains("display-name")) {
                             return UltraVanilla.getConfig(player).getString("display-name");

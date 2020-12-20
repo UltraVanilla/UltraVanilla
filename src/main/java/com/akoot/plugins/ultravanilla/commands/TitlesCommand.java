@@ -51,7 +51,7 @@ public class TitlesCommand extends UltraCommand implements CommandExecutor, TabE
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("set")) {
                 OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[1]);
-                if (!player.hasPlayedBefore()) {
+                if (!(player.hasPlayedBefore() || player.isOnline())) {
                     sender.sendMessage(plugin.getString("player-unknown"));
                     return true;
                 }

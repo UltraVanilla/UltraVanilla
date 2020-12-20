@@ -21,7 +21,7 @@ public class PermabanCommand extends AdminCommand implements CommandExecutor, Ta
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 2) {
             OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[0]);
-            if (target.hasPlayedBefore()) {
+            if (target.hasPlayedBefore() || target.isOnline()) {
                 if (!target.isBanned()) {
                     String reason = getArg(args, 2);
                     String source = sender.getName();

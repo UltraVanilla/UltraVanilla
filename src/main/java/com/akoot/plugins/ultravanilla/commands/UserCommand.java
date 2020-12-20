@@ -43,7 +43,7 @@ public class UserCommand extends UltraCommand implements CommandExecutor, TabExe
         // user notch
         else if (args.length == 1) {
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-            if (player.hasPlayedBefore()) {
+            if (player.hasPlayedBefore() || player.isOnline()) {
                 sendInfo(sender, player);
             } else {
                 sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));

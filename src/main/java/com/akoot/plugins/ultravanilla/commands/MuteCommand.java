@@ -67,7 +67,7 @@ public class MuteCommand extends UltraCommand implements CommandExecutor, TabCom
                 }
             } else {
                 OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(args[0]);
-                if (offlinePlayer.hasPlayedBefore()) {
+                if (offlinePlayer.hasPlayedBefore() || offlinePlayer.isOnline()) {
                     sender.sendMessage(WRONG_COLOR + offlinePlayer.getName() + COLOR + " is offline.");
                 } else {
                     sender.sendMessage(WRONG_COLOR + args[0] + COLOR + " has never played here before.");

@@ -50,7 +50,7 @@ public class SettitleCommand extends UltraCommand implements CommandExecutor, Ta
                 }
             } else if (args.length == 2) {
                 player = plugin.getServer().getOfflinePlayer(args[0]);
-                if (!player.hasPlayedBefore()) {
+                if (!(player.hasPlayedBefore() || player.isOnline())) {
                     sender.sendMessage(plugin.getString("player-unknown"));
                     return true;
                 }

@@ -42,7 +42,7 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
         }
         if (args.length > 0) {
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-            if (player.hasPlayedBefore()) {
+            if (player.hasPlayedBefore() || player.isOnline()) {
                 if (args.length == 1) {
                     long lastJoin = player.getLastSeen();
                     sender.sendMessage(format(command, "format.seen.last", "{player}", player.getName(), "{date}", getDate(lastJoin, timezone)));
