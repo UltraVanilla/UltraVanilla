@@ -99,14 +99,14 @@ public class TicketCommand extends UltraCommand implements CommandExecutor, TabE
                 if (ticket != null) {
                     // Generate format
                     String[] format = {
-                            "{author's}", posessive(ticket.getAuthor()),
-                            "{author}", ticket.getAuthor(),
-                            "{id}", ticket.getId() + "",
-                            "{admin}", ticket.getAdmin(),
-                            "{response}", ticket.getReply(),
-                            "{content}", ticket.getContent(),
-                            "{preview}", ticket.getPreview(),
-                            "{status}", ticket.getStatus().toString()
+                        "{author's}", possessive(ticket.getAuthor()),
+                        "{author}", ticket.getAuthor(),
+                        "{id}", ticket.getId() + "",
+                        "{admin}", ticket.getAdmin(),
+                        "{response}", ticket.getReply(),
+                        "{content}", ticket.getContent(),
+                        "{preview}", ticket.getPreview(),
+                        "{status}", ticket.getStatus().toString()
                     };
 
                     // ticket read|delete|open|close <id>

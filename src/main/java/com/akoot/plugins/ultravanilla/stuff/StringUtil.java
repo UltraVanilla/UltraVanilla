@@ -9,6 +9,30 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 
+    /**
+     * Combines arguments separated by a space into one single argument using double quotes or single quotes.
+     * Use '/' as a delimiter.
+     *
+     * @param str The string to convert to arguments
+     * @return Arguments with spaces
+     */
+    public static String[] toArgs(String str) {
+        Pattern pattern = Pattern.compile("\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'|[\\S]+");
+        Matcher matcher = pattern.matcher(str);
+        List<String> refined = new ArrayList<>();
+        while (matcher.find()) {
+            String group = matcher.group();
+            if (group.matches("^\".+\"$")) {
+                refined.add(matcher.group(1).replaceAll("\\\\\"", "\""));
+            } else if (group.matches("^'.+'$")) {
+                refined.add(matcher.group(3).replaceAll("\\\\'", "'"));
+            } else {
+                refined.add(group);
+            }
+        }
+        return refined.toArray(new String[0]);
+    }
+
     public static String getTimeString(long ms) {
 
         long seconds = (ms / 1000) % 60;
@@ -28,7 +52,7 @@ public class StringUtil {
     public static String getSqlDate(long date) {
         if (date > 0) {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            return "'" + df.format(new Date(date)) + "'";
+            return df.format(new Date(date));
         } else {
             return "NULL";
         }
@@ -50,8 +74,8 @@ public class StringUtil {
         return result + "s";
     }
 
-    public static int getSeconds(String timeString) {
-        int time = 0;
+    public static double getSeconds(String timeString) {
+        double time = 0;
         Pattern p = Pattern.compile("([0-9]+(\\.[0-9]+)?)([dhmst])");
         Matcher m = p.matcher(timeString);
         while (m.find()) {

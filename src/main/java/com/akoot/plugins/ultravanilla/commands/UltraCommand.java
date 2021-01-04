@@ -2,15 +2,15 @@ package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UltraCommand {
 
@@ -21,7 +21,7 @@ public class UltraCommand {
         this.plugin = instance;
     }
 
-    protected String posessive(String item) {
+    protected String possessive(String item) {
         return item + (item.endsWith("s") ? "'" : "'s");
     }
 
@@ -38,13 +38,7 @@ public class UltraCommand {
     }
 
     protected String[] refinedArgs(String[] args) {
-        Pattern pattern = Pattern.compile("\"[^\"]+\"|[-\\w:.]+");
-        Matcher matcher = pattern.matcher(String.join(" ", args));
-        List<String> refined = new ArrayList<>();
-        while (matcher.find()) {
-            refined.add(matcher.group().replace("\"", ""));
-        }
-        return refined.toArray(new String[0]);
+        return StringUtil.toArgs(String.join(" ", args));
     }
 
     protected String getArgFor(String[] args, String arg) {
@@ -151,6 +145,19 @@ public class UltraCommand {
             sender.sendMessage(plugin.getString("not-a-number", "{number}", arg));
             return -1;
         }
+    }
+
+    protected String getArgFor(String s, String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(s) && i + 1 < args.length) {
+                return args[i + 1];
+            }
+        }
+        return null;
+    }
+
+    protected boolean hasArg(String s, String[] args) {
+        return Arrays.asList(args).contains(s);
     }
 
     /**

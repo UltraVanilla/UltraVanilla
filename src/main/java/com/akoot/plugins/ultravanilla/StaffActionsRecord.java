@@ -1,10 +1,6 @@
 package com.akoot.plugins.ultravanilla;
 
-import com.akoot.plugins.ultravanilla.stuff.StringUtil;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class StaffActionsRecord {
 
@@ -16,16 +12,17 @@ public class StaffActionsRecord {
 
     public void log(StaffAction staffAction) {
         try {
-            getConnection().prepareStatement(
-                "INSERT INTO " + plugin.getConfig().getString("sql.table") + " (created, expires, type, description, sources, targets) VALUES (" +
-                    StringUtil.getSqlDate(staffAction.getCreated()) + ", " +
-                    StringUtil.getSqlDate(staffAction.getExpires()) + ", " +
-                    "'" + staffAction.getType().toString() + "', " +
-                    "'" + staffAction.getDescription().replace("'", "''") + "', " +
-                    "'" + staffAction.getSource() + "', " +
-                    "'" + staffAction.getTarget() + "'" +
-                    ")"
-            ).executeUpdate();
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                "INSERT INTO " + plugin.getConfig().getString("sql.table") + " (created, expires, type, description, sources, targets) VALUES (?, ?, ?, ?, ?, ?)");
+
+            preparedStatement.setObject(1, new Timestamp(staffAction.getCreated()));
+            preparedStatement.setObject(2, new Timestamp(staffAction.getExpires()));
+            preparedStatement.setString(3, staffAction.getType().toString());
+            preparedStatement.setString(4, staffAction.getDescription());
+            preparedStatement.setString(5, staffAction.getSource());
+            preparedStatement.setString(6, staffAction.getTarget());
+
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

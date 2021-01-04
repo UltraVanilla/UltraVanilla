@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 public class SeenCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
@@ -30,91 +27,117 @@ public class SeenCommand extends UltraCommand implements CommandExecutor, TabExe
         this.color = COLOR;
     }
 
+    private void sendLastSeen(CommandSender sender, OfflinePlayer player, TimeZone timeZone) {
+        long lastSeen = player.getFirstPlayed();
+        sender.sendMessage(Palette.NOUN + player.getName() + COLOR + " was last seen on " + Palette.OBJECT + getDate(lastSeen, timeZone));
+        if (UltraVanilla.isStaff(sender)) {
+            sendPromotionInfo(sender, player, timeZone);
+            sendLocationInfo(sender, player);
+        }
+    }
+
+    private void sendFirstJoined(CommandSender sender, OfflinePlayer player, TimeZone timeZone) {
+        long firstJoined = player.getFirstPlayed();
+        sender.sendMessage(Palette.NOUN + player.getName() + COLOR + " first joined on " + Palette.OBJECT + getDate(firstJoined, timeZone));
+    }
+
+    private void sendPromotionInfo(CommandSender sender, OfflinePlayer player, TimeZone timeZone) {
+        plugin.async(() -> {
+            sender.sendMessage(COLOR + "Last promoted: " + Palette.OBJECT + getDate(UltraVanilla.getConfig(player).getLong("last-promotion"), timeZone));
+            String nextRole = plugin.getRoleShouldHave(player);
+            if (nextRole != null) {
+                sender.sendMessage(String.format(
+                    "%sNext promotion: %s%s",
+                    COLOR,
+                    Palette.OBJECT, getDate(plugin.getNextRoleDate(player), timeZone)
+                ));
+                if (!plugin.hasRightRole(player)) {
+                    sender.sendMessage(String.format(
+                        "%sThey should be %s%s %sby now!",
+                        COLOR,
+                        plugin.getRoleColor(nextRole), nextRole,
+                        COLOR
+                    ));
+                }
+            }
+        });
+    }
+
+    private void sendLocationInfo(CommandSender sender, OfflinePlayer player) {
+        Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
+        if (position != null) {
+            TextComponent textComponent = new TextComponent("Last logout location: ");
+            textComponent.setColor(COLOR);
+            TextComponent component = new TextComponent();
+            component.setColor(ChatColor.WHITE);
+            component.setText(position.toStringTrimmed());
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand()));
+            textComponent.addExtra(component);
+            sender.sendMessage(textComponent);
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        TimeZone timezone = TimeZone.getDefault();
+        TimeZone timeZone = TimeZone.getDefault();
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            String zone = UltraVanilla.getConfig(player.getUniqueId()).getString("timezone", "");
+            String zone = UltraVanilla.getConfig(player.getUniqueId()).getString("timezone");
             if (!(zone == null || zone.isEmpty())) {
-                timezone = TimeZone.getTimeZone(zone);
+                timeZone = TimeZone.getTimeZone(zone);
             }
         }
-        if (args.length > 0) {
-            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
-            if (player.hasPlayedBefore() || player.isOnline()) {
-                if (args.length == 1) {
-                    long lastJoin = player.getLastSeen();
-                    sender.sendMessage(format(command, "format.seen.last", "{player}", player.getName(), "{date}", getDate(lastJoin, timezone)));
-                } else if (args.length == 2) {
-                    if (args[1].equalsIgnoreCase("first")) {
-                        long firstJoin = player.getFirstPlayed();
-                        sender.sendMessage(format(command, "format.seen.first", "{player}", player.getName(), "{date}", getDate(firstJoin, timezone)));
-                    } else {
-                        return false;
-                    }
+        OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
+        if (!player.hasPlayedBefore()) {
+            sender.sendMessage(Palette.NOUN + player.getName() + COLOR + " has not played here before.");
+            return true;
+        }
+        switch (command.getName()) {
+            case "seen":
+                if (args.length != 2) {
+                    return false;
+                }
+                if (args[1].equalsIgnoreCase("first")) {
+                    sendFirstJoined(sender, player, timeZone);
+                    return true;
+                } else if (args[1].equalsIgnoreCase("last")) {
+                    sendLastSeen(sender, player, timeZone);
+                    return true;
                 } else {
                     return false;
                 }
-                if (sender.hasPermission("ultravanilla.permission.admin")) {
-                    Position position = (Position) UltraVanilla.getConfig(player).get(Users.LOGOUT_LOCATION);
-                    TimeZone finalTimezone = timezone;
-                    plugin.async(() -> {
-                        String nextRole = plugin.getRoleShouldHave(player);
-                        if (nextRole != null) {
-                            sender.sendMessage(String.format(
-                                    "%sNext promotion: %s%s",
-                                    COLOR,
-                                    Palette.OBJECT, getDate(plugin.getNextRoleDate(player), finalTimezone)
-                            ));
-                            if (!plugin.hasRightRole(player)) {
-                                sender.sendMessage(String.format(
-                                        "%sThey should be %s%s %sby now!",
-                                        COLOR,
-                                        plugin.getRoleColor(nextRole), nextRole,
-                                        COLOR
-                                ));
-                            }
-                        }
-                        TextComponent textComponent = new TextComponent("Last logout location: ");
-                        textComponent.setColor(COLOR);
-                        TextComponent component = new TextComponent();
-                        component.setColor(ChatColor.WHITE);
-                        component.setText(position.toStringTrimmed());
-                        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand()));
-                        textComponent.addExtra(component);
-                        sender.sendMessage(textComponent);
-                    });
-                }
-            } else {
-                sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));
-            }
-        } else {
-            return false;
+            case "firstjoined":
+                sendFirstJoined(sender, player, timeZone);
+                return true;
+            case "lastseen":
+                sendLastSeen(sender, player, timeZone);
+                return true;
         }
-        return true;
+        return false;
     }
 
     private String getDate(long time, TimeZone timezone) {
-        Date date = new Date(time);
-        DateFormat df = new SimpleDateFormat(plugin.getCommandString("seen.format.date-format"));
-        df.setTimeZone(timezone);
-        return df.format(date);
+        if (time == 0) {
+            return "a long time ago";
+        } else {
+            Date date = new Date(time);
+            DateFormat df = new SimpleDateFormat(plugin.getCommandString("seen.format.date-format"));
+            df.setTimeZone(timezone);
+            return df.format(date);
+        }
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
-            for (OfflinePlayer player : plugin.getServer().getOfflinePlayers()) {
-                String name = player.getName();
-                if (name != null && (args[0].length() < 1 || name.toLowerCase().startsWith(args[0].toLowerCase()))) {
-                    suggestions.add(name);
-                }
+            Arrays.stream(plugin.getServer().getOfflinePlayers()).forEach(p -> suggestions.add(p.getName()));
+        } else {
+            if (command.getName().equals("seen")) {
+                suggestions.add("first");
+                suggestions.add("last");
             }
-        } else if (args.length == 2) {
-            suggestions.add("first");
         }
-        return suggestions;
+        return getSuggestions(suggestions, args);
     }
 }

@@ -293,7 +293,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
                         if (target.hasPlayedBefore() || target.isOnline()) {
                             homes = getHomes(target);
-                            sender.sendMessage(COLOR + "Copied " + Palette.NOUN + posessive(target.getName()) + COLOR + " homes");
+                            sender.sendMessage(COLOR + "Copied " + Palette.NOUN + possessive(target.getName()) + COLOR + " homes");
                         } else {
                             sender.sendMessage(plugin.getString("player-unknown", "{player}", args[1]));
                         }

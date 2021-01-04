@@ -30,7 +30,7 @@ public class CustomizeCommand extends UltraCommand implements CommandExecutor, T
         String newName = Palette.translate(String.join(" ", getArg(args, index)));
         meta.setDisplayName(ChatColor.RESET + newName);
         item.setItemMeta(meta);
-        sendFormatted(player, "%sSet this %s%s %sname to: %s%s", COLOR, RIGHT, posessive(item.getType().name().toLowerCase()), COLOR, ChatColor.RESET, newName);
+        sendFormatted(player, "%sSet this %s%s %sname to: %s%s", COLOR, RIGHT, possessive(item.getType().name().toLowerCase()), COLOR, ChatColor.RESET, newName);
     }
 
     private void setLore(Player player, ItemStack item, ItemMeta meta, String[] args, int index) {
@@ -40,7 +40,7 @@ public class CustomizeCommand extends UltraCommand implements CommandExecutor, T
         }
         meta.setLore(Arrays.asList(lore));
         item.setItemMeta(meta);
-        sendFormatted(player, "%sSet this %s%s %slore to:\n%s", COLOR, RIGHT, posessive(item.getType().name().toLowerCase()), COLOR, String.join("\n", lore));
+        sendFormatted(player, "%sSet this %s%s %slore to:\n%s", COLOR, RIGHT, possessive(item.getType().name().toLowerCase()), COLOR, String.join("\n", lore));
     }
 
     @Override

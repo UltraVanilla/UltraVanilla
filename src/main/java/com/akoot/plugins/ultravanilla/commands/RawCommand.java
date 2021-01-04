@@ -28,8 +28,11 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
         if (args.length > 0) {
             TextComponent textComponent = new TextComponent();
             String[] rawComponents = String.join(" ", args).split("\\+");
+            StringBuilder rawText = new StringBuilder();
             for (String text : rawComponents) {
-                textComponent.addExtra(getComponent(text));
+                TextComponent component = getComponent(text);
+                textComponent.addExtra(component);
+                rawText.append(component.getText());
             }
             List<Player> players = new ArrayList<>(plugin.getServer().getOnlinePlayers());
             String playersString = getArgFor(args, "-to");
@@ -39,6 +42,7 @@ public class RawCommand extends UltraCommand implements CommandExecutor, TabExec
             for (Player player : players) {
                 player.sendMessage(textComponent);
             }
+            System.out.println(rawText);
             return true;
         }
         return false;

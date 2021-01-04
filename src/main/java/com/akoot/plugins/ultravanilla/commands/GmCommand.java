@@ -55,7 +55,7 @@ public class GmCommand extends UltraCommand implements CommandExecutor, TabExecu
                     for (Player player : getPlayers(args[1])) {
                         if (player != null) {
                             if (player.getGameMode() != gameMode) {
-                                sender.sendMessage(format(command, "message.set.other", "{player}", player.getName(), "{player's}", posessive(player.getName()), "{gamemode}", gameMode.name()));
+                                sender.sendMessage(format(command, "message.set.other", "{player}", player.getName(), "{player's}", possessive(player.getName()), "{gamemode}", gameMode.name()));
                                 player.setGameMode(gameMode);
                             } else {
                                 sender.sendMessage(format(command, "error.already-in-gamemode.other", "{player}", player.getName(), "{gamemode}", gameMode.name()));

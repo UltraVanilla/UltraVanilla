@@ -26,7 +26,7 @@ public class TempBanCommand extends AdminCommand implements CommandExecutor {
             OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[0]);
             if (UltraVanilla.getConfig(target.getUniqueId()) != null) {
                 if (!target.isBanned()) {
-                    long time = StringUtil.getSeconds(args[1]) * 1000L;
+                    long time = (long) (StringUtil.getSeconds(args[1]) * 1000.0);
                     long now = System.currentTimeMillis();
                     long expires = now + time;
                     String reason = getArg(args, 3);

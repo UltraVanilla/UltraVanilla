@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class PromoteCommand extends UltraCommand implements TabExecutor {
-    public static final ChatColor COLOR = ChatColor.GREEN;
+    public static final ChatColor COLOR = ChatColor.of("#79ea75");
     private final LuckPerms luckPerms;
 
     public PromoteCommand(UltraVanilla instance) {

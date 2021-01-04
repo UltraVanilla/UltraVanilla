@@ -48,11 +48,11 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                         if (args[1].equals(target.getName())) {
                             UltraVanilla.set(target, "display-name", null);
                             UltraVanilla.updateDisplayName(target);
-                            sender.sendMessage(format(command, "message.clear.other", "{player}", target.getName(), "{player's}", posessive(target.getName())));
+                            sender.sendMessage(format(command, "message.clear.other", "{player}", target.getName(), "{player's}", possessive(target.getName())));
                         } else {
                             UltraVanilla.set(target, "display-name", newName);
                             UltraVanilla.updateDisplayName(target);
-                            sender.sendMessage(format(command, "message.set.other", "{player}", target.getName(), "{player's}", posessive(target.getName()), "{name}", target.getDisplayName()));
+                            sender.sendMessage(format(command, "message.set.other", "{player}", target.getName(), "{player's}", possessive(target.getName()), "{name}", target.getDisplayName()));
                         }
                     } else {
                         sender.sendMessage(plugin.getString("player-offline", "{player}", args[0]));

@@ -3,7 +3,7 @@ version: ${project.version}
 main: com.akoot.plugins.ultravanilla.UltraVanilla
 api-version: 1.13
 prefix: UV
-authors: [Akoot_]
+authors: [ Akoot_, lordpipe ]
 description: Official plugin for UltraVanilla Minecraft server
 website: ultravanilla.world
 depend:
@@ -21,7 +21,7 @@ commands:
       /nick <name>
       /nick [player] <name>
   reload:
-    aliases: [reloadconfig, uvreload]
+    aliases: [ reloadconfig, uvreload ]
     description: Reload the configs
     permission: ultravanilla.command.reload
     usage: /ultravanilla:reload
@@ -65,15 +65,16 @@ commands:
       /home set <name>
       /home remove <name>
   seen:
-    aliases: [ lastseen ]
+    description: Check when someone was last or first seen
+    usage: /seen <player> first|last
+  lastseen:
+    aliases: [ seenlast, lastjoined ]
     description: Check when someone was last seen
-    usage: |
-      /seen <player>
-      /seen <player> first (same as /seenfirst)
-  seenfirst:
-    aliases: [ firstseen ]
+    usage: /<command> <player>
+  firstjoined:
+    aliases: [ firstseen, seenfirst ]
     description: Check when someone was first seen
-    usage: /seen <player>
+    usage: /<command> <player>
   spawn:
     description: Teleport to spawn
     usage: /spawn
@@ -82,26 +83,26 @@ commands:
     usage: /print <message> [\n<new line>]
   do:
     description: Run multiple commands
-    usage: /do "<command> [subcommand]"...
+    usage: /do [delay:<time>] "command1" "command2" "command3"...
   afk:
     description: Toggles AFK mode
     usage: /afk
   message:
-    aliases: [tell, whisper, msg, m, t, w]
+    aliases: [ tell, whisper, msg, m, t, w ]
     description: Send a private message
     usage: /msg <player> <message>
   reply:
-    aliases: [r]
+    aliases: [ r ]
     description: Reply to the person you last /msg'd
     usage: /reply <message>
   changelog:
     description: Shows the changelog
     usage: /changelog
   inventory:
-    aliases: [inv]
+    aliases: [ inv ]
     permission: ultravanilla.command.inventory
     description: Opens a player's inventory
-    usage: /inventory <player>
+    usage: /<command> <player>
   lag:
     description: Shows the percentage of lag from the last minute
     usage: |
@@ -160,18 +161,18 @@ commands:
     permission: ultravanilla.command.back
     usage: /back
   namecolor:
-    aliases: [nc]
+    aliases: [ nc ]
     description: Set your name color
     permission: ultravanilla.command.namecolor
     usage: /namecolor <color>
   playtime:
-    aliases: [pt]
+    aliases: [ pt ]
     description: Get the playtime in hours, minutes, and seconds of a player
-    usage: /playtime [player]
+    usage: /<command> [player]
   whois:
-    aliases: [whomis]
+    aliases: [ whomis ]
     description: Find out who is behind that extravagant nickname
-    usage: /whois <name>
+    usage: /<command> <name>
   sunmute:
     description: Silently un-mute a player.
     usage: /sunmute <player>
@@ -189,12 +190,12 @@ commands:
     usage: /mute <player>
     permission: ultravanilla.command.mute
   mcolor:
-    aliases: [mcol, mc, wcolor, wcol, wc, tcolor, tcol, tc]
+    aliases: [ mcol, mc, wcolor, wcol, wc, tcolor, tcol, tc ]
     description: Change your message thread color
     usage: |
-      /mcolor <player> <color>
-      /mcolor -disable
-      /mcolor -enable
+      /<command> <player> <color>
+      /<command> -disable
+      /<command> -enable
     permission: ultravanilla.command.mcolor
   sign:
     description: Modify a sign via command
@@ -221,6 +222,7 @@ commands:
   pardon:
     description: Pardon a player
     aliases: [ unban ]
+    permission: ultravanilla.command.pardon
     usage: /pardon <player>
   ban:
     description: Ban a player
@@ -242,6 +244,18 @@ commands:
     description: Pardon an IP address
     permission: ultravanilla.command.pardon-ip
     usage: /pardon-ip <address>
+  rtp:
+    description: Randomly teleport to a location (safely above ground)
+    permission: ultravanilla.command.rtp
+    usage: /rtp [player(s)=you] <x0> <y0>|^ <z0> <x1> <y1>|^ <z1> [world=overworld]
+  setgroup:
+    description: Set a player to a specific group
+    permission: ultravanilla.command.setgroup
+    usage: /setgroup <player> <group>
+#  utvp:
+#    description: Teleport command
+#    permission: ultravanilla.command.tp
+#    usage: /uvtp [player(s)=you] <x> <y> <z> [world=your current world]
 # Scrapped until further notice
 #  mail:
 #    description: Send mail to a player

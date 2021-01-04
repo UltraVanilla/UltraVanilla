@@ -2,11 +2,13 @@ package com.akoot.plugins.ultravanilla;
 
 import com.akoot.plugins.ultravanilla.commands.AfkCommand;
 import com.akoot.plugins.ultravanilla.commands.MuteCommand;
-import com.akoot.plugins.ultravanilla.commands.SuicideCommand;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.reference.Users;
 import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
+import com.akoot.plugins.ultravanilla.stuff.Range;
+import net.luckperms.api.event.EventBus;
+import net.luckperms.api.event.user.track.UserPromoteEvent;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,6 +38,13 @@ public class EventListener implements Listener {
 
     public EventListener(UltraVanilla instance) {
         this.plugin = instance;
+        // get the LuckPerms event bus
+        EventBus eventBus = instance.getLuckPerms().getEventBus();
+        eventBus.subscribe(UserPromoteEvent.class, this::onUserPromote);
+    }
+
+    private void onUserPromote(UserPromoteEvent event) {
+        UltraVanilla.set(event.getUser().getUniqueId(), "last-promotion", System.currentTimeMillis());
     }
 
     private void unsetAfk(Player player) {
@@ -64,41 +73,85 @@ public class EventListener implements Listener {
         UltraVanilla.set(event.getPlayer(), "last-teleport", new Position(event.getFrom()));
     }
 
+    private String macro(String command, String args) {
+        System.out.println(command + ":" + args);
+        if (command.equalsIgnoreCase("randp")) {
+            if (args == null) {
+                return plugin.getRandomOnlinePlayer().getName();
+            }
+        } else if (command.equalsIgnoreCase("rands")) {
+            if (args != null) {
+                String[] strings = args.split(",");
+                return strings[(int) new Range(strings.length).getRandom()];
+            }
+        } else if (command.startsWith("rand")) {
+            Range range;
+
+            if (args == null) {
+                range = new Range(0, 1);
+            } else {
+                range = Range.of(args);
+            }
+
+            if (range == null) {
+                return null;
+            }
+
+            float random = range.getRandom();
+            if (command.endsWith("f")) {
+                return random + "";
+            } else {
+                return String.format("%.0f", random);
+            }
+        }
+        return null;
+    }
+
     @EventHandler
     public void onCommandType(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage();
-        String newMessage = message;
+
+        Pattern pattern;
+        Matcher matcher;
 
         // ${}
-        Pattern pattern = Pattern.compile("\\$\\{([\\w]+)\\.([\\w-.]+)}");
-        Matcher matcher = pattern.matcher(message);
+        pattern = Pattern.compile("\\$\\{([\\w]+)\\.([\\w-.]+)}");
+        matcher = pattern.matcher(message);
         while (matcher.find()) {
-            newMessage = message.replaceAll(Pattern.quote(matcher.group()),
-                    getValue(matcher.group(1), matcher.group(2).toLowerCase().split("\\.")));
+            message = message.replace(matcher.group(),
+                getValue(matcher.group(1), matcher.group(2).toLowerCase().split("\\.")));
+        }
+
+        // !<command>[(<args>)]
+        pattern = Pattern.compile("!([\\w]+)(?:\\(([^)]+)\\))?");
+        matcher = pattern.matcher(message);
+        while (matcher.find()) {
+            message = message.replaceFirst(Pattern.quote(matcher.group()),
+                macro(matcher.group(1), matcher.group(2)) + "");
         }
 
         // --as
-        if (newMessage.contains("--as ")) {
-            String command = newMessage.substring(1, newMessage.indexOf("--as ") - 1);
-            String target = newMessage.substring(newMessage.indexOf("--as ") + "--as ".length());
-            newMessage = "/make " + target + " do " + command;
+        if (message.contains("--as ")) {
+            String command = message.substring(1, message.indexOf("--as ") - 1);
+            String target = message.substring(message.indexOf("--as ") + "--as ".length());
+            message = "/make " + target + " do " + command;
         }
 
         // --at
-        if (newMessage.contains("--at ")) {
-            String command = newMessage.substring(1, newMessage.indexOf("--at ") - 1);
-            String location = newMessage.substring(newMessage.indexOf("--at ") + "--at ".length());
-            newMessage = "/execute at " + location + " run " + command;
+        if (message.contains("--at ")) {
+            String command = message.substring(1, message.indexOf("--at ") - 1);
+            String location = message.substring(message.indexOf("--at ") + "--at ".length());
+            message = "/execute at " + location + " run " + command;
         }
 
         // --in
-        if (newMessage.contains("--in ")) {
-            String command = newMessage.substring(1, newMessage.indexOf("--in ") - 1);
-            String world = newMessage.substring(newMessage.indexOf("--in ") + "--in ".length());
-            newMessage = "/execute in " + world + " run " + command;
+        if (message.contains("--in ")) {
+            String command = message.substring(1, message.indexOf("--in ") - 1);
+            String world = message.substring(message.indexOf("--in ") + "--in ".length());
+            message = "/execute in " + world + " run " + command;
         }
 
-        e.setMessage(newMessage);
+        e.setMessage(message);
     }
 
     public String getValue(String parent, String[] children) {
@@ -108,7 +161,7 @@ public class EventListener implements Listener {
                 if (player.hasPlayedBefore() || player.isOnline()) {
                     if (children[1].matches("(nick|display|custom)[-_]?name")) {
                         if (UltraVanilla.getConfig(player).contains("display-name")) {
-                            return UltraVanilla.getConfig(player).getString("display-name");
+                            return UltraVanilla.getConfig(player).getString("display-name") + ChatColor.RESET;
                         }
                     } else if (children[1].matches("role|rank|group")) {
                         return plugin.getRole(player);
@@ -149,8 +202,8 @@ public class EventListener implements Listener {
         String version = plugin.getServer().getVersion();
         version = version.substring(version.indexOf("MC: ") + 4, version.length() - 1);
         event.setMotd(Palette.translate(plugin.getConfig().getString("motd.server-name")) +
-                " " + ChatColor.of(plugin.getConfig().getString("motd.version-color")) + version +
-                "\n" + ChatColor.RESET + plugin.getMOTD());
+            " " + ChatColor.of(plugin.getConfig().getString("motd.version-color")) + version +
+            "\n" + ChatColor.RESET + plugin.getMOTD());
     }
 
     @EventHandler
@@ -197,8 +250,7 @@ public class EventListener implements Listener {
         if (player.hasPermission("ultravanilla.command.suicide")) {
             String message = event.getDeathMessage();
             if (message != null && message.endsWith(" died")) {
-                message = plugin.getRandomString("suicide-messages", "{player}", player.getDisplayName(), "$color", SuicideCommand.COLOR + "");
-                event.setDeathMessage(message);
+                event.setDeathMessage(null);
             }
         }
     }
@@ -319,16 +371,16 @@ public class EventListener implements Listener {
         String staffColor = ChatColor.of(plugin.getConfig().getString("color.rank.staff")) + "";
 
         String format = String.format("%s%s%s[%s%s%s] %s<%s%s> %s%s",
-                (donator ?
-                        String.format("%s[%sD%s] ",
-                                donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
-                        : ""),
-                (staff ?
-                        String.format("%s[%sStaff%s] ", rankBracketsColor, staffColor, rankBracketsColor)
-                        : ""),
-                rankBracketsColor, rankColor, rank, rankBracketsColor,
-                nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,
-                textPrefix, "%2$s");
+            (donator ?
+                String.format("%s[%sD%s] ",
+                    donatorBracketsColor, ChatColor.of(plugin.getConfig().getString("color.rank.donator")), donatorBracketsColor)
+                : ""),
+            (staff ?
+                String.format("%s[%sStaff%s] ", rankBracketsColor, staffColor, rankBracketsColor)
+                : ""),
+            rankBracketsColor, rankColor, rank, rankBracketsColor,
+            nameBracketsColor, defaultNameColor + "%1$s", nameBracketsColor,
+            textPrefix, "%2$s");
 
         String formatted = Palette.translate(format);
         event.setFormat(formatted);

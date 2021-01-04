@@ -7,13 +7,21 @@ import com.akoot.plugins.ultravanilla.serializable.LoreItem;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import com.akoot.plugins.ultravanilla.serializable.Powertool;
 import com.akoot.plugins.ultravanilla.serializable.Title;
+import com.akoot.plugins.ultravanilla.stuff.Range;
 import com.akoot.plugins.ultravanilla.stuff.Ticket;
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemorySection;
@@ -268,123 +276,27 @@ public final class UltraVanilla extends JavaPlugin {
         return staffActionsRecord;
     }
 
-    @Override
-    public void onEnable() {
-
-        instance = this;
-
-        random = new Random();
-        staffActionsRecord = new StaffActionsRecord(this);
-        tickets = new ArrayList<>();
-
-        // Vault API
-        RegisteredServiceProvider<Permission> vaultProvider = getServer().getServicesManager().getRegistration(Permission.class);
-        if (vaultProvider == null) {
-            getLogger().warning("Could not link to Vault.");
-        } else {
-            vault = vaultProvider.getProvider();
+    public static boolean isSafeLocation(Location location) {
+        try {
+            Block feet = location.getBlock();
+            if (!feet.getType().isTransparent() && !feet.getLocation().add(0, 1, 0).getBlock().getType().isTransparent()) {
+                return false; // not transparent (will suffocate)
+            }
+            Block head = feet.getRelative(BlockFace.UP);
+            if (!head.getType().isTransparent()) {
+                return false; // not transparent (will suffocate)
+            }
+            Block ground = feet.getRelative(BlockFace.DOWN);
+            // returns if the ground is solid or not.
+            return ground.getType().isSolid();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
-        // Add luckperms API
-        RegisteredServiceProvider<LuckPerms> luckPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (luckPermsProvider == null) {
-            getLogger().warning("Could not link to LuckPerms.");
-        } else {
-            luckPerms = luckPermsProvider.getProvider();
-        }
-
-        ConfigurationSerialization.registerClass(Position.class);
-        ConfigurationSerialization.registerClass(Powertool.class);
-        ConfigurationSerialization.registerClass(Title.class);
-        ConfigurationSerialization.registerClass(LoreItem.class, "LoreItem");
-
-        getDataFolder().mkdir();
-        Users.DIR.mkdir();
-        loadConfigs();
-        configFile = new File(getDataFolder(), "config.yml");
-
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
-
-        loadConfig(storage, "storage.yml");
-        for (Map<?, ?> map : storage.getMapList("tickets")) {
-            Ticket ticket = new Ticket(this);
-            ticket.load((Map<String, Object>) map);
-            tickets.add(ticket);
-        }
-
-        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
-
-        getCommand("nick").setExecutor(new NickCommand(instance));
-        getCommand("suicide").setExecutor(new SuicideCommand(instance));
-        getCommand("make").setExecutor(new MakeCommand(instance));
-        getCommand("gm").setExecutor(new GmCommand(instance));
-        getCommand("title").setExecutor(new TitleCommand(instance));
-        getCommand("reload").setExecutor(new ReloadCommand(instance));
-        getCommand("ping").setExecutor(new PingCommand(instance));
-        getCommand("raw").setExecutor(new RawCommand(instance));
-        getCommand("motd").setExecutor(new MotdCommand(instance));
-        getCommand("ignore").setExecutor(new IgnoreCommand(instance));
-        getCommand("home").setExecutor(new HomeCommand(instance));
-
-        SeenCommand seenCommand = new SeenCommand(instance);
-        getCommand("seen").setExecutor(seenCommand);
-        getCommand("seenfirst").setExecutor(seenCommand);
-
-        getCommand("spawn").setExecutor(new SpawnCommand(instance));
-        getCommand("print").setExecutor(new PrintCommand(instance));
-        getCommand("do").setExecutor(new DoCommand(instance));
-        getCommand("afk").setExecutor(new AfkCommand(instance));
-        getCommand("msg").setExecutor(new MsgCommand(instance));
-        getCommand("reply").setExecutor(new ReplyCommand(instance));
-        getCommand("changelog").setExecutor(new ChangelogCommand(instance));
-        getCommand("inventory").setExecutor(new InventoryCommand(instance));
-        getCommand("lag").setExecutor(new LagCommand(instance));
-        getCommand("ticket").setExecutor(new TicketCommand(instance));
-
-        CustomizeCommand customizeCommand = new CustomizeCommand(instance);
-        getCommand("customize").setExecutor(customizeCommand);
-        getCommand("rename").setExecutor(customizeCommand);
-        getCommand("setlore").setExecutor(customizeCommand);
-
-        getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
-        getCommand("timezone").setExecutor(new TimezoneCommand(instance));
-        getCommand("hat").setExecutor(new HatCommand(instance));
-        getCommand("user").setExecutor(new UserCommand(instance));
-        getCommand("smite").setExecutor(new SmiteCommand(instance));
-        getCommand("back").setExecutor(new BackCommand(instance));
-        getCommand("namecolor").setExecutor(new NameColorCommand(instance));
-        getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
-        getCommand("whois").setExecutor(new WhoIsCommand(instance));
-
-        MuteCommand muteCommand = new MuteCommand(instance);
-        getCommand("mute").setExecutor(muteCommand);
-        getCommand("smute").setExecutor(muteCommand);
-        getCommand("unmute").setExecutor(muteCommand);
-        getCommand("sunmute").setExecutor(muteCommand);
-
-        getCommand("mcolor").setExecutor(new McolorCommand(instance));
-
-        SignCommand signCommand = new SignCommand(instance);
-        getCommand("sign").setExecutor(signCommand);
-        getServer().getPluginManager().registerEvents(signCommand, instance);
-
-        getCommand("promote").setExecutor(new PromoteCommand(instance));
-
-        // New admin command suite
-        getCommand("tempban").setExecutor(new TempBanCommand(instance));
-        getCommand("ban").setExecutor(new BanCommand(instance));
-        getCommand("ban-ip").setExecutor(new BanIpCommand(instance));
-        getCommand("kick").setExecutor(new KickCommand(instance));
-        getCommand("permaban").setExecutor(new PermabanCommand(instance));
-        getCommand("pardon").setExecutor(new PardonCommand(instance));
-        getCommand("warn").setExecutor(new WarnCommand(instance));
-        getCommand("pardon-ip").setExecutor(new PardonIpCommand(instance));
-
-        // Scrapped until further notice
-//        MailCommand mailCommand = new MailCommand(instance);
-//        getCommand("mail").setExecutor(mailCommand);
-//        getServer().getPluginManager().registerEvents(mailCommand, instance);
-
+    public static boolean isStaff(CommandSender sender) {
+        return sender.hasPermission("ultravanilla.permission.staff");
     }
 
     public void loadConfig(YamlConfiguration config, String file) {
@@ -538,5 +450,155 @@ public final class UltraVanilla extends JavaPlugin {
             }
         }
         return role;
+    }
+
+    public static boolean isAdmin(CommandSender sender) {
+        return sender.hasPermission("ultravanilla.permission.admin");
+    }
+
+    @Override
+    public void onEnable() {
+
+        instance = this;
+
+        random = new Random();
+        staffActionsRecord = new StaffActionsRecord(this);
+        tickets = new ArrayList<>();
+
+        // Vault API
+        RegisteredServiceProvider<Permission> vaultProvider = getServer().getServicesManager().getRegistration(Permission.class);
+        if (vaultProvider == null) {
+            getLogger().warning("Could not link to Vault.");
+        } else {
+            vault = vaultProvider.getProvider();
+        }
+
+        // Add luckperms API
+        RegisteredServiceProvider<LuckPerms> luckPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (luckPermsProvider == null) {
+            getLogger().warning("Could not link to LuckPerms.");
+        } else {
+            luckPerms = luckPermsProvider.getProvider();
+        }
+
+        ConfigurationSerialization.registerClass(Position.class);
+        ConfigurationSerialization.registerClass(Powertool.class);
+        ConfigurationSerialization.registerClass(Title.class);
+        ConfigurationSerialization.registerClass(LoreItem.class, "LoreItem");
+
+        getDataFolder().mkdir();
+        Users.DIR.mkdir();
+        loadConfigs();
+        configFile = new File(getDataFolder(), "config.yml");
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this::setRandomMOTD, 0L, 12 * 60 * 60 * 20L);
+
+        loadConfig(storage, "storage.yml");
+        for (Map<?, ?> map : storage.getMapList("tickets")) {
+            Ticket ticket = new Ticket(this);
+            ticket.load((Map<String, Object>) map);
+            tickets.add(ticket);
+        }
+
+        getServer().getPluginManager().registerEvents(new EventListener(instance), instance);
+
+        getCommand("nick").setExecutor(new NickCommand(instance));
+        getCommand("suicide").setExecutor(new SuicideCommand(instance));
+        getCommand("make").setExecutor(new MakeCommand(instance));
+        getCommand("gm").setExecutor(new GmCommand(instance));
+        getCommand("title").setExecutor(new TitleCommand(instance));
+        getCommand("reload").setExecutor(new ReloadCommand(instance));
+        getCommand("ping").setExecutor(new PingCommand(instance));
+        getCommand("raw").setExecutor(new RawCommand(instance));
+        getCommand("motd").setExecutor(new MotdCommand(instance));
+        getCommand("ignore").setExecutor(new IgnoreCommand(instance));
+        getCommand("home").setExecutor(new HomeCommand(instance));
+
+        SeenCommand seenCommand = new SeenCommand(instance);
+        getCommand("seen").setExecutor(seenCommand);
+        getCommand("firstjoined").setExecutor(seenCommand);
+        getCommand("lastseen").setExecutor(seenCommand);
+
+        getCommand("spawn").setExecutor(new SpawnCommand(instance));
+        getCommand("print").setExecutor(new PrintCommand(instance));
+        getCommand("do").setExecutor(new DoCommand(instance));
+        getCommand("afk").setExecutor(new AfkCommand(instance));
+        getCommand("msg").setExecutor(new MsgCommand(instance));
+        getCommand("reply").setExecutor(new ReplyCommand(instance));
+        getCommand("changelog").setExecutor(new ChangelogCommand(instance));
+        getCommand("inventory").setExecutor(new InventoryCommand(instance));
+        getCommand("lag").setExecutor(new LagCommand(instance));
+        getCommand("ticket").setExecutor(new TicketCommand(instance));
+
+        CustomizeCommand customizeCommand = new CustomizeCommand(instance);
+        getCommand("customize").setExecutor(customizeCommand);
+        getCommand("rename").setExecutor(customizeCommand);
+        getCommand("setlore").setExecutor(customizeCommand);
+
+        getCommand("tptoggle").setExecutor(new TptoggleCommand(instance));
+        getCommand("timezone").setExecutor(new TimezoneCommand(instance));
+        getCommand("hat").setExecutor(new HatCommand(instance));
+        getCommand("user").setExecutor(new UserCommand(instance));
+        getCommand("smite").setExecutor(new SmiteCommand(instance));
+        getCommand("back").setExecutor(new BackCommand(instance));
+        getCommand("namecolor").setExecutor(new NameColorCommand(instance));
+        getCommand("playtime").setExecutor(new PlayTimeCommand(instance));
+        getCommand("whois").setExecutor(new WhoIsCommand(instance));
+
+        MuteCommand muteCommand = new MuteCommand(instance);
+        getCommand("mute").setExecutor(muteCommand);
+        getCommand("smute").setExecutor(muteCommand);
+        getCommand("unmute").setExecutor(muteCommand);
+        getCommand("sunmute").setExecutor(muteCommand);
+
+        getCommand("mcolor").setExecutor(new McolorCommand(instance));
+
+        SignCommand signCommand = new SignCommand(instance);
+        getCommand("sign").setExecutor(signCommand);
+        getServer().getPluginManager().registerEvents(signCommand, instance);
+
+        getCommand("promote").setExecutor(new PromoteCommand(instance));
+
+        // New admin command suite
+        getCommand("tempban").setExecutor(new TempBanCommand(instance));
+        getCommand("ban").setExecutor(new BanCommand(instance));
+        getCommand("ban-ip").setExecutor(new BanIpCommand(instance));
+        getCommand("kick").setExecutor(new KickCommand(instance));
+        getCommand("permaban").setExecutor(new PermabanCommand(instance));
+        getCommand("pardon").setExecutor(new PardonCommand(instance));
+        getCommand("warn").setExecutor(new WarnCommand(instance));
+        getCommand("pardon-ip").setExecutor(new PardonIpCommand(instance));
+
+        getCommand("rtp").setExecutor(new RtpCommand(instance));
+
+        getCommand("setgroup").setExecutor(new SetGroupCommand(instance));
+
+
+        // Scrapped until further notice
+//        MailCommand mailCommand = new MailCommand(instance);
+//        getCommand("mail").setExecutor(mailCommand);
+//        getServer().getPluginManager().registerEvents(mailCommand, instance);
+
+    }
+
+    // https://github.com/LuckPerms/api-cookbook/blob/master/src/main/java/me/lucko/lpcookbook/commands/SetGroupCommand.java
+    public void setGroup(OfflinePlayer player, String group) {
+        luckPerms.getUserManager().modifyUser(player.getUniqueId(), (User user) -> {
+
+            // Remove all other inherited groups the user had before.
+            user.data().clear(NodeType.INHERITANCE::matches);
+            user.data().remove(InheritanceNode.builder("default").build());
+
+            // Create a node to add to the player.
+            Node node = InheritanceNode.builder(group).build();
+
+            // Add the node to the user.
+            user.data().add(node);
+        });
+    }
+
+    public Player getRandomOnlinePlayer() {
+        Collection<? extends Player> players = getServer().getOnlinePlayers();
+        return new ArrayList<Player>(players).get((int) new Range(players.size()).getRandom());
     }
 }

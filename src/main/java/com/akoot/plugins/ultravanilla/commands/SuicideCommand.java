@@ -59,7 +59,6 @@ public class SuicideCommand extends UltraCommand implements CommandExecutor, Tab
                             } else {
                                 sender.sendMessage(message(command, "pact.cease", "{player}", player.getName()));
                                 UltraVanilla.set(suicider, "suicide-pact", null);
-
                             }
                         } else {
                             sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));

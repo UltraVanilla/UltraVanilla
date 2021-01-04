@@ -1,13 +1,20 @@
 player:
-  added: [  ]
+  added: [ ]
   removed: [ ]
   fixed:
-    - "issue with '<player> has not played here before' on various commands when player logs in for the first time"
+    - "some command messages"
   changed: [ ]
   broke: [ ]
 staff:
-  added: [  ]
+  added:
+    - "more &6&odelay:&r&7 options to &b/do"
+    - "&b/rtp &7- randomly teleport a player &c&o(staff use only)"
+    - "&b/seenlast &7oshowing when someone was last promoted"
+    - "&b/setgroup &7command"
+    - "&dmacros &7and &dvariables&7! &oMore info on this soon..."
   removed: [ ]
-  fixed: [  ]
-  changed: [  ]
+  fixed:
+    - "using quotes and apostraphes in command that use quotes such as &b/raw"
+  changed:
+    - "&b/promote&7's color to &#79ea75#79ea75"
   broke: [ ]

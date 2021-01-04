@@ -1,6 +1,7 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import com.akoot.plugins.ultravanilla.stuff.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,26 +19,41 @@ public class DoCommand extends UltraCommand implements CommandExecutor, TabExecu
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        args = refinedArgs(args);
-        long timer = 0;
-        if (args[0].startsWith("delay:")) {
-            timer = (long) (Double.parseDouble(args[0].substring(args[0].indexOf(":") + 1)) * 20.0);
-        }
-        if (timer > 0) {
-            for (int i = 1, argsLength = args.length; i < argsLength; i++) {
-                String arg = args[i];
-                Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(sender, arg), timer * (i - 1));
+        if (args.length > 0) {
+            args = refinedArgs(args);
+            long timer = 0;
+            if (args[0].startsWith("delay:")) {
+                System.out.println(args[0].substring(args[0].indexOf(":") + 1));
+                timer = (long) (StringUtil.getSeconds(args[0].substring(args[0].indexOf(":") + 1)) * 20.0);
+                System.out.println(timer);
             }
-        } else {
-            for (String arg : args) {
-                Bukkit.dispatchCommand(sender, arg);
+            if (timer > 0) {
+                for (int i = 1, argsLength = args.length; i < argsLength; i++) {
+                    String arg = args[i];
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> Bukkit.dispatchCommand(sender, arg), timer * (i - 1));
+                }
+            } else {
+                for (String arg : args) {
+                    Bukkit.dispatchCommand(sender, arg);
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>();
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            String arg = args[0];
+            if (!arg.startsWith("\"") && !arg.startsWith("'")) {
+                String suggestion = "delay:";
+                if (!arg.startsWith(suggestion)) {
+                    suggestions.add(suggestion);
+                }
+            }
+        }
+        return suggestions;
     }
 }

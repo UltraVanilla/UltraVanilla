@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TemplateCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.WHITE;
+    public static final ChatColor COLOR = ChatColor.of("#ffffff");
 
     public TemplateCommand(UltraVanilla instance) {
         super(instance);
