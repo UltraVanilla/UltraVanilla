@@ -1,19 +1,24 @@
 package com.akoot.plugins.ultravanilla.commands;
 
 import com.akoot.plugins.ultravanilla.UltraVanilla;
+import com.akoot.plugins.ultravanilla.reference.Palette;
+import com.akoot.plugins.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlayTimeCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.AQUA;
+    public static final ChatColor COLOR = ChatColor.of("#8DF6C8");
 
     public PlayTimeCommand(UltraVanilla instance) {
         super(instance);
@@ -21,42 +26,36 @@ public class PlayTimeCommand extends UltraCommand implements CommandExecutor, Ta
     }
 
     private static String getPlayTime(OfflinePlayer player) {
-        long playtime = UltraVanilla.getPlayTime(player);
-        long seconds = (playtime / 1000) % 60;
-        long minutes = (playtime / (1000 * 60)) % 60;
-        long hours = (playtime / (1000 * 60 * 60)) % 24;
-        return String.format(
-                "§d%s §bhas played for §6%s%s%s",
-                player.getName(),
-                hours != 0 ? hours + "h" : "",
-                minutes != 0 ? minutes + "m" : "",
-                seconds != 0 ? seconds + "s" : ""
-        );
+        return StringUtil.getTimeString(player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20L * 1000L);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        OfflinePlayer player;
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(plugin.getString("player-only", "{action}", "check your playtime"));
                 return true;
             }
-            sender.sendMessage(getPlayTime((OfflinePlayer) sender));
+            player = (Player) sender;
         } else if (args.length == 1) {
-            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
+            player = plugin.getServer().getOfflinePlayer(args[0]);
             if (!(player.hasPlayedBefore() || player.isOnline())) {
                 sender.sendMessage(plugin.getString("player-unknown", "{player}", args[0]));
                 return true;
             }
-            sender.sendMessage(getPlayTime(player));
         } else {
             return false;
         }
+
+        sender.sendMessage(Palette.NOUN + player.getName() + COLOR + " has played for " + Palette.NUMBER + getPlayTime(player));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        List<String> suggestions = new ArrayList<>();
+        Arrays.stream(plugin.getServer().getOfflinePlayers()).forEach(p -> suggestions.add(p.getName()));
+        return getSuggestions(suggestions, args);
     }
 }

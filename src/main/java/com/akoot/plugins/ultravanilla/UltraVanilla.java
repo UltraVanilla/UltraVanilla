@@ -601,4 +601,9 @@ public final class UltraVanilla extends JavaPlugin {
         Collection<? extends Player> players = getServer().getOnlinePlayers();
         return new ArrayList<Player>(players).get((int) new Range(players.size()).getRandom());
     }
+
+    public static void killPlayer(Player player, String message) {
+        set(player.getUniqueId(), "death-message", message);
+        player.setHealth(0);
+    }
 }

@@ -20,7 +20,7 @@ public class Palette {
 
     public static final ChatColor VERB = ChatColor.ITALIC;
     public static final ChatColor NOUN = ChatColor.of("#3772ff");
-    public static final ChatColor NUMBER = ChatColor.of("#faa916");
+    public static final ChatColor NUMBER = ChatColor.of("#F7D27E");
     public static final ChatColor OBJECT = ChatColor.of("#b8dbd9");
     public static final ChatColor TRUE = ChatColor.of("#8cba80");
     public static final ChatColor FALSE = ChatColor.of("#dd2d4a");

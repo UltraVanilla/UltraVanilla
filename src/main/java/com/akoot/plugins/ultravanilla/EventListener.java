@@ -250,7 +250,7 @@ public class EventListener implements Listener {
         if (player.hasPermission("ultravanilla.command.suicide")) {
             String message = event.getDeathMessage();
             if (message != null && message.endsWith(" died")) {
-                event.setDeathMessage(null);
+                event.setDeathMessage(UltraVanilla.getConfig(player.getUniqueId()).getString("death-message"));
             }
         }
     }

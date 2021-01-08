@@ -14,7 +14,8 @@ import java.util.UUID;
 
 public class SuicideCommand extends UltraCommand implements CommandExecutor, TabExecutor {
 
-    public static final ChatColor COLOR = ChatColor.RED;
+    public static final ChatColor COLOR = ChatColor.of("#b22345");
+    public static final ChatColor PLAYER = ChatColor.of("#3772ff");
 
     public SuicideCommand(UltraVanilla instance) {
         super(instance);
@@ -29,49 +30,33 @@ public class SuicideCommand extends UltraCommand implements CommandExecutor, Tab
         return false;
     }
 
+    public void suicide(Player player, String message) {
+        if (UltraVanilla.getConfig(player).getLong("last-suicide") + (plugin.getConfig().getLong("suicide-time") * 1000L) <= System.currentTimeMillis()) {
+            UltraVanilla.killPlayer(player, message);
+            UltraVanilla.set(player, "last-suicide", System.currentTimeMillis());
+            String pactId = UltraVanilla.getConfig(player.getUniqueId()).getString("suicide-pact");
+            if (pactId != null && !pactId.isEmpty()) {
+                player = plugin.getServer().getPlayer(UUID.fromString(pactId));
+                if (player != null) {
+                    UltraVanilla.killPlayer(player, message);
+                }
+            }
+        } else {
+            player.sendMessage(COLOR + "You must wait to suicide again!");
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            Player suicider = (Player) sender;
+            String message;
+            Player player = (Player) sender;
             if (args.length == 0) {
-                if (UltraVanilla.getConfig(suicider).getLong("last-suicide") + (plugin.getConfig().getLong("suicide-time") * 1000L) <= System.currentTimeMillis()) {
-                    suicider.setHealth(0);
-                    sender.sendMessage(format(command, "message.kill-self"));
-                    UltraVanilla.set(suicider, "last-suicide", System.currentTimeMillis());
-                    String pactId = UltraVanilla.getConfig(suicider.getUniqueId()).getString("suicide-pact");
-                    if (pactId != null && !pactId.isEmpty()) {
-                        Player player = plugin.getServer().getPlayer(UUID.fromString(pactId));
-                        if (player != null) {
-                            player.setHealth(0);
-                        }
-                    }
-                } else {
-                    sender.sendMessage(COLOR + "You must wait to suicide again!");
-                }
-            } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("pact")) {
-                    if (suicider.hasPermission("ultravanilla.command.suicide.pact")) {
-                        Player player = plugin.getServer().getPlayer(args[1]);
-                        if (player != null) {
-                            if (!isInPact(suicider, player)) {
-                                sender.sendMessage(message(command, "pact.create", "{player}", player.getName()));
-                                UltraVanilla.set(suicider, "suicide-pact", player.getUniqueId().toString());
-                            } else {
-                                sender.sendMessage(message(command, "pact.cease", "{player}", player.getName()));
-                                UltraVanilla.set(suicider, "suicide-pact", null);
-                            }
-                        } else {
-                            sender.sendMessage(plugin.getString("player-offline", "{player}", args[1]));
-                        }
-                    } else {
-                        sender.sendMessage(plugin.getString("no-permission", "{action}", "make a suicide pact with anyone"));
-                    }
-                } else {
-                    return false;
-                }
+                message = plugin.getRandomString("suicide-messages", "{player}", PLAYER + player.getName() + COLOR);
             } else {
-                return false;
+                message = PLAYER + player.getName() + COLOR + " " + String.join(" ", args);
             }
+            suicide(player, message);
         } else {
             sender.sendMessage(plugin.getString("player-only", "{action}", "kill yourself"));
         }
