@@ -1,5 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
+import com.akoot.plugins.ultravanilla.AnarchyRegion;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
@@ -23,6 +24,9 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
+                if (AnarchyRegion.inside(player.getLocation())) {
+                    return false;
+                }
                 Position spawn = (Position) plugin.getConfig().get("spawn");
                 if (spawn != null) {
                     player.teleport(spawn.getLocation());

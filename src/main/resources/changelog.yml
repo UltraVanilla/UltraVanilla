@@ -1,10 +1,8 @@
 player:
   added:
-    - "the ability to set your own suicide message (try it!) &b&o/suicide &4&o<message>"
+    - "spectate mode for anarchy events"
   removed: [ ]
-  fixed:
-    - "suicide messages not showing up"
-    - "/playtime not showing the correct time"
+  fixed: [  ]
   changed: [ ]
   broke: [ ]
 staff:

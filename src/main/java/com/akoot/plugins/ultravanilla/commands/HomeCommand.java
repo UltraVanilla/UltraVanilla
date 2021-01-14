@@ -1,5 +1,6 @@
 package com.akoot.plugins.ultravanilla.commands;
 
+import com.akoot.plugins.ultravanilla.AnarchyRegion;
 import com.akoot.plugins.ultravanilla.UltraVanilla;
 import com.akoot.plugins.ultravanilla.reference.Palette;
 import com.akoot.plugins.ultravanilla.serializable.Position;
@@ -136,6 +137,10 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
             // Set player & user variables
             Player player = (Player) sender;
+
+            if (AnarchyRegion.inside(player.getLocation())) {
+                return true;
+            }
 
             // Get home list from config
             List<Position> homes = getHomes(player);

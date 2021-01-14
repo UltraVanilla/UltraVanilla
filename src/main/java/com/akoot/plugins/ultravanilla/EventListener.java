@@ -10,6 +10,8 @@ import com.akoot.plugins.ultravanilla.stuff.Range;
 import net.luckperms.api.event.EventBus;
 import net.luckperms.api.event.user.track.UserPromoteEvent;
 import net.md_5.bungee.api.ChatColor;
+
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -49,7 +51,7 @@ public class EventListener implements Listener {
 
     private void unsetAfk(Player player) {
         if (Users.isAFK(player)) {
-            Users.AFK.remove(player.getUniqueId());
+            Users.afk.remove(player.getUniqueId());
             plugin.getServer().broadcastMessage(player.getDisplayName() + AfkCommand.COLOR + " is no longer AFK");
             player.setPlayerListName(player.getDisplayName());
         }
@@ -58,7 +60,8 @@ public class EventListener implements Listener {
     // Might break with future versions
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (!UltraVanilla.isSuperAdmin(event.getPlayer())) {
+        Player player = event.getPlayer();
+        if (!UltraVanilla.isSuperAdmin(player)) {
             if (event.getCause().name().equals("COMMAND") || event.getCause().name().equals("SPECTATE")) {
                 for (Player p : plugin.getServer().getOnlinePlayers()) {
                     if (p.getLocation().equals(event.getTo())) {
@@ -70,7 +73,8 @@ public class EventListener implements Listener {
                 }
             }
         }
-        UltraVanilla.set(event.getPlayer(), "last-teleport", new Position(event.getFrom()));
+        UltraVanilla.set(player, "last-teleport", new Position(event.getFrom()));
+        if (Users.isSpectator(player)) spectatorCheck(event.getTo(), player);
     }
 
     private String macro(String command, String args) {
@@ -195,6 +199,17 @@ public class EventListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         unsetAfk(player);
+        if (Users.isSpectator(player)) spectatorCheck(event.getTo(), player);
+    }
+
+
+    void spectatorCheck(Location to, Player player) {
+        if (!AnarchyRegion.inside(to)) {
+            Users.spectators.remove(player.getUniqueId());
+            player.teleport(((Position) plugin.getConfig().get("spawn")).getLocation());
+            player.setGameMode(GameMode.SURVIVAL);
+            UltraVanilla.set(player, "spectator", false);
+        }
     }
 
     @EventHandler
@@ -232,6 +247,13 @@ public class EventListener implements Listener {
             player.performCommand("changelog");
         }
         UltraVanilla.set(player, "last-version", thisVersion);
+
+        if (UltraVanilla.getConfig(player).getBoolean("spectator")) {
+            player.teleport(((Position) plugin.getConfig().get("spawn")).getLocation());
+            player.setGameMode(GameMode.SURVIVAL);
+            Users.spectators.remove(player.getUniqueId());
+            UltraVanilla.set(player, "spectator", false);
+        }
     }
 
     @EventHandler

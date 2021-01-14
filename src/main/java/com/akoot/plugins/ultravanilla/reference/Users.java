@@ -18,10 +18,15 @@ public class Users {
     public static final String DISPLAY_TITLE = "title.display";
 
 
-    public static final Map<String, String> REPLIES = new HashMap<>();
-    public static final List<UUID> AFK = new ArrayList<>();
+    public static final Map<String, String> replies = new HashMap<>();
+    public static final List<UUID> afk = new ArrayList<>();
+    public static final HashSet<UUID> spectators = new HashSet<>();
 
     public static boolean isAFK(Player player) {
-        return AFK.contains(player.getUniqueId());
+        return afk.contains(player.getUniqueId());
+    }
+
+    public static boolean isSpectator(Player player) {
+        return spectators.contains(player.getUniqueId());
     }
 }

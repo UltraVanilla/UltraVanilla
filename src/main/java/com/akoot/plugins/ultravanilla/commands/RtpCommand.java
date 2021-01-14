@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,13 @@ public class RtpCommand extends UltraCommand implements CommandExecutor, TabExec
                 }
             }
 
-            for (Player player : players) {
+            player_loop: for (Player player : players) {
+                for(ItemStack item : player.getInventory().getContents()) {
+                    if (item != null) {
+                        player.sendMessage("You must clear your inventory!");
+                        continue player_loop;
+                    }
+                }
 
                 if (worldString == null) {
                     world = player.getWorld();

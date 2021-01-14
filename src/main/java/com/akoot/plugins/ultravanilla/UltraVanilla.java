@@ -148,6 +148,8 @@ public final class UltraVanilla extends JavaPlugin {
         getConfig("config.yml", false);
         changelog = getConfig("changelog.yml", true);
         storage = getConfig("storage.yml", false);
+
+        AnarchyRegion.configure(this);
     }
 
     private YamlConfiguration getConfig(String name, boolean overwrite) {
@@ -572,6 +574,8 @@ public final class UltraVanilla extends JavaPlugin {
         getCommand("rtp").setExecutor(new RtpCommand(instance));
 
         getCommand("setgroup").setExecutor(new SetGroupCommand(instance));
+
+        getCommand("spectate").setExecutor(new SpectateCommand(instance));
 
 
         // Scrapped until further notice

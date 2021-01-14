@@ -252,6 +252,10 @@ commands:
     description: Set a player to a specific group
     permission: ultravanilla.command.setgroup
     usage: /setgroup <player> <group>
+  spectate:
+    description: Spectate the spectation box
+    permission: ultravanilla.command.spectate
+    usage: /spectate
 #  utvp:
 #    description: Teleport command
 #    permission: ultravanilla.command.tp
