@@ -13,6 +13,8 @@ object AnarchyRegion {
   var zMin = 0.0
   var zMax = 0.0
 
+  var allowTeleport = true
+
   def inside(location: Location) =
     location.getX > xMin && location.getX < xMax && location.getZ > zMin && location.getZ < zMax &&
       (location.getWorld.getUID eq center.getWorld.getUID)
@@ -30,5 +32,7 @@ object AnarchyRegion {
     center.setX((xMax + xMin) / 2.0)
     center.setZ((zMax + zMin) / 2.0)
     center.setY(128.0)
+
+    allowTeleport = config.getBoolean("spectate-box.allow-teleport")
   }
 }

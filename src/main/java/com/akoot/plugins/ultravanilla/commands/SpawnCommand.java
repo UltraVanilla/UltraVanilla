@@ -24,8 +24,8 @@ public class SpawnCommand extends UltraCommand implements CommandExecutor {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (AnarchyRegion.inside(player.getLocation())) {
-                    return false;
+                if (!AnarchyRegion.allowTeleport() && AnarchyRegion.inside(player.getLocation())) {
+                    return true;
                 }
                 Position spawn = (Position) plugin.getConfig().get("spawn");
                 if (spawn != null) {

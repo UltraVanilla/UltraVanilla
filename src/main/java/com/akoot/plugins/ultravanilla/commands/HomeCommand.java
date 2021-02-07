@@ -138,7 +138,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
             // Set player & user variables
             Player player = (Player) sender;
 
-            if (AnarchyRegion.inside(player.getLocation())) {
+            if (!AnarchyRegion.allowTeleport() && AnarchyRegion.inside(player.getLocation())) {
                 return true;
             }
 

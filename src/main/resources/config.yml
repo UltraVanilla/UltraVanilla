@@ -2,6 +2,7 @@ spectate-box:
   x: [0, 100]
   z: [0, 200]
   world: world
+  allow-teleport: true
 # 1.20
 permaban-commands:
   - 'co rollback %target% t:99w r:global'
