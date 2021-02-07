@@ -42,7 +42,7 @@ public class SpectateCommand extends UltraCommand implements CommandExecutor {
                 Users.spectators.remove(player.getUniqueId());
                 UltraVanilla.set(player, "spectator", false);
             } else {
-                player.teleport(AnarchyRegion.center);
+                player.teleport(AnarchyRegion.center());
                 player.setGameMode(GameMode.SPECTATOR);
                 Users.spectators.add(player.getUniqueId());
                 UltraVanilla.set(player, "spectator", true);

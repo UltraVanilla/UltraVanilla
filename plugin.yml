@@ -1,5 +1,5 @@
 name: UltraVanilla
-version: ${project.version}
+version: @VERSION@
 main: com.akoot.plugins.ultravanilla.UltraVanilla
 api-version: 1.13
 prefix: UV

@@ -12,6 +12,6 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[*.{yml,yaml,json}]
+[*.{yml,yaml,json,scala,sbt}]
 indent_style = space
 indent_size = 2
