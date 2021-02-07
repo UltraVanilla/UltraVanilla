@@ -1,6 +1,6 @@
 player:
   added:
-    - "spectate mode for anarchy events"
+    - "much better keepinventory-disabling system for anarchy events"
   removed: [ ]
   fixed: [  ]
   changed: [ ]
