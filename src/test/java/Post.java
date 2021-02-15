@@ -1,4 +1,4 @@
-import com.akoot.plugins.ultravanilla.reference.Palette;
+import world.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

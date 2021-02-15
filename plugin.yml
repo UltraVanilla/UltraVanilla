@@ -1,6 +1,6 @@
 name: UltraVanilla
 version: @VERSION@
-main: com.akoot.plugins.ultravanilla.UltraVanilla
+main: world.ultravanilla.UltraVanilla
 api-version: 1.13
 prefix: UV
 authors: [ Akoot_, lordpipe ]
@@ -108,15 +108,6 @@ commands:
     usage: |
       /lag
       /lag median|average
-  ticket:
-    description: Create a ticket to notify admins about something
-    usage: |
-      /ticket create <message>
-      /ticket list
-      /ticket read <id>
-      /ticket close <id>
-      /ticket delete <id>
-      /ticket answer <id> <message>
   tptoggle:
     description: Toggles teleport access
     usage: /tptoggle

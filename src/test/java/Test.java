@@ -1,4 +1,4 @@
-import com.akoot.plugins.ultravanilla.stuff.StringUtil;
+import world.ultravanilla.stuff.StringUtil;
 
 public class Test {
 

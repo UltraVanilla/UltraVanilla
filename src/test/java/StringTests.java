@@ -1,5 +1,5 @@
-import com.akoot.plugins.ultravanilla.reference.Palette;
-import com.akoot.plugins.ultravanilla.stuff.StringUtil;
+import world.ultravanilla.reference.Palette;
+import world.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.junit.Test;
 

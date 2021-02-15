@@ -1,3 +1,7 @@
+discord:
+  token: ""
+  private-reports-channel: 683200639022661651
+  helper-role: 810661891893755924
 spectate-box:
   x: [0, 100]
   z: [0, 200]
