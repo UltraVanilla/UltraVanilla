@@ -332,33 +332,21 @@ class UltraVanilla extends JavaPlugin {
     getCommand("afk").setExecutor(new AfkCommand(UltraVanilla.instance))
     getCommand("msg").setExecutor(new MsgCommand(UltraVanilla.instance))
     getCommand("reply").setExecutor(new ReplyCommand(UltraVanilla.instance))
-    getCommand("changelog").setExecutor(
-      new ChangelogCommand(UltraVanilla.instance)
-    )
-    getCommand("inventory").setExecutor(
-      new InventoryCommand(UltraVanilla.instance)
-    )
+    getCommand("changelog").setExecutor(new ChangelogCommand(UltraVanilla.instance))
+    getCommand("inventory").setExecutor(new InventoryCommand(UltraVanilla.instance))
     getCommand("lag").setExecutor(new LagCommand(UltraVanilla.instance))
     val customizeCommand = new CustomizeCommand(UltraVanilla.instance)
     getCommand("customize").setExecutor(customizeCommand)
     getCommand("rename").setExecutor(customizeCommand)
     getCommand("setlore").setExecutor(customizeCommand)
-    getCommand("tptoggle").setExecutor(
-      new TptoggleCommand(UltraVanilla.instance)
-    )
-    getCommand("timezone").setExecutor(
-      new TimezoneCommand(UltraVanilla.instance)
-    )
+    getCommand("tptoggle").setExecutor(new TptoggleCommand(UltraVanilla.instance))
+    getCommand("timezone").setExecutor(new TimezoneCommand(UltraVanilla.instance))
     getCommand("hat").setExecutor(new HatCommand(UltraVanilla.instance))
     getCommand("user").setExecutor(new UserCommand(UltraVanilla.instance))
     getCommand("smite").setExecutor(new SmiteCommand(UltraVanilla.instance))
     getCommand("back").setExecutor(new BackCommand(UltraVanilla.instance))
-    getCommand("namecolor").setExecutor(
-      new NameColorCommand(UltraVanilla.instance)
-    )
-    getCommand("playtime").setExecutor(
-      new PlayTimeCommand(UltraVanilla.instance)
-    )
+    getCommand("namecolor").setExecutor(new NameColorCommand(UltraVanilla.instance))
+    getCommand("playtime").setExecutor(new PlayTimeCommand(UltraVanilla.instance))
     getCommand("whois").setExecutor(new WhoIsCommand(UltraVanilla.instance))
     val muteCommand = new MuteCommand(UltraVanilla.instance)
     getCommand("mute").setExecutor(muteCommand)
@@ -368,31 +356,20 @@ class UltraVanilla extends JavaPlugin {
     getCommand("mcolor").setExecutor(new McolorCommand(UltraVanilla.instance))
     val signCommand = new SignCommand(UltraVanilla.instance)
     getCommand("sign").setExecutor(signCommand)
-    getServer.getPluginManager.registerEvents(
-      signCommand,
-      UltraVanilla.instance
-    )
+    getServer.getPluginManager.registerEvents(signCommand, UltraVanilla.instance)
     getCommand("promote").setExecutor(new PromoteCommand(UltraVanilla.instance))
 
     getCommand("tempban").setExecutor(new TempBanCommand(UltraVanilla.instance))
     getCommand("ban").setExecutor(new BanCommand(UltraVanilla.instance))
     getCommand("ban-ip").setExecutor(new BanIpCommand(UltraVanilla.instance))
     getCommand("kick").setExecutor(new KickCommand(UltraVanilla.instance))
-    getCommand("permaban").setExecutor(
-      new PermabanCommand(UltraVanilla.instance)
-    )
+    getCommand("permaban").setExecutor(new PermabanCommand(UltraVanilla.instance))
     getCommand("pardon").setExecutor(new PardonCommand(UltraVanilla.instance))
     getCommand("warn").setExecutor(new WarnCommand(UltraVanilla.instance))
-    getCommand("pardon-ip").setExecutor(
-      new PardonIpCommand(UltraVanilla.instance)
-    )
+    getCommand("pardon-ip").setExecutor(new PardonIpCommand(UltraVanilla.instance))
     getCommand("rtp").setExecutor(new RtpCommand(UltraVanilla.instance))
-    getCommand("setgroup").setExecutor(
-      new SetGroupCommand(UltraVanilla.instance)
-    )
-    getCommand("spectate").setExecutor(
-      new SpectateCommand(UltraVanilla.instance)
-    )
+    getCommand("setgroup").setExecutor(new SetGroupCommand(UltraVanilla.instance))
+    getCommand("spectate").setExecutor(new SpectateCommand(UltraVanilla.instance))
 
     jda = JDABuilder.createDefault(getConfig.getString("discord.token")).build()
   }

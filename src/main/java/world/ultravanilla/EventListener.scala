@@ -87,16 +87,14 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
     while ({
       matcher.find
     })
-      message =
-        message.replace(matcher.group, getValue(matcher.group(1), matcher.group(2).toLowerCase.split("\\.")))
+      message = message.replace(matcher.group, getValue(matcher.group(1), matcher.group(2).toLowerCase.split("\\.")))
     // !<command>[(<args>)]
     pattern = Pattern.compile("!([\\w]+)(?:\\(([^)]+)\\))?")
     matcher = pattern.matcher(message)
     while ({
       matcher.find
     })
-      message =
-        message.replaceFirst(Pattern.quote(matcher.group), `macro`(matcher.group(1), matcher.group(2)) + "")
+      message = message.replaceFirst(Pattern.quote(matcher.group), `macro`(matcher.group(1), matcher.group(2)) + "")
     // --as
     if (message.contains("--as ")) {
       val command = message.substring(1, message.indexOf("--as ") - 1)
