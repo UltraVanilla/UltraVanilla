@@ -77,7 +77,7 @@ class UltraVanilla extends JavaPlugin {
     AnarchyRegion.configure(this)
   }
 
-  private def getPluginConfig(name: String, overwrite: Boolean) = {
+  def getPluginConfig(name: String, overwrite: Boolean) = {
     val config = new YamlConfiguration
     val configFile = new File(this.getDataFolder, name)
     init(name, overwrite)
@@ -89,7 +89,7 @@ class UltraVanilla extends JavaPlugin {
     config
   }
 
-  private def init(name: String, overwrite: Boolean) = {
+  def init(name: String, overwrite: Boolean) = {
     val file = new File(this.getDataFolder, name)
     if (!file.exists || overwrite) {
       val fis = getClass.getResourceAsStream("/" + name)
@@ -117,7 +117,7 @@ class UltraVanilla extends JavaPlugin {
     }
   }
 
-  private def saveConfig(config: YamlConfiguration, fileName: String) =
+  def saveConfig(config: YamlConfiguration, fileName: String) =
     try config.save(new File(getDataFolder, fileName))
     catch {
       case e: IOException =>
@@ -435,7 +435,7 @@ object UltraVanilla {
     }
   }
 
-  private def getUserFile(uid: UUID) = {
+  def getUserFile(uid: UUID) = {
     val userFile = new File(Users.DIR, uid.toString + ".yml")
     if (!userFile.exists)
       try userFile.createNewFile

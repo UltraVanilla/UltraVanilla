@@ -34,10 +34,10 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
   val eventBus = plugin.luckPerms.getEventBus
   eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
 
-  private def onUserPromote(event: UserPromoteEvent) =
+  def onUserPromote(event: UserPromoteEvent) =
     UltraVanilla.set(event.getUser.getUniqueId, "last-promotion", System.currentTimeMillis)
 
-  private def unsetAfk(player: Player) = if (Users.isAFK(player)) {
+  def unsetAfk(player: Player) = if (Users.isAFK(player)) {
     Users.afk.remove(player.getUniqueId)
     plugin.getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is no longer AFK")
     player.setPlayerListName(player.getDisplayName)
@@ -61,7 +61,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
     if (Users.isSpectator(player)) spectatorCheck(event.getTo, player)
   }
 
-  private def `macro`(command: String, args: String): String = {
+  def `macro`(command: String, args: String): String = {
     System.out.println(command + ":" + args)
     if (command.equalsIgnoreCase("randp"))
       if (args == null) return plugin.getRandomOnlinePlayer.getName
@@ -145,7 +145,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
     if (Users.isSpectator(player)) spectatorCheck(event.getTo, player)
   }
 
-  private[ultravanilla] def spectatorCheck(to: Location, player: Player) = if (!AnarchyRegion.inside(to)) {
+  def spectatorCheck(to: Location, player: Player) = if (!AnarchyRegion.inside(to)) {
     Users.spectators.remove(player.getUniqueId)
     player.teleport(plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation)
     player.setGameMode(GameMode.SURVIVAL)
