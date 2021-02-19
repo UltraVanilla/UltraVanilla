@@ -317,12 +317,6 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
         }
       }
     }
-    //ignored
-    for (p <- event.getRecipients.asScala) {
-      if (UltraVanilla.isIgnored(p, player)) {
-        event.getRecipients.remove(p)
-      }
-    }
     event.setMessage(message)
     // Chat formatter
     val donator = player.hasPermission("ultravanilla.donator")

@@ -54,9 +54,6 @@ commands:
     usage: |
       /motd
       /motd <new MOTD>
-  ignore:
-    description: Ignore someone
-    usage: /ignore <player>
   home:
     description: Set and teleport to your home(s)
     usage: |

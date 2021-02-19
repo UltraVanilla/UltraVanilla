@@ -321,7 +321,6 @@ class UltraVanilla extends JavaPlugin {
     getCommand("ping").setExecutor(new PingCommand(UltraVanilla.instance))
     getCommand("raw").setExecutor(new RawCommand(UltraVanilla.instance))
     getCommand("motd").setExecutor(new MotdCommand(UltraVanilla.instance))
-    getCommand("ignore").setExecutor(new IgnoreCommand(UltraVanilla.instance))
     getCommand("home").setExecutor(new HomeCommand(UltraVanilla.instance))
     val seenCommand = new SeenCommand(UltraVanilla.instance)
     getCommand("seen").setExecutor(seenCommand)
@@ -478,12 +477,6 @@ object UltraVanilla {
         return null
     }
     config
-  }
-
-  def isIgnored(player: Player, target: Player) = {
-    val ignored =
-      getPlayerConfig(player.getUniqueId).getStringList(Users.IGNORED)
-    ignored.contains(target.getUniqueId.toString)
   }
 
   def add(uid: UUID, key: String, value: String) = {
