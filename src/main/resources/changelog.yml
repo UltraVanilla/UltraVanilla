@@ -1,7 +1,8 @@
 player:
   added:
-    - "much better keepinventory-disabling system for anarchy events"
-  removed: [ ]
+    - "/h alias for /home"
+  removed:
+    - "/ignore command (use Minecraft's builtin ignore instead)"
   fixed: [  ]
   changed: [ ]
   broke: [ ]

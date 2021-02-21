@@ -61,6 +61,13 @@ commands:
       /home list
       /home set <name>
       /home remove <name>
+  h:
+    description: Set and teleport to your home(s)
+    usage: |
+      /h
+      /h list
+      /h set <name>
+      /h remove <name>
   seen:
     description: Check when someone was last or first seen
     usage: /seen <player> first|last

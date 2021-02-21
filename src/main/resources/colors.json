@@ -69,6 +69,7 @@
         "head-admin": "#c72121",
         "admin": "#e74c3c",
         "moderator": "#1f8b4c",
+        "mod": "#1f8b4c",
         "intern": "#8a7189",
         "discord-mod": "#b38866",
         "sage": "#e0606e",

@@ -45,6 +45,7 @@ color:
     headadmin: '#c72121'
     admin: '#e74c3c'
     moderator: '#02adfc'
+    mod: '#02adfc'
     intern: '#8a7189'
     discordmod: '#b38866'
     sage: '#e0606e'
