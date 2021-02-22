@@ -1,9 +1,8 @@
 player:
-  added:
-    - "/h alias for /home"
-  removed:
-    - "/ignore command (use Minecraft's builtin ignore instead)"
-  fixed: [  ]
+  added: [  ]
+  removed: [  ]
+  fixed:
+    - "/seenlast command"
   changed: [ ]
   broke: [ ]
 staff:
