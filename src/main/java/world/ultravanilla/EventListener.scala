@@ -229,11 +229,13 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
     }
   }
 
+  val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH)
+
   @EventHandler def onBlockBreak(event: BlockBreakEvent): Unit = {
     val block = event.getBlock
     val location = block.getLocation
     val loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
-    if (block.getState.getType eq Material.PLAYER_HEAD) if (loreItems != null && !loreItems.isEmpty) {
+    if (loreWhitelist contains block.getState.getType) if (loreItems != null && !loreItems.isEmpty) {
       for (loreItem <- loreItems.asScala) {
         if (loreItem != null && loreItem.getPosition == location) {
           event.setDropItems(false)
@@ -255,7 +257,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
 
   @EventHandler def onBlockPlace(event: BlockPlaceEvent) = {
     val meta = event.getItemInHand.getItemMeta
-    if (event.getItemInHand.getType eq Material.PLAYER_HEAD)
+    if (loreWhitelist contains event.getItemInHand.getType)
       if (meta != null && !(meta.getDisplayName.isEmpty && (meta.getLore != null && meta.getLore.isEmpty))) {
         val item =
           new LoreItem(meta.getDisplayName, meta.getLore, new Position(event.getBlockPlaced.getLocation))

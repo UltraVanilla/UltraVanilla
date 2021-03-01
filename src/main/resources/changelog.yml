@@ -1,8 +1,7 @@
 player:
-  added: [  ]
+  added: [ "redstone torch to block lore whitelist" ]
   removed: [  ]
-  fixed:
-    - "/seenlast command"
+  fixed: [  ]
   changed: [ ]
   broke: [ ]
 staff:
