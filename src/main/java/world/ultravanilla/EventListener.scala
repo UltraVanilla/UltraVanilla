@@ -237,7 +237,15 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
     val loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
     if (loreWhitelist contains block.getState.getType) if (loreItems != null && !loreItems.isEmpty) {
       for (loreItem <- loreItems.asScala) {
-        if (loreItem != null && loreItem.getPosition == location) {
+        // TODO: figure out why rewriting in scala necessitated this jank
+        // TODO: maybe just rework the serialization
+        val loreItemPosition = loreItem.getPosition
+        if (
+          loreItemPosition.getX == location.getX
+          && loreItemPosition.getY == location.getY
+          && loreItemPosition.getZ == location.getZ
+          && loreItemPosition.getWorld == location.getWorld.getUID
+        ) {
           event.setDropItems(false)
           val itemStack = block.getDrops.iterator.next
           val meta = itemStack.getItemMeta
