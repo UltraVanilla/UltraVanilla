@@ -1,6 +1,6 @@
 scalaVersion := "2.13.3"
 organization := "world.ultravanilla"
-version := "1.27.1"
+version := "1.28.0"
 name := "UltraVanilla"
 resolvers ++= List(
   "jitpack.io" at "https://jitpack.io",

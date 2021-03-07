@@ -1,7 +1,7 @@
 player:
-  added: [ "redstone torch to block lore whitelist" ]
-  removed: [  ]
-  fixed: [  ]
+  added: [ ]
+  removed: [ ]
+  fixed: [ "arena spectator mode bugs" ]
   changed: [ ]
   broke: [ ]
 staff:

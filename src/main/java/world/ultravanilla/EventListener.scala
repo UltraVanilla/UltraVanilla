@@ -46,9 +46,9 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
   // Might break with future versions
   @EventHandler def onPlayerTeleport(event: PlayerTeleportEvent) = {
     val player = event.getPlayer
+    if (Users.isSpectator(player)) spectatorCheck(event)
     if (!UltraVanilla.isSuperAdmin(player))
       if (event.getCause.name == "COMMAND" || event.getCause.name == "SPECTATE") {
-
         plugin.getServer.getOnlinePlayers.forEach { p => }
         for (p <- plugin.getServer.getOnlinePlayers.asScala) {
           if (p.getLocation == event.getTo) {
@@ -58,7 +58,6 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
         }
       }
     UltraVanilla.set(player, "last-teleport", new Position(event.getFrom))
-    if (Users.isSpectator(player)) spectatorCheck(event.getTo, player)
   }
 
   def `macro`(command: String, args: String): String = {
@@ -142,15 +141,24 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
   @EventHandler def onPlayerMove(event: PlayerMoveEvent) = {
     val player = event.getPlayer
     unsetAfk(player)
-    if (Users.isSpectator(player)) spectatorCheck(event.getTo, player)
+    if (Users.isSpectator(player)) spectatorCheck(event)
   }
 
-  def spectatorCheck(to: Location, player: Player) = if (!AnarchyRegion.inside(to)) {
-    Users.spectators.remove(player.getUniqueId)
-    player.teleport(plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation)
-    player.setGameMode(GameMode.SURVIVAL)
-    UltraVanilla.set(player, "spectator", false)
-  }
+  def spectatorCheck(event: PlayerMoveEvent) =
+    if (!AnarchyRegion.inside(event.getTo)) {
+      val player = event.getPlayer
+      val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation
+
+      // the ultimate rubberbanding code
+
+      val destination = event.getFrom
+      val attemptedLocation = event.getTo
+
+      destination setPitch attemptedLocation.getPitch
+      destination setYaw attemptedLocation.getYaw + 180.0f
+
+      event.setTo(destination)
+    }
 
   @EventHandler def onServerListPing(event: ServerListPingEvent) = {
     var version = plugin.getServer.getVersion

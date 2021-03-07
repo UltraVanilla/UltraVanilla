@@ -373,7 +373,9 @@ class UltraVanilla extends JavaPlugin {
     getCommand("setgroup").setExecutor(new SetGroupCommand(UltraVanilla.instance))
     getCommand("spectate").setExecutor(new SpectateCommand(UltraVanilla.instance))
 
-    jda = JDABuilder.createDefault(getConfig.getString("discord.token")).build()
+    try {
+      jda = JDABuilder.createDefault(getConfig.getString("discord.token")).build()
+    } catch { case e: Throwable => }
   }
   override def onDisable() = saveStorage()
 
@@ -408,6 +410,15 @@ class UltraVanilla extends JavaPlugin {
       }
     }
     runnable.runTaskTimer(this, delay, period)
+  }
+
+  def scheduleSyncTask(delay: Long)(task: () => Unit) = {
+    val runnable = new BukkitRunnable {
+      override def run(): Unit = {
+        task()
+      }
+    }
+    runnable.runTaskLater(this, delay)
   }
 }
 
