@@ -18,30 +18,30 @@ import java.util.UUID
 
 object SpectateCommand { val COLOR = ChatColor.WHITE }
 class SpectateCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor {
-  this.color = SpectateCommand.COLOR
-  override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]) = {
-    if (sender.isInstanceOf[Player]) {
-      val player = sender.asInstanceOf[Player]
-      val uuid = player.getUniqueId
-      if (Users.spectators.contains(uuid)) {
-        val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation
+    this.color = SpectateCommand.COLOR
+    override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]) = {
+        if (sender.isInstanceOf[Player]) {
+            val player = sender.asInstanceOf[Player]
+            val uuid = player.getUniqueId
+            if (Users.spectators.contains(uuid)) {
+                val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation
 
-        player.setGameMode(GameMode.SURVIVAL)
-        player.teleport(spawn)
-        Users.spectators.remove(player.getUniqueId)
-        UltraVanilla.set(player, "spectator", false)
+                player.setGameMode(GameMode.SURVIVAL)
+                player.teleport(spawn)
+                Users.spectators.remove(player.getUniqueId)
+                UltraVanilla.set(player, "spectator", false)
 
-        plugin.scheduleSyncTask(1) { () =>
-          player.setGameMode(GameMode.SURVIVAL)
-          player.teleport(spawn)
+                plugin.scheduleSyncTask(1) { () =>
+                    player.setGameMode(GameMode.SURVIVAL)
+                    player.teleport(spawn)
+                }
+            } else {
+                player.setGameMode(GameMode.SPECTATOR)
+                player.teleport(AnarchyRegion.center)
+                Users.spectators.add(player.getUniqueId)
+                UltraVanilla.set(player, "spectator", true)
+            }
         }
-      } else {
-        player.setGameMode(GameMode.SPECTATOR)
-        player.teleport(AnarchyRegion.center)
-        Users.spectators.add(player.getUniqueId)
-        UltraVanilla.set(player, "spectator", true)
-      }
+        true
     }
-    true
-  }
 }
