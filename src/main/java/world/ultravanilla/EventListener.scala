@@ -30,18 +30,12 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import scala.jdk.CollectionConverters._
 
-class EventListener(val plugin: UltraVanilla) extends Listener { // get the LuckPerms event bus
+class EventListener(val plugin: UltraVanilla) extends Listener {
     val eventBus = plugin.luckPerms.getEventBus
     eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
 
     def onUserPromote(event: UserPromoteEvent) =
         UltraVanilla.set(event.getUser.getUniqueId, "last-promotion", System.currentTimeMillis)
-
-    def unsetAfk(player: Player) = if (Users.isAFK(player)) {
-        Users.afk.remove(player.getUniqueId)
-        plugin.getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is no longer AFK")
-        player.setPlayerListName(player.getDisplayName)
-    }
 
     // Might break with future versions
     @EventHandler def onPlayerTeleport(event: PlayerTeleportEvent) = {
@@ -140,7 +134,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
 
     @EventHandler def onPlayerMove(event: PlayerMoveEvent) = {
         val player = event.getPlayer
-        unsetAfk(player)
+        plugin.unsetAfk(player)
         if (Users.isSpectator(player)) spectatorCheck(event)
     }
 
@@ -282,96 +276,5 @@ class EventListener(val plugin: UltraVanilla) extends Listener { // get the Luck
                 loreItems.add(item)
                 plugin.store("lore-items", loreItems)
             }
-    }
-
-    @EventHandler def onAsyncPlayerChat(event: AsyncPlayerChatEvent): Unit = {
-        val player = event.getPlayer
-        unsetAfk(player)
-        val config = UltraVanilla.getPlayerConfig(player.getUniqueId)
-        var message = event.getMessage
-        // Mute
-        if (config.getBoolean("muted", false)) {
-            player.sendMessage(MuteCommand.COLOR + "You are muted.")
-            event.setCancelled(true)
-            plugin.getLogger.info(player.getName + " tried to say: " + message)
-            return
-        }
-        // Chat color
-        if (player.hasPermission("ultravanilla.chat.color")) message = Palette.translate(message)
-        // Pings
-        if (message.contains("@")) {
-            val p = Pattern.compile("@([a-zA-Z0-9_]{2,})")
-            val m = p.matcher(message)
-            while ({
-                m.find
-            }) {
-                val `match` = m.group(0)
-                val name = m.group(1)
-                if (name == "everyone" && player.hasPermission("ultravanilla.chat.everyone")) {
-                    for (recipient <- event.getRecipients.asScala) {
-                        message = message.replace(
-                          `match`,
-                          ChatColor.of(plugin.getConfig.getString("color.chat.ping.everyone")) + `match` + ChatColor.RESET
-                        )
-                        plugin.ping(recipient)
-                    }
-                } else {
-                    for (recipient <- event.getRecipients.asScala) {
-                        if (
-                          recipient.getName.toLowerCase.contains(name.toLowerCase) || ChatColor
-                              .stripColor(recipient.getDisplayName)
-                              .toLowerCase
-                              .contains(name)
-                        ) {
-                            message = message.replace(
-                              `match`,
-                              ChatColor.of(plugin.getConfig.getString("color.chat.ping.user")) + name + ChatColor.RESET
-                            )
-                            plugin.ping(player, recipient)
-                        }
-                    }
-                }
-            }
-        }
-        event.setMessage(message)
-        // Chat formatter
-        val donator = player.hasPermission("ultravanilla.donator")
-        val staff = player.hasPermission("ultravanilla.staff-custom")
-        val textPrefix = config.getString("text-prefix", ChatColor.RESET + "")
-        val group = plugin.vault.getPrimaryGroup(player)
-        val rankColor = plugin.getRoleColor(group) + ""
-        val rank = plugin.getConfig.getString(
-          "rename-groups." + group,
-          group.substring(0, 1).toUpperCase + group.substring(1)
-        )
-        val donatorBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.donator")) + ""
-        val rankBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.rank")) + ""
-        val nameBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.name")) + ""
-        val defaultNameColor = ChatColor.of(plugin.getConfig.getString("color.chat.default-name-color")) + ""
-        val staffColor = ChatColor.of(plugin.getConfig.getString("color.rank.staff")) + ""
-        val format = String.format(
-          "%s%s%s[%s%s%s] %s<%s%s> %s%s",
-          if (donator)
-              String.format(
-                "%s[%sD%s] ",
-                donatorBracketsColor,
-                ChatColor.of(plugin.getConfig.getString("color.rank.donator")),
-                donatorBracketsColor
-              )
-          else "",
-          if (staff) String.format("%s[%sStaff%s] ", rankBracketsColor, staffColor, rankBracketsColor)
-          else "",
-          rankBracketsColor,
-          rankColor,
-          rank,
-          rankBracketsColor,
-          nameBracketsColor,
-          defaultNameColor + "%1$s",
-          nameBracketsColor,
-          textPrefix,
-          "%2$s"
-        )
-        val formatted = Palette.translate(format)
-        event.setFormat(formatted)
     }
 }

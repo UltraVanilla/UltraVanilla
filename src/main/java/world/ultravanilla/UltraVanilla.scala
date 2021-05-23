@@ -43,6 +43,7 @@ import world.ultravanilla.reference.{Palette, Users}
 import world.ultravanilla.serializable.{LoreItem, Position, Powertool, Title}
 import world.ultravanilla.stuff.Range
 import world.ultravanilla.EventListener;
+import world.ultravanilla.Chat;
 
 class UltraVanilla extends JavaPlugin {
     var vault: Permission = null
@@ -57,6 +58,8 @@ class UltraVanilla extends JavaPlugin {
     var staffActionsRecord: StaffActionsRecord = null
 
     var jda: JDA = null
+
+    var chat: Chat = null
 
     def getRoleCapitalized(role: String) = getConfig.getString(
       "rename-groups." + role,
@@ -220,6 +223,12 @@ class UltraVanilla extends JavaPlugin {
         saveConfig(storage, "storage.yml")
     }
 
+    def unsetAfk(player: Player) = if (Users.isAFK(player)) {
+        Users.afk.remove(player.getUniqueId)
+        getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is no longer AFK")
+        player.setPlayerListName(player.getDisplayName)
+    }
+
     def getNextRole(player: OfflinePlayer): String = {
         val roles = getAllTimedRoles
         for (i <- 0 until roles.length - 1) {
@@ -308,9 +317,16 @@ class UltraVanilla extends JavaPlugin {
         }
 
         loadConfig(storage, "storage.yml")
+
+        chat = new Chat(UltraVanilla.instance)
+
         getServer.getPluginManager.registerEvents(
           new EventListener(UltraVanilla.instance),
           UltraVanilla.instance
+        )
+        getServer.getPluginManager.registerEvents(
+            chat,
+            UltraVanilla.instance
         )
         getCommand("nick").setExecutor(new NickCommand(UltraVanilla.instance))
         getCommand("suicide").setExecutor(new SuicideCommand(UltraVanilla.instance))
