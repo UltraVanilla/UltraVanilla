@@ -59,8 +59,6 @@ class UltraVanilla extends JavaPlugin {
 
     var jda: JDA = null
 
-    var chat: Chat = null
-
     def getRoleCapitalized(role: String) = getConfig.getString(
       "rename-groups." + role,
       role.substring(0, 1).toUpperCase + role.substring(1)
@@ -318,7 +316,7 @@ class UltraVanilla extends JavaPlugin {
 
         loadConfig(storage, "storage.yml")
 
-        chat = new Chat(UltraVanilla.instance)
+        UltraVanilla.chat = new Chat(UltraVanilla.instance)
 
         getServer.getPluginManager.registerEvents(
           new EventListener(UltraVanilla.instance),
@@ -440,6 +438,8 @@ class UltraVanilla extends JavaPlugin {
 
 object UltraVanilla {
     var instance: UltraVanilla = null
+
+    var chat: Chat = null
 
     def getPlayerConfig(player: OfflinePlayer): YamlConfiguration =
         getPlayerConfig(player.getUniqueId)
