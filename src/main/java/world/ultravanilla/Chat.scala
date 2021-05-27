@@ -29,13 +29,23 @@ import java.util
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import scala.jdk.CollectionConverters._
+import scala.collection.mutable.ArrayBuffer
 
 class Chat(val plugin: UltraVanilla) extends Listener {
+    var history = ArrayBuffer[ChatEvent]()
+
+    def sink(chatEvent: ChatEvent) = {
+        history.addOne(chatEvent)
+        // unimplemented
+        ???
+    }
+
     @EventHandler def onAsyncPlayerChat(event: AsyncPlayerChatEvent): Unit = {
         val player = event.getPlayer
         plugin.unsetAfk(player)
         val config = UltraVanilla.getPlayerConfig(player.getUniqueId)
         var message = event.getMessage
+
         // Mute
         if (config.getBoolean("muted", false)) {
             player.sendMessage(MuteCommand.COLOR + "You are muted.")
@@ -120,6 +130,8 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         )
         val formatted = Palette.translate(format)
         event.setFormat(formatted)
+
+        if (false) sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
     }
 
 }

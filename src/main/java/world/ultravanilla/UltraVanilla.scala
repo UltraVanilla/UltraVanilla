@@ -323,7 +323,7 @@ class UltraVanilla extends JavaPlugin {
           UltraVanilla.instance
         )
         getServer.getPluginManager.registerEvents(
-            chat,
+            UltraVanilla.chat,
             UltraVanilla.instance
         )
         getCommand("nick").setExecutor(new NickCommand(UltraVanilla.instance))
