@@ -15,6 +15,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.world.PortalCreateEvent
 import org.bukkit.event.player._
 import org.bukkit.event.server.ServerListPingEvent
 import org.bukkit.inventory.ItemStack
@@ -276,5 +277,23 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 loreItems.add(item)
                 plugin.store("lore-items", loreItems)
             }
+    }
+
+    @EventHandler def onPortalCreate(event: PortalCreateEvent) = {
+        if (event.getReason == PortalCreateEvent.CreateReason.END_PLATFORM) {
+            val world = event.getWorld()
+
+            // create a 2nd end platform suitable for farming
+            for (x <- 198 to 202)
+                for (z <- -2 to 2) {
+                    val location = new Location(world, x, 48, z)
+                    if (!location.getChunk().isLoaded())
+                        location.getChunk().load()
+
+                    val block = world.getBlockAt(location)
+                    block.setType(Material.OBSIDIAN)
+                }
+
+        }
     }
 }
