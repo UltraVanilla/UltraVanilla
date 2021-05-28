@@ -284,16 +284,19 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             val world = event.getWorld
 
             // create a 2nd end platform suitable for farming
-            for (x <- 198 to 202)
-                for (z <- -2 to 2) {
-                    val location = new Location(world, x, 48, z)
-                    if (!location.getChunk.isLoaded)
-                        location.getChunk.load()
+            val square = (y: Int, material: Material) => for (x <- 198 to 202) for (z <- -2 to 2) {
+                val location = new Location(world, x, y, z)
+                if (!location.getChunk.isLoaded)
+                    location.getChunk.load()
 
-                    val block = world.getBlockAt(location)
-                    block.setType(Material.OBSIDIAN)
-                }
+                val block = world.getBlockAt(location)
+                block setType material
+            }
 
+            square(48, Material.OBSIDIAN)
+            square(49, Material.AIR)
+            square(50, Material.AIR)
+            square(51, Material.AIR)
         }
     }
 }
