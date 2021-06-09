@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.stuff.Range;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -84,8 +82,9 @@ public class RtpCommand extends UltraCommand implements CommandExecutor, TabExec
                 }
             }
 
-            player_loop: for (Player player : players) {
-                for(ItemStack item : player.getInventory().getContents()) {
+            player_loop:
+            for (Player player : players) {
+                for (ItemStack item : player.getInventory().getContents()) {
                     if (item != null) {
                         player.sendMessage("You must clear your inventory!");
                         continue player_loop;

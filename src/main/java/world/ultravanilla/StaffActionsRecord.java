@@ -13,7 +13,7 @@ public class StaffActionsRecord {
     public void log(StaffAction staffAction) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                "INSERT INTO " + plugin.getConfig().getString("sql.table") + " (created, expires, type, description, sources, targets) VALUES (?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO " + plugin.getConfig().getString("sql.table") + " (created, expires, type, description, sources, targets) VALUES (?, ?, ?, ?, ?, ?)");
 
             preparedStatement.setObject(1, new Timestamp(staffAction.getCreated()));
             preparedStatement.setObject(2, new Timestamp(staffAction.getExpires()));

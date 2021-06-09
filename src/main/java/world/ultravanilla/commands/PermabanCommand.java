@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.StaffAction;
-import world.ultravanilla.UltraVanilla;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import world.ultravanilla.StaffAction;
+import world.ultravanilla.UltraVanilla;
 
 public class PermabanCommand extends AdminCommand implements CommandExecutor, TabExecutor {
 

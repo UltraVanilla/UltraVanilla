@@ -1,10 +1,6 @@
 package world.ultravanilla
 
-import java.util
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.configuration.file.FileConfiguration
-import world.ultravanilla.serializable.Position
+import org.bukkit.{Bukkit, Location}
 
 object AnarchyRegion {
     var center = new Location(null, 0, 0, 0)

@@ -1,12 +1,12 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.stuff.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import world.ultravanilla.UltraVanilla;
+import world.ultravanilla.stuff.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

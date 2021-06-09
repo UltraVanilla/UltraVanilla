@@ -1,7 +1,7 @@
-import world.ultravanilla.reference.Palette;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import world.ultravanilla.reference.Palette;
 
 import java.io.File;
 import java.io.IOException;

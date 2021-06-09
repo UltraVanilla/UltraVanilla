@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Palette;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -11,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.Palette;
 
 import java.util.ArrayList;

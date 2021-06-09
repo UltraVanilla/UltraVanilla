@@ -1,17 +1,15 @@
 scalaVersion := "2.13.3"
 organization := "world.ultravanilla"
-version := "1.29.0"
+version := "2.0.0-SNAPSHOT"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
     "papermc" at "https://papermc.io/repo/repository/maven-public/",
-    ("vault-repo" at "http://nexus.hc.to/content/repositories/pub_releases").withAllowInsecureProtocol(true),
     "dmulloy2-repo" at "https://repo.dmulloy2.net/nexus/repository/public/",
     "jcenter" at "https://jcenter.bintray.com"
 )
 libraryDependencies ++= List(
     "com.destroystokyo.paper" % "paper-api" % "1.16.1-R0.1-SNAPSHOT" % Provided,
-    "com.github.MilkBowl" % "VaultAPI" % "1.7" % Provided,
     "net.luckperms" % "api" % "5.2" % Provided,
     "net.dv8tion" % "JDA" % "4.2.0_228" exclude("club.minnced", "opus-java")
 )
@@ -34,13 +32,16 @@ assemblyMergeStrategy in assembly := {
         oldStrategy(x)
 }
 
-
 val sbtDefaultTarget = System.getProperty("sbtDefaultTarget", "false")
+val sbtOutputDirectory = System.getProperty("sbtOutputDirectory", "testserver/plugins")
 
 assemblyOutputPath in assembly := {
+    val default = (assemblyOutputPath in assembly).value
     if (sbtDefaultTarget == "true") {
-        (assemblyOutputPath in assembly).value
+        println("default")
+        default
     } else {
-        file("testserver/plugins/UltraVanilla.jar")         
+        println("notdefault")
+        file(sbtOutputDirectory + "/" + name.value + "-" + version.value + ".jar")
     }
 }

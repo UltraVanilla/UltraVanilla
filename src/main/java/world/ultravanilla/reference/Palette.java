@@ -12,12 +12,9 @@ import java.util.regex.Pattern;
 
 public class Palette {
 
-    private static final Random random = new Random();
-
     public static final char[] rainbowseq = {'a', '3', '9', '5', 'd', 'c', '6', 'e'};
     public static final String colorMatch = "(" + String.join("|", LegacyColors.listNames()) + "|#[0-9a-fA-F]{6}|[0-9a-fA-F])";
     public static final String MIX_SYMBOL = "+";
-
     public static final ChatColor VERB = ChatColor.ITALIC;
     public static final ChatColor NOUN = ChatColor.of("#3772ff");
     public static final ChatColor NUMBER = ChatColor.of("#F7D27E");
@@ -26,6 +23,7 @@ public class Palette {
     public static final ChatColor FALSE = ChatColor.of("#dd2d4a");
     public static final ChatColor RIGHT = ChatColor.of("#cacf85");
     public static final ChatColor WRONG = ChatColor.of("#880d1e");
+    private static final Random random = new Random();
 
     public static ChatColor random() {
         return ChatColor.of(Color.getHSBColor(random.nextFloat(), 0.6f, 0.95f));
@@ -128,7 +126,7 @@ public class Palette {
 
         for (int i = 0, l = str.length(); i < l; i++) {
             // do interpolation in CIE space
-            float[] interpolatedCie = new float[] {
+            float[] interpolatedCie = new float[]{
                     cieFrom[0] + (i * (1.0F / l)) * (cieTo[0] - cieFrom[0]),
                     cieFrom[1] + (i * (1.0F / l)) * (cieTo[1] - cieFrom[1]),
                     cieFrom[2] + (i * (1.0F / l)) * (cieTo[2] - cieFrom[2])

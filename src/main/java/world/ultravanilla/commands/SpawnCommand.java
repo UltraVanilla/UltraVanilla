@@ -1,13 +1,13 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.AnarchyRegion;
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import world.ultravanilla.AnarchyRegion;
+import world.ultravanilla.UltraVanilla;
+import world.ultravanilla.serializable.Position;
 
 public class SpawnCommand extends UltraCommand implements CommandExecutor {
 

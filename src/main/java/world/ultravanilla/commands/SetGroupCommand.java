@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Palette;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.track.Track;
@@ -11,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.Palette;
 
 import java.util.ArrayList;

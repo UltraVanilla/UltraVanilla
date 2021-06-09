@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Users;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

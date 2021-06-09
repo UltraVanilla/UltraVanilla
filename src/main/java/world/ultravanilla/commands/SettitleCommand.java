@@ -1,8 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Users;
-import world.ultravanilla.serializable.Title;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -11,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.Users;
 import world.ultravanilla.serializable.Title;
 

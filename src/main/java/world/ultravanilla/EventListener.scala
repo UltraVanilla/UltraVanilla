@@ -3,47 +3,37 @@ package world.ultravanilla
 import net.luckperms.api.event.EventBus
 import net.luckperms.api.event.user.track.UserPromoteEvent
 import net.md_5.bungee.api.ChatColor
-import org.bukkit.GameMode
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.OfflinePlayer
-import org.bukkit.block.Block
-import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.block.{BlockBreakEvent, BlockPlaceEvent}
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.world.PortalCreateEvent
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause
 import org.bukkit.event.player._
 import org.bukkit.event.server.ServerListPingEvent
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import world.ultravanilla.commands.{AfkCommand, MuteCommand}
+import org.bukkit.event.world.PortalCreateEvent
+import org.bukkit.event.{EventHandler, Listener}
+import org.bukkit.{GameMode, Location, Material}
 import world.ultravanilla.reference.{Palette, Users}
 import world.ultravanilla.serializable.{LoreItem, Position}
 import world.ultravanilla.stuff.Range
 
 import java.io.IOException
 import java.util
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 import scala.jdk.CollectionConverters._
 
 class EventListener(val plugin: UltraVanilla) extends Listener {
-    val eventBus = plugin.luckPerms.getEventBus
+    val eventBus: EventBus = plugin.luckPerms.getEventBus
     eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
+    val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH)
 
-    def onUserPromote(event: UserPromoteEvent) =
+    def onUserPromote(event: UserPromoteEvent): Unit =
         UltraVanilla.set(event.getUser.getUniqueId, "last-promotion", System.currentTimeMillis)
 
     // Might break with future versions
-    @EventHandler def onPlayerTeleport(event: PlayerTeleportEvent) = {
+    @EventHandler def onPlayerTeleport(event: PlayerTeleportEvent): Unit = {
         val player = event.getPlayer
         if (Users.isSpectator(player)) spectatorCheck(event)
         if (!UltraVanilla.isSuperAdmin(player))
-            if (event.getCause.name == "COMMAND" || event.getCause.name == "SPECTATE") {
+            if (event.getCause == TeleportCause.COMMAND || event.getCause == TeleportCause.SPECTATE) {
                 plugin.getServer.getOnlinePlayers.forEach { p => }
                 for (p <- plugin.getServer.getOnlinePlayers.asScala) {
                     if (p.getLocation == event.getTo) {
@@ -55,37 +45,34 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         UltraVanilla.set(player, "last-teleport", new Position(event.getFrom))
     }
 
-    def `macro`(command: String, args: String): String = {
-        System.out.println(command + ":" + args)
-        if (command.equalsIgnoreCase("randp"))
-            if (args == null) return plugin.getRandomOnlinePlayer.getName
-            else if (command.equalsIgnoreCase("rands")) if (args != null) {
-                val strings = args.split(",")
-                return strings(new Range(strings.length).getRandom.toInt)
-            } else if (command.startsWith("rand")) {
-                var range =
-                    if (args == null) new Range(0, 1)
-                    else stuff.Range.of(args)
-                if (range == null) return null
-                val random = range.getRandom
-                if (command.endsWith("f")) return random + ""
-                else return String.format("%.0f", random)
-            }
-        null
-    }
+    def spectatorCheck(event: PlayerMoveEvent): Unit =
+        if (!AnarchyRegion.inside(event.getTo)) {
+            val player = event.getPlayer
+            val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation
 
-    @EventHandler def onCommandType(e: PlayerCommandPreprocessEvent) = {
+            // the ultimate rubberbanding code
+
+            val destination = event.getFrom
+            val attemptedLocation = event.getTo
+
+            destination setPitch attemptedLocation.getPitch
+            destination setYaw attemptedLocation.getYaw + 180.0f
+
+            event.setTo(destination)
+        }
+
+    @EventHandler def onCommandType(e: PlayerCommandPreprocessEvent): Unit = {
         var message = e.getMessage
         var pattern = Pattern.compile("\\$\\{([\\w]+)\\.([\\w-.]+)}")
         var matcher = pattern.matcher(message)
-        while ({
+        while ( {
             matcher.find
         })
             message = message.replace(matcher.group, getValue(matcher.group(1), matcher.group(2).toLowerCase.split("\\.")))
         // !<command>[(<args>)]
         pattern = Pattern.compile("!([\\w]+)(?:\\(([^)]+)\\))?")
         matcher = pattern.matcher(message)
-        while ({
+        while ( {
             matcher.find
         })
             message = message.replaceFirst(Pattern.quote(matcher.group), `macro`(matcher.group(1), matcher.group(2)) + "")
@@ -108,6 +95,25 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             message = "/execute in " + world + " run " + command
         }
         e.setMessage(message)
+    }
+
+    def `macro`(command: String, args: String): String = {
+        System.out.println(command + ":" + args)
+        if (command.equalsIgnoreCase("randp"))
+            if (args == null) return plugin.getRandomOnlinePlayer.getName
+            else if (command.equalsIgnoreCase("rands")) if (args != null) {
+                val strings = args.split(",")
+                return strings(new Range(strings.length).getRandom.toInt)
+            } else if (command.startsWith("rand")) {
+                val range =
+                    if (args == null) new Range(0, 1)
+                    else stuff.Range.of(args)
+                if (range == null) return null
+                val random = range.getRandom
+                if (command.endsWith("f")) return random + ""
+                else return String.format("%.0f", random)
+            }
+        null
     }
 
     def getValue(parent: String, children: Array[String]): String = {
@@ -133,45 +139,29 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         parent + "." + children.mkString(",")
     }
 
-    @EventHandler def onPlayerMove(event: PlayerMoveEvent) = {
+    @EventHandler def onPlayerMove(event: PlayerMoveEvent): Unit = {
         val player = event.getPlayer
         plugin.unsetAfk(player)
         if (Users.isSpectator(player)) spectatorCheck(event)
     }
 
-    def spectatorCheck(event: PlayerMoveEvent) =
-        if (!AnarchyRegion.inside(event.getTo)) {
-            val player = event.getPlayer
-            val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position].getLocation
-
-            // the ultimate rubberbanding code
-
-            val destination = event.getFrom
-            val attemptedLocation = event.getTo
-
-            destination setPitch attemptedLocation.getPitch
-            destination setYaw attemptedLocation.getYaw + 180.0f
-
-            event.setTo(destination)
-        }
-
-    @EventHandler def onServerListPing(event: ServerListPingEvent) = {
+    @EventHandler def onServerListPing(event: ServerListPingEvent): Unit = {
         var version = plugin.getServer.getVersion
         version = version.substring(version.indexOf("MC: ") + 4, version.length - 1)
         event.setMotd(
-          Palette.translate(plugin.getConfig.getString("motd.server-name")) + " " + ChatColor.of(
-            plugin.getConfig.getString("motd.version-color")
-          ) + version + "\n" + ChatColor.RESET + plugin.motd
+            Palette.translate(plugin.getConfig.getString("motd.server-name")) + " " + ChatColor.of(
+                plugin.getConfig.getString("motd.version-color")
+            ) + version + "\n" + ChatColor.RESET + plugin.motd
         )
     }
 
-    @EventHandler def onPlayerJoin(event: PlayerJoinEvent) = {
+    @EventHandler def onPlayerJoin(event: PlayerJoinEvent): Unit = {
         val player = event.getPlayer
         val nick = UltraVanilla.getPlayerConfig(player.getUniqueId).getString("display-name")
         if (nick != null) {
             UltraVanilla.updateDisplayName(player)
             event.setJoinMessage(
-              event.getJoinMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
+                event.getJoinMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
             )
         }
         if (!player.hasPlayedBefore) {
@@ -209,7 +199,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         UltraVanilla.set(player.getUniqueId, Users.LOGOUT_LOCATION, new Position(event.getPlayer.getLocation))
         UltraVanilla.updatePlaytime(player)
         event.setQuitMessage(
-          event.getQuitMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
+            event.getQuitMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
         )
     }
 
@@ -232,8 +222,6 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         }
     }
 
-    val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH)
-
     @EventHandler def onBlockBreak(event: BlockBreakEvent): Unit = {
         val block = event.getBlock
         val location = block.getLocation
@@ -244,16 +232,16 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 // TODO: maybe just rework the serialization
                 val loreItemPosition = loreItem.getPosition
                 if (
-                  loreItemPosition.getX == location.getX
-                  && loreItemPosition.getY == location.getY
-                  && loreItemPosition.getZ == location.getZ
-                  && loreItemPosition.getWorld == location.getWorld.getUID
+                    loreItemPosition.getX == location.getX
+                        && loreItemPosition.getY == location.getY
+                        && loreItemPosition.getZ == location.getZ
+                        && loreItemPosition.getWorld == location.getWorld.getUID
                 ) {
                     event.setDropItems(false)
                     val itemStack = block.getDrops.iterator.next
                     val meta = itemStack.getItemMeta
                     val name = loreItem.getName
-                    if (!name.isEmpty) meta.setDisplayName(name)
+                    if (name.nonEmpty) meta.setDisplayName(name)
                     val lore = loreItem.getLore
                     if (lore != null) meta.setLore(lore)
                     itemStack.setItemMeta(meta)

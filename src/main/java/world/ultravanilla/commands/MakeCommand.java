@@ -1,12 +1,12 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 
 import java.util.ArrayList;
 import java.util.List;

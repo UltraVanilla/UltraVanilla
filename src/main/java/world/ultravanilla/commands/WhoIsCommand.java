@@ -1,12 +1,12 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class WhoIsCommand extends UltraCommand implements CommandExecutor, TabEx
                             sendMessage(sender, "&d%s &:is none other than &r%s&:!", name, displayName);
                         }
                     }
-                    sendMessage(sender, "&d%s &:is a &7%s&:.", name, plugin.vault().getPrimaryGroup(player));
+                    sendMessage(sender, "&d%s &:is a &7%s&:.", name, plugin.getRole(player));
                     return true;
                 }
             }

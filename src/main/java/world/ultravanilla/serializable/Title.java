@@ -1,9 +1,9 @@
 package world.ultravanilla.serializable;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Users;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import world.ultravanilla.UltraVanilla;
+import world.ultravanilla.reference.Users;
 
 import java.util.ArrayList;
 import java.util.HashMap;

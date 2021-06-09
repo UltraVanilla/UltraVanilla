@@ -3,8 +3,8 @@ discord:
   private-reports-channel: 683200639022661651
   helper-role: 810661891893755924
 spectate-box:
-  x: [0, 100]
-  z: [0, 200]
+  x: [ 0, 100 ]
+  z: [ 0, 200 ]
   world: world
   allow-teleport: true
 # 1.20
@@ -74,16 +74,9 @@ rename-groups:
   grandchampion: GrandChampion
 motd:
   server-name: '&#f9c345&lUltra&r&#f7ecd4Vanilla'
-  version-color: '#c94545'
+  version-color: '#88cfef'
   strings:
-    - 'The origin of 416 is classified.'
-    - 'Sometimes it rains FISH'
-    - 'Visit Alliance City for capitalism, visit Cara for commuism'
-    - 'HoboNation is tall, Burzum is epic, EverFae is magical'
-    - 'Who is Spaghettatron?'
-    - '&5&lPrism&f is here to&5 &0&l&o&msuck up&5&l&o &d&l&o&ndouble&f your diamonds!'
-    - 'Naval Detroit - High Class Living for High Class Citizens'
-    - 'Your message goes here'
+    - '&#88cfefYour Ad Here'
 default-group: default
 format:
   default: '&r<{name-color}{name}&r> {text-color}{message}'

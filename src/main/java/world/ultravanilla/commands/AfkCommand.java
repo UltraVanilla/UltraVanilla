@@ -1,7 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Users;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,7 +26,7 @@ public class AfkCommand extends UltraCommand implements CommandExecutor, TabExec
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (Users.isAFK(player)) {
+                if (UltraVanilla.getPlayerConfig(player).getBoolean("afk", false)) {
                     Users.afk.remove(player.getUniqueId());
                     plugin.getServer().broadcastMessage(player.getDisplayName() + color + " is no longer AFK");
                 } else {

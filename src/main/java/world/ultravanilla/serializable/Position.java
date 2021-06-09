@@ -45,6 +45,22 @@ public class Position implements ConfigurationSerializable {
                 Float.valueOf(args.get("yaw") + "F"));
     }
 
+    public static Position of(String string) {
+        Pattern p = Pattern.compile("([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) (.+)");
+        Matcher m = p.matcher(string);
+        if (m.matches()) {
+            return new Position("",
+                    Bukkit.getWorld(m.group(6)).getUID(),
+                    Double.parseDouble(m.group(1)),
+                    Double.parseDouble(m.group(2)),
+                    Double.parseDouble(m.group(3)),
+                    Float.parseFloat(m.group(4)),
+                    Float.parseFloat(m.group(5))
+            );
+        }
+        return null;
+    }
+
     public float getYaw() {
         return yaw;
     }
@@ -145,22 +161,6 @@ public class Position implements ConfigurationSerializable {
 
     public String toStringTrimmed() {
         return String.format("%s, %s, %s, %s", (int) Math.round(x), (int) Math.round(y), (int) Math.round(z), Bukkit.getWorld(world).getName());
-    }
-
-    public static Position of(String string) {
-        Pattern p = Pattern.compile("([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) ([-0-9.]+) (.+)");
-        Matcher m = p.matcher(string);
-        if (m.matches()) {
-            return new Position("",
-                    Bukkit.getWorld(m.group(6)).getUID(),
-                    Double.parseDouble(m.group(1)),
-                    Double.parseDouble(m.group(2)),
-                    Double.parseDouble(m.group(3)),
-                    Float.parseFloat(m.group(4)),
-                    Float.parseFloat(m.group(5))
-            );
-        }
-        return null;
     }
 
     public String toStringLite() {

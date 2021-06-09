@@ -1,7 +1,7 @@
 player:
   added: [ "another end platform at 200, 48, 0" ]
   removed: [ ]
-  fixed: [  ]
+  fixed: [ ]
   changed: [ ]
   broke: [ ]
 staff:

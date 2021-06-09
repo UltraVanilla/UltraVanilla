@@ -1,14 +1,12 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.StaffAction;
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import world.ultravanilla.StaffAction;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.stuff.StringUtil;
 
 import java.util.ArrayList;
@@ -39,11 +37,11 @@ public class AdminCommand extends UltraCommand implements TabExecutor {
         long expires = staffAction.getExpires();
         String description = staffAction.getDescription();
         String message =
-            PLAYER + staffAction.getSource() + COLOR +
-                " " + staffAction.getType().getVerb() + " " +
-                PLAYER + staffAction.getTarget() + COLOR +
-                (expires > 0 ? " for " + TIME + StringUtil.getTimeString(expires - staffAction.getCreated()) + COLOR : "") +
-                (!description.isEmpty() ? ": " + ChatColor.RESET + description + COLOR : "") + COLOR + ".";
+                PLAYER + staffAction.getSource() + COLOR +
+                        " " + staffAction.getType().getVerb() + " " +
+                        PLAYER + staffAction.getTarget() + COLOR +
+                        (expires > 0 ? " for " + TIME + StringUtil.getTimeString(expires - staffAction.getCreated()) + COLOR : "") +
+                        (!description.isEmpty() ? ": " + ChatColor.RESET + description + COLOR : "") + COLOR + ".";
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.hasPermission("ultravanilla.mod")) {
                 player.sendMessage(message);

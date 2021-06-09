@@ -1,8 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.LegacyColors;
-import world.ultravanilla.reference.Palette;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.LegacyColors;
 import world.ultravanilla.reference.Palette;
 

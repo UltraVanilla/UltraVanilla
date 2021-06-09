@@ -1,7 +1,7 @@
-import world.ultravanilla.reference.Palette;
-import world.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.junit.Test;
+import world.ultravanilla.reference.Palette;
+import world.ultravanilla.stuff.StringUtil;
 
 import static org.junit.Assert.assertEquals;
 

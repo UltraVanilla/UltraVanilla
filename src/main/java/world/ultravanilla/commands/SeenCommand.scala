@@ -1,19 +1,14 @@
 package world.ultravanilla.commands
 
-import world.ultravanilla.UltraVanilla
-import world.ultravanilla.reference.Palette
-import world.ultravanilla.reference.Users
-import world.ultravanilla.serializable.Position
 import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.{ClickEvent, TextComponent}
 import org.bukkit.OfflinePlayer
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabExecutor
+import org.bukkit.command.{Command, CommandExecutor, CommandSender, TabExecutor}
 import org.bukkit.entity.Player
-import java.text.DateFormat
+import world.ultravanilla.UltraVanilla
+import world.ultravanilla.reference.{Palette, Users}
+import world.ultravanilla.serializable.Position
+
 import java.text.SimpleDateFormat
 import java.util._
 
@@ -23,71 +18,6 @@ object SeenCommand {
 
 class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor with TabExecutor {
     this.color = SeenCommand.COLOR
-
-    def sendLastSeen(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
-        val lastSeen = player.getLastPlayed
-        sender.sendMessage(
-          Palette.NOUN + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(lastSeen, timeZone)
-        )
-        if (UltraVanilla.isStaff(sender)) {
-            sendPromotionInfo(sender, player, timeZone)
-            sendLocationInfo(sender, player)
-        }
-    }
-
-    def sendFirstJoined(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
-        val firstJoined = player.getFirstPlayed
-        sender.sendMessage(
-          Palette.NOUN + player.getName + SeenCommand.COLOR + " first joined on " + Palette.OBJECT + getDate(
-            firstJoined,
-            timeZone
-          )
-        )
-    }
-
-    def sendPromotionInfo(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = plugin.async(() => {
-        sender.sendMessage(
-          SeenCommand.COLOR + "Last promoted: " + Palette.OBJECT + getDate(
-            UltraVanilla.getPlayerConfig(player).getLong("last-promotion"),
-            timeZone
-          )
-        )
-        val nextRole = plugin.getRoleShouldHave(player)
-        if (nextRole != null) {
-            sender.sendMessage(
-              String.format(
-                "%sNext promotion: %s%s",
-                SeenCommand.COLOR,
-                Palette.OBJECT,
-                getDate(plugin.getNextRoleDate(player), timeZone)
-              )
-            )
-            if (!plugin.hasRightRole(player))
-                sender.sendMessage(
-                  String.format(
-                    "%sThey should be %s%s %sby now!",
-                    SeenCommand.COLOR,
-                    plugin.getRoleColor(nextRole),
-                    nextRole,
-                    SeenCommand.COLOR
-                  )
-                )
-        }
-    })
-
-    def sendLocationInfo(sender: CommandSender, player: OfflinePlayer) = {
-        val position = UltraVanilla.getPlayerConfig(player).get(Users.LOGOUT_LOCATION).asInstanceOf[Position]
-        if (position != null) {
-            val textComponent = new TextComponent("Last logout location: ")
-            textComponent.setColor(SeenCommand.COLOR)
-            val component = new TextComponent
-            component.setColor(ChatColor.WHITE)
-            component.setText(position.toStringTrimmed)
-            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand))
-            textComponent.addExtra(component)
-            sender.sendMessage(textComponent)
-        }
-    }
 
     override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]): Boolean = {
         var timeZone = TimeZone.getDefault
@@ -121,6 +51,47 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         false
     }
 
+    def sendLastSeen(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
+        val lastSeen = player.getLastPlayed
+        sender.sendMessage(
+            Palette.NOUN + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(lastSeen, timeZone)
+        )
+        if (UltraVanilla.isStaff(sender)) {
+            sendPromotionInfo(sender, player, timeZone)
+            sendLocationInfo(sender, player)
+        }
+    }
+
+    def sendPromotionInfo(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = plugin.async(() => {
+        sender.sendMessage(
+            SeenCommand.COLOR + "Last promoted: " + Palette.OBJECT + getDate(
+                UltraVanilla.getPlayerConfig(player).getLong("last-promotion"),
+                timeZone
+            )
+        )
+        val nextRole = plugin.getRoleShouldHave(player)
+        if (nextRole != null) {
+            sender.sendMessage(
+                String.format(
+                    "%sNext promotion: %s%s",
+                    SeenCommand.COLOR,
+                    Palette.OBJECT,
+                    getDate(plugin.getNextRoleDate(player), timeZone)
+                )
+            )
+            if (!plugin.hasRightRole(player))
+                sender.sendMessage(
+                    String.format(
+                        "%sThey should be %s%s %sby now!",
+                        SeenCommand.COLOR,
+                        plugin.getRoleColor(nextRole),
+                        nextRole,
+                        SeenCommand.COLOR
+                    )
+                )
+        }
+    })
+
     def getDate(time: Long, timezone: TimeZone) = if (time == 0) {
         "a long time ago"
     } else {
@@ -128,6 +99,30 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         val df = new SimpleDateFormat(plugin.getCommandString("seen.format.date-format"))
         df.setTimeZone(timezone)
         df.format(date)
+    }
+
+    def sendLocationInfo(sender: CommandSender, player: OfflinePlayer) = {
+        val position = UltraVanilla.getPlayerConfig(player).get(Users.LOGOUT_LOCATION).asInstanceOf[Position]
+        if (position != null) {
+            val textComponent = new TextComponent("Last logout location: ")
+            textComponent.setColor(SeenCommand.COLOR)
+            val component = new TextComponent
+            component.setColor(ChatColor.WHITE)
+            component.setText(position.toStringTrimmed)
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, position.getTpCommand))
+            textComponent.addExtra(component)
+            sender.sendMessage(textComponent)
+        }
+    }
+
+    def sendFirstJoined(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
+        val firstJoined = player.getFirstPlayed
+        sender.sendMessage(
+            Palette.NOUN + player.getName + SeenCommand.COLOR + " first joined on " + Palette.OBJECT + getDate(
+                firstJoined,
+                timeZone
+            )
+        )
     }
 
     override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]) = {

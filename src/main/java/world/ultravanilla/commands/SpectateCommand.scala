@@ -1,24 +1,20 @@
 package world.ultravanilla.commands
 
-import world.ultravanilla.AnarchyRegion
-import world.ultravanilla.UltraVanilla
-import world.ultravanilla.reference.LegacyColors
-import world.ultravanilla.reference.Palette
-import world.ultravanilla.reference.Users
-import world.ultravanilla.serializable.Position
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabExecutor
+import org.bukkit.command.{Command, CommandExecutor, CommandSender}
 import org.bukkit.entity.Player
-import java.util
-import java.util.UUID
+import world.ultravanilla.reference.Users
+import world.ultravanilla.serializable.Position
+import world.ultravanilla.{AnarchyRegion, UltraVanilla}
 
-object SpectateCommand { val COLOR = ChatColor.WHITE }
+object SpectateCommand {
+    val COLOR = ChatColor.WHITE
+}
+
 class SpectateCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor {
     this.color = SpectateCommand.COLOR
+
     override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]) = {
         if (sender.isInstanceOf[Player]) {
             val player = sender.asInstanceOf[Player]

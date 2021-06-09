@@ -1,9 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.AnarchyRegion;
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Palette;
-import world.ultravanilla.serializable.Position;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,6 +10,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import world.ultravanilla.AnarchyRegion;
+import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.Palette;
 import world.ultravanilla.serializable.Position;
 
@@ -110,7 +108,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
      * Gets the location of a home
      *
      * @param homes The player's homes
-     * @param name   The name of the home
+     * @param name  The name of the home
      * @return The location of the specified home. Returns null of not found
      */
     private Location getHomeLocation(List<Position> homes, String name) {
@@ -380,7 +378,24 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
     }
 
     private boolean canSetAnotherHome(Player player, List<Position> homes, String homeName) {
-        return hasHome(homeName, homes) || homes.size() == 0 || player.hasPermission("ultravanilla.command.home.unlimited");
+
+        if (hasHome(homeName, homes) || player.hasPermission("ultravanilla.command.home.unlimited")) {
+            return true;
+        } else {
+            int numberOfHomes = homes.size();
+            if (numberOfHomes > 0) {
+                // number of max homes should be 5, otherwise unlimited
+                for (int i = numberOfHomes + 1; i <= 5; i++) {
+                    System.out.println("Checking if they have permission node: " + "ultravanilla.command.home.multiple." + i);
+                    if (player.hasPermission("ultravanilla.command.home.multiple." + i)) {
+                        return true;
+                    }
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

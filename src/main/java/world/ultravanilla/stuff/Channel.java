@@ -1,7 +1,7 @@
 package world.ultravanilla.stuff;
 
-import world.ultravanilla.reference.Palette;
 import net.md_5.bungee.api.ChatColor;
+import world.ultravanilla.reference.Palette;
 
 public class Channel {
 

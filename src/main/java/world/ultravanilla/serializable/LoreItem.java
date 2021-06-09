@@ -1,8 +1,8 @@
 package world.ultravanilla.serializable;
 
-import world.ultravanilla.reference.Palette;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import world.ultravanilla.reference.Palette;
 
 import java.util.ArrayList;
 import java.util.HashMap;

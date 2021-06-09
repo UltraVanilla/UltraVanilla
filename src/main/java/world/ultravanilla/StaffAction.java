@@ -22,12 +22,12 @@ public class StaffAction {
         this.expires = expires;
     }
 
-    public long getExpires() {
-        return expires;
-    }
-
     public StaffAction(Type type, String description, String source, String target, long created) {
         this(type, description, source, target, created, -1);
+    }
+
+    public long getExpires() {
+        return expires;
     }
 
     public void setExpires(long expires) {

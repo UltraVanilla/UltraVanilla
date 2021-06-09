@@ -1,8 +1,5 @@
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
-import world.ultravanilla.reference.Palette;
-import world.ultravanilla.stuff.StringUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;

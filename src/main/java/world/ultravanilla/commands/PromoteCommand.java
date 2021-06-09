@@ -1,7 +1,5 @@
-
 package world.ultravanilla.commands;
 
-import world.ultravanilla.UltraVanilla;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.model.group.Group;
@@ -12,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import world.ultravanilla.UltraVanilla;
 
 import java.util.List;
 
@@ -58,6 +57,7 @@ public class PromoteCommand extends UltraCommand implements TabExecutor {
 
         return true;
     }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return null;

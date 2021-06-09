@@ -1,52 +1,32 @@
 package world.ultravanilla
 
+import net.dv8tion.jda.api.{JDA, JDABuilder}
 import net.luckperms.api.LuckPerms
 import net.luckperms.api.model.user.User
-import net.luckperms.api.node.Node
 import net.luckperms.api.node.NodeType
 import net.luckperms.api.node.types.InheritanceNode
 import net.md_5.bungee.api.ChatColor
-import net.milkbowl.vault.permission.Permission
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.OfflinePlayer
-import org.bukkit.Sound
-import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.command.CommandSender
-import org.bukkit.configuration.InvalidConfigurationException
-import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.configuration.serialization.ConfigurationSerialization
+import org.bukkit.configuration.{InvalidConfigurationException, MemorySection}
 import org.bukkit.entity.Player
-import org.bukkit.plugin.RegisteredServiceProvider
 import org.bukkit.plugin.java.JavaPlugin
-
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.nio.file.Files
-import java.util._
-import scala.collection.mutable.ListBuffer
-import scala.collection.immutable.Seq
-import scala.io.Source
-import scala.collection.JavaConverters._
-import org.yaml.snakeyaml.Yaml
-
-import scala.annotation.varargs
 import org.bukkit.scheduler.BukkitRunnable
-import net.dv8tion.jda.api.JDABuilder
-import net.dv8tion.jda.api.JDA
+import org.bukkit.{Bukkit, Location, OfflinePlayer, Sound}
 import world.ultravanilla.commands._
 import world.ultravanilla.reference.{Palette, Users}
 import world.ultravanilla.serializable.{LoreItem, Position, Powertool, Title}
 import world.ultravanilla.stuff.Range
-import world.ultravanilla.EventListener;
-import world.ultravanilla.Chat;
+
+import java.io.{File, FileOutputStream, IOException}
+import java.util._
+import scala.annotation.varargs
+import scala.collection.JavaConverters._
+import scala.io.Source;
 
 class UltraVanilla extends JavaPlugin {
-    var vault: Permission = null
     var luckPerms: LuckPerms = null
 
     var changelog: YamlConfiguration = null
@@ -59,71 +39,14 @@ class UltraVanilla extends JavaPlugin {
 
     var jda: JDA = null
 
-    def getRoleCapitalized(role: String) = getConfig.getString(
-      "rename-groups." + role,
-      role.substring(0, 1).toUpperCase + role.substring(1)
-    )
-
     def getColoredRole(role: String) = ChatColor.of(
-      getConfig.getString("color.rank." + role, "#ffffff")
+        getConfig.getString("color.rank." + role, "#ffffff")
     ) + getRoleCapitalized(role)
 
-    def setMOTD(motd: String) = this.motd = Palette.translate(motd)
-
-    def loadConfigs() = {
-        init("join.txt", false)
-        getPluginConfig("config.yml", false)
-        changelog = getPluginConfig("changelog.yml", true)
-        storage = getPluginConfig("storage.yml", false)
-        AnarchyRegion.configure(this)
-    }
-
-    def getPluginConfig(name: String, overwrite: Boolean) = {
-        val config = new YamlConfiguration
-        val configFile = new File(this.getDataFolder, name)
-        init(name, overwrite)
-        try config.load(configFile)
-        catch {
-            case e @ (_: IOException | _: InvalidConfigurationException) =>
-                e.printStackTrace()
-        }
-        config
-    }
-
-    def init(name: String, overwrite: Boolean) = {
-        val file = new File(this.getDataFolder, name)
-        if (!file.exists || overwrite) {
-            val fis = getClass.getResourceAsStream("/" + name)
-            var fos: FileOutputStream = null
-            try {
-                fos = new FileOutputStream(file)
-                val buf = new Array[Byte](1024)
-                var i = 0
-                while ({
-                    i = fis.read(buf)
-                    i != -1
-                }) {
-                    fos.write(buf, 0, i)
-                }
-            } catch {
-                case e: Exception =>
-                    e.printStackTrace()
-            } finally try {
-                if (fis != null) fis.close()
-                if (fos != null) fos.close()
-            } catch {
-                case e: Exception =>
-                    e.printStackTrace()
-            }
-        }
-    }
-
-    def saveConfig(config: YamlConfiguration, fileName: String) =
-        try config.save(new File(getDataFolder, fileName))
-        catch {
-            case e: IOException =>
-                e.printStackTrace()
-        }
+    def getRoleCapitalized(role: String) = getConfig.getString(
+        "rename-groups." + role,
+        role.substring(0, 1).toUpperCase + role.substring(1)
+    )
 
     @throws[IOException]
     def firstJoin(name: String) = {
@@ -135,28 +58,19 @@ class UltraVanilla extends JavaPlugin {
         }
     }
 
-    def ping(target: Player) = target.playSound(
-      target.getLocation,
-      Sound.BLOCK_NOTE_BLOCK_PLING,
-      1.0f,
-      1.5f
-    )
-
     def ping(sender: CommandSender, target: Player): Unit = {
         if (Users.isAFK(target)) sender.sendMessage(target.getName + " is AFK")
         ping(target)
     }
 
-    def getStaffActionsRecord = staffActionsRecord
+    def ping(target: Player) = target.playSound(
+        target.getLocation,
+        Sound.BLOCK_NOTE_BLOCK_PLING,
+        1.0f,
+        1.5f
+    )
 
-    def loadConfig(config: YamlConfiguration, file: String) = {
-        val configFile = new File(getDataFolder, file)
-        try config.load(configFile)
-        catch {
-            case exception @ (_: IOException | _: InvalidConfigurationException) =>
-                exception.printStackTrace()
-        }
-    }
+    def getStaffActionsRecord = staffActionsRecord
 
     def getTitle(title: String, color: ChatColor) =
         getString("title", "{title}", title, "$color", color + "")
@@ -165,7 +79,7 @@ class UltraVanilla extends JavaPlugin {
     def getString(key: String, format: String*) = {
         var message = getConfig.getString("strings." + key)
         var i = 0
-        while ({
+        while ( {
             i < format.length
         }) {
             message = message.replace(format(i), format(i + 1))
@@ -185,7 +99,7 @@ class UltraVanilla extends JavaPlugin {
         val list = getConfig.getStringList("strings." + key)
         var message = list.get(random.nextInt(list.size - 1))
         var i = 0
-        while ({
+        while ( {
             i < format.length
         }) {
             message = message.replace(format(i), format(i + 1))
@@ -217,15 +131,14 @@ class UltraVanilla extends JavaPlugin {
         saveConfig(storage, "storage.yml")
     }
 
-    def saveStorage() = {
-        saveConfig(storage, "storage.yml")
-    }
-
     def unsetAfk(player: Player) = if (Users.isAFK(player)) {
         Users.afk.remove(player.getUniqueId)
         getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is no longer AFK")
         player.setPlayerListName(player.getDisplayName)
     }
+
+    def getNextRoleDate(player: OfflinePlayer) =
+        player.getFirstPlayed + getConfig.getLong("times." + getNextRole(player))
 
     def getNextRole(player: OfflinePlayer): String = {
         val roles = getAllTimedRoles
@@ -237,27 +150,20 @@ class UltraVanilla extends JavaPlugin {
         roles(0)
     }
 
-    def getNextRoleDate(player: OfflinePlayer) =
-        player.getFirstPlayed + getConfig.getLong("times." + getNextRole(player))
-
-    def getRole(player: OfflinePlayer) = if (player.isOnline) {
-        vault.getPrimaryGroup(player.asInstanceOf[Player])
-    } else {
-
-        vault.getPrimaryGroup(null, player)
-    }
-
-    def async(task: Runnable) =
-        Bukkit.getScheduler.runTaskAsynchronously(this, task)
-
-    def getRoleColor(group: String) =
-        ChatColor.of(getConfig.getString("color.rank." + group, "RESET"))
+    def getRole(player: OfflinePlayer) =
+        luckPerms.getUserManager.getUser(player.getUniqueId).getPrimaryGroup
 
     def getAllTimedRoles = getConfig
         .get("times")
         .asInstanceOf[MemorySection]
         .getKeys(false)
         .toArray(new Array[String](0))
+
+    def async(task: Runnable) =
+        Bukkit.getScheduler.runTaskAsynchronously(this, task)
+
+    def getRoleColor(group: String) =
+        ChatColor.of(getConfig.getString("color.rank." + group, "RESET"))
 
     def hasRightRole(player: OfflinePlayer) =
         getRole(player) == getRoleShouldHave(player)
@@ -278,12 +184,6 @@ class UltraVanilla extends JavaPlugin {
 
         staffActionsRecord = new StaffActionsRecord(this)
 
-        // Vault API
-        val vaultProvider =
-            getServer.getServicesManager.getRegistration(classOf[Permission])
-        if (vaultProvider == null) getLogger.warning("Could not link to Vault.")
-        else vault = vaultProvider.getProvider
-
         // Add luckperms API
         val luckPermsProvider =
             Bukkit.getServicesManager.getRegistration(classOf[LuckPerms])
@@ -291,16 +191,16 @@ class UltraVanilla extends JavaPlugin {
             getLogger.warning("Could not link to LuckPerms.")
         else luckPerms = luckPermsProvider.getProvider
         ConfigurationSerialization.registerClass(
-          classOf[Position],
-          "com.akoot.plugins.ultravanilla.serializable.Position"
+            classOf[Position],
+            "com.akoot.plugins.ultravanilla.serializable.Position"
         )
         ConfigurationSerialization.registerClass(
-          classOf[Powertool],
-          "com.akoot.plugins.ultravanilla.serializable.Powertool"
+            classOf[Powertool],
+            "com.akoot.plugins.ultravanilla.serializable.Powertool"
         )
         ConfigurationSerialization.registerClass(
-          classOf[Title],
-          "com.akoot.plugins.ultravanilla.serializable.Title"
+            classOf[Title],
+            "com.akoot.plugins.ultravanilla.serializable.Title"
         )
         ConfigurationSerialization.registerClass(classOf[LoreItem], "LoreItem")
 
@@ -318,14 +218,23 @@ class UltraVanilla extends JavaPlugin {
 
         UltraVanilla.chat = new Chat(UltraVanilla.instance)
 
+        // Spaghettatron!
+        try {
+            jda = JDABuilder.createDefault(getConfig.getString("discord.token")).build()
+        } catch {
+            case _: Throwable =>
+        }
+
         getServer.getPluginManager.registerEvents(
-          new EventListener(UltraVanilla.instance),
-          UltraVanilla.instance
+            new world.ultravanilla.EventListener(UltraVanilla.instance),
+            UltraVanilla.instance
         )
         getServer.getPluginManager.registerEvents(
             UltraVanilla.chat,
             UltraVanilla.instance
         )
+
+
         getCommand("nick").setExecutor(new NickCommand(UltraVanilla.instance))
         getCommand("suicide").setExecutor(new SuicideCommand(UltraVanilla.instance))
         getCommand("make").setExecutor(new MakeCommand(UltraVanilla.instance))
@@ -386,35 +295,65 @@ class UltraVanilla extends JavaPlugin {
         getCommand("rtp").setExecutor(new RtpCommand(UltraVanilla.instance))
         getCommand("setgroup").setExecutor(new SetGroupCommand(UltraVanilla.instance))
         getCommand("spectate").setExecutor(new SpectateCommand(UltraVanilla.instance))
-
-        try {
-            jda = JDABuilder.createDefault(getConfig.getString("discord.token")).build()
-        } catch { case e: Throwable => }
     }
-    override def onDisable() = saveStorage()
 
-    // https://github.com/LuckPerms/api-cookbook/blob/master/src/main/java/me/lucko/lpcookbook/commands/SetGroupCommand.java
-    def setGroup(player: OfflinePlayer, group: String) =
-        luckPerms.getUserManager.modifyUser(
-          player.getUniqueId,
-          (user: User) => {
-              def foo(user: User) = {
-                  // Remove all other inherited groups the user had before.
-                  user.data.clear(NodeType.INHERITANCE.matches(_))
-                  user.data.remove(InheritanceNode.builder("default").build)
-                  // Create a node to add to the player.
-                  val node = InheritanceNode.builder(group).build
-                  // Add the node to the user.
-                  user.data.add(node)
-              }
+    def setMOTD(motd: String) = this.motd = Palette.translate(motd)
 
-              foo(user)
-          }
-        )
+    def loadConfigs() = {
+        init("join.txt", false)
+        getPluginConfig("config.yml", false)
+        changelog = getPluginConfig("changelog.yml", true)
+        storage = getPluginConfig("storage.yml", false)
+        AnarchyRegion.configure(this)
+    }
 
-    def getRandomOnlinePlayer = {
-        val players = getServer.getOnlinePlayers
-        players.asScala.toSeq(new Range(players.size).getRandom.toInt)
+    def getPluginConfig(name: String, overwrite: Boolean) = {
+        val config = new YamlConfiguration
+        val configFile = new File(this.getDataFolder, name)
+        init(name, overwrite)
+        try config.load(configFile)
+        catch {
+            case e@(_: IOException | _: InvalidConfigurationException) =>
+                e.printStackTrace()
+        }
+        config
+    }
+
+    def init(name: String, overwrite: Boolean) = {
+        val file = new File(this.getDataFolder, name)
+        if (!file.exists || overwrite) {
+            val fis = getClass.getResourceAsStream("/" + name)
+            var fos: FileOutputStream = null
+            try {
+                fos = new FileOutputStream(file)
+                val buf = new Array[Byte](1024)
+                var i = 0
+                while ( {
+                    i = fis.read(buf)
+                    i != -1
+                }) {
+                    fos.write(buf, 0, i)
+                }
+            } catch {
+                case e: Exception =>
+                    e.printStackTrace()
+            } finally try {
+                if (fis != null) fis.close()
+                if (fos != null) fos.close()
+            } catch {
+                case e: Exception =>
+                    e.printStackTrace()
+            }
+        }
+    }
+
+    def loadConfig(config: YamlConfiguration, file: String) = {
+        val configFile = new File(getDataFolder, file)
+        try config.load(configFile)
+        catch {
+            case exception@(_: IOException | _: InvalidConfigurationException) =>
+                exception.printStackTrace()
+        }
     }
 
     def scheduleSyncRepeatingTask(delay: Long, period: Long)(task: () => Unit) = {
@@ -424,6 +363,65 @@ class UltraVanilla extends JavaPlugin {
             }
         }
         runnable.runTaskTimer(this, delay, period)
+    }
+
+    def afk(player: Player) = {
+        if (Users.isAFK(player)) {
+            Users.afk.remove(player.getUniqueId)
+            getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is no longer AFK")
+            //TODO: implement this or something
+            //            val chatEvent = new ChatEvent(
+            //                getConfig.getLong("discord.server-chat"),
+            //                player.getUniqueId,
+            //                player.getDisplayName + " is no longer AFK",
+            //                "",
+            //                false,
+            //                false,
+            //                false,
+            //                false,
+            //                ChatSource.InGame)
+        }
+        else {
+            Users.afk.add(player.getUniqueId)
+            getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is now AFK")
+        }
+    }
+
+    override def onDisable() = saveStorage()
+
+    def saveStorage() = {
+        saveConfig(storage, "storage.yml")
+    }
+
+    def saveConfig(config: YamlConfiguration, fileName: String) =
+        try config.save(new File(getDataFolder, fileName))
+        catch {
+            case e: IOException =>
+                e.printStackTrace()
+        }
+
+    // https://github.com/LuckPerms/api-cookbook/blob/master/src/main/java/me/lucko/lpcookbook/commands/SetGroupCommand.java
+    def setGroup(player: OfflinePlayer, group: String) =
+        luckPerms.getUserManager.modifyUser(
+            player.getUniqueId,
+            (user: User) => {
+                def foo(user: User) = {
+                    // Remove all other inherited groups the user had before.
+                    user.data.clear(NodeType.INHERITANCE.matches(_))
+                    user.data.remove(InheritanceNode.builder("default").build)
+                    // Create a node to add to the player.
+                    val node = InheritanceNode.builder(group).build
+                    // Add the node to the user.
+                    user.data.add(node)
+                }
+
+                foo(user)
+            }
+        )
+
+    def getRandomOnlinePlayer = {
+        val players = getServer.getOnlinePlayers
+        players.asScala.toSeq(new Range(players.size).getRandom.toInt)
     }
 
     def scheduleSyncTask(delay: Long)(task: () => Unit) = {
@@ -441,15 +439,9 @@ object UltraVanilla {
 
     var chat: Chat = null
 
-    def getPlayerConfig(player: OfflinePlayer): YamlConfiguration =
-        getPlayerConfig(player.getUniqueId)
-
     def getInstance = instance
 
     def set(player: Player, key: String, value: Any): Unit =
-        set(player.getUniqueId, key, value)
-
-    def set(player: OfflinePlayer, key: String, value: Any): Unit =
         set(player.getUniqueId, key, value)
 
     def set(uid: UUID, key: String, value: Any) = {
@@ -464,26 +456,8 @@ object UltraVanilla {
         }
     }
 
-    def getUserFile(uid: UUID) = {
-        val userFile = new File(Users.DIR, uid.toString + ".yml")
-        if (!userFile.exists)
-            try userFile.createNewFile
-            catch {
-                case e: IOException =>
-                    e.printStackTrace()
-            }
-        userFile
-    }
-
-    def getPlayerConfig(uid: UUID): YamlConfiguration = {
-        val config = new YamlConfiguration
-        try config.load(getUserFile(uid))
-        catch {
-            case e @ (_: IOException | _: InvalidConfigurationException) =>
-                return null
-        }
-        config
-    }
+    def set(player: OfflinePlayer, key: String, value: Any): Unit =
+        set(player.getUniqueId, key, value)
 
     def add(uid: UUID, key: String, value: String) = {
         val list = getPlayerConfig(uid).getStringList(key)
@@ -500,6 +474,22 @@ object UltraVanilla {
     def isSuperAdmin(player: Player) =
         getPlayerConfig(player.getUniqueId).getBoolean("super-admin", false)
 
+    def updateDisplayName(player: Player) = {
+        val config = UltraVanilla.getPlayerConfig(player)
+        var displayName = config.getString("display-name")
+        if (displayName != null)
+            displayName = ChatColor.valueOf(config.getString("name-color", "RESET")) + displayName
+        player.setDisplayName(displayName)
+        player.setPlayerListName(
+            (if (displayName != null) displayName
+            else player.getName) + (if (Users.isAFK(player)) " §7§o(AFK)"
+            else "")
+        )
+    }
+
+    def getPlayerConfig(player: OfflinePlayer): YamlConfiguration =
+        getPlayerConfig(player.getUniqueId)
+
     def getPlayTime(player: OfflinePlayer) = {
         val difference = player.getLastSeen - player.getLastLogin
         UltraVanilla.getPlayerConfig(player).getLong("playtime", 0L) + difference
@@ -508,28 +498,36 @@ object UltraVanilla {
     def updatePlaytime(player: OfflinePlayer) =
         UltraVanilla.set(player, "playtime", getPlayTime(player))
 
-    def updateDisplayName(player: Player) = {
-        val config = UltraVanilla.getPlayerConfig(player)
-        var displayName = config.getString("display-name")
-        if (displayName != null)
-            displayName = ChatColor.valueOf(config.getString("name-color", "RESET")) + displayName
-        player.setDisplayName(displayName)
-        player.setPlayerListName(
-          (if (displayName != null) displayName
-           else player.getName) + (if (Users.isAFK(player)) " §7§o(AFK)"
-                                   else "")
-        )
+    def getPlayerConfig(uid: UUID): YamlConfiguration = {
+        val config = new YamlConfiguration
+        try config.load(getUserFile(uid))
+        catch {
+            case e@(_: IOException | _: InvalidConfigurationException) =>
+                return null
+        }
+        config
+    }
+
+    def getUserFile(uid: UUID) = {
+        val userFile = new File(Users.DIR, uid.toString + ".yml")
+        if (!userFile.exists)
+            try userFile.createNewFile
+            catch {
+                case e: IOException =>
+                    e.printStackTrace()
+            }
+        userFile
     }
 
     def isSafeLocation(location: Location): Boolean = {
         try {
             val feet = location.getBlock
             if (
-              !feet.getType.isTransparent && !feet.getLocation
-                  .add(0, 1, 0)
-                  .getBlock
-                  .getType
-                  .isTransparent
+                !feet.getType.isTransparent && !feet.getLocation
+                    .add(0, 1, 0)
+                    .getBlock
+                    .getType
+                    .isTransparent
             ) return false // not transparent (will suffocate)
             val head = feet.getRelative(BlockFace.UP)
             if (!head.getType.isTransparent) return false
