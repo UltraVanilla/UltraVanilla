@@ -83,7 +83,7 @@ commands:
     description: Teleport to spawn
     usage: /spawn
   oldspawn:
-    aliases: [os]
+    aliases: [os, spawn2, s2]
     description: Teleport to old spawn
     usage: /oldspawn
   print:
