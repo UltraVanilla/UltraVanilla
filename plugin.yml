@@ -79,8 +79,13 @@ commands:
     description: Check when someone was first seen
     usage: /<command> <player>
   spawn:
+    aliases: [s]
     description: Teleport to spawn
     usage: /spawn
+  oldspawn:
+    aliases: [os]
+    description: Teleport to old spawn
+    usage: /oldspawn
   print:
     description: Print a message
     usage: /print <message> [\n<new line>]
