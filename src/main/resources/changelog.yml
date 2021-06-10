@@ -1,5 +1,7 @@
 player:
-  added: [ "Added /oldspawn command with /os, /s2 and /spawn2 aliases. Also added /s alias for /spawn" ]
+  added:    
+    - /oldspawn command with /os, /s2 and /spawn2 aliases.
+    - /s alias for /spawn
   removed: [ ]
   fixed: [ ]
   changed: [ ]
