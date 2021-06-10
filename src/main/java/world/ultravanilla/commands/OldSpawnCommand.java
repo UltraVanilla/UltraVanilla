@@ -41,7 +41,7 @@ public class OldSpawnCommand extends UltraCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("ultravanilla.command.oldspawn.set")) {
-                        player.sendMessage(format(command, "message.set"));
+                        player.sendMessage(format(command, "Old spawn has been set"));
                         plugin.getConfig().set("oldspawn", new Position(player.getLocation()));
                         plugin.saveConfig();
                     } else {
@@ -73,3 +73,4 @@ public class OldSpawnCommand extends UltraCommand implements CommandExecutor {
         return true;
     }
 }
+
