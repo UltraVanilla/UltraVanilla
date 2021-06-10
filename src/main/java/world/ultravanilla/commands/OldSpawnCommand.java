@@ -45,10 +45,10 @@ public class OldSpawnCommand extends UltraCommand implements CommandExecutor {
                         plugin.getConfig().set("oldspawn", new Position(player.getLocation()));
                         plugin.saveConfig();
                     } else {
-                        sender.sendMessage(plugin.getString("no-permission", "{action}", "set oldspawn"));
+                        sender.sendMessage(plugin.getString("no-permission", "{action}", "set Old Spawn"));
                     }
                 } else {
-                    sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the oldspawn"));
+                    sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the Old Spawn"));
                 }
             } else {
                 Position oldspawn = (Position) plugin.getConfig().get("oldspawn");
@@ -61,7 +61,7 @@ public class OldSpawnCommand extends UltraCommand implements CommandExecutor {
                     if (sender.hasPermission("ultravanilla.command.oldspawn.player")) {
                         player.teleport(oldspawn.getLocation());
                     } else {
-                        sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to oldspawn.");
+                        sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to Old Spawn.");
                     }
                 } else {
                     sender.sendMessage(format(command, "error.not-set"));
