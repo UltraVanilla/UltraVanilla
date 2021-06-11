@@ -1,4 +1,4 @@
-scalaVersion := "2.13.3"
+scalaVersion := "2.13.5"
 organization := "world.ultravanilla"
 version := "2.0.0-SNAPSHOT"
 name := "UltraVanilla"
@@ -9,13 +9,13 @@ resolvers ++= List(
     "jcenter" at "https://jcenter.bintray.com"
 )
 libraryDependencies ++= List(
-    "com.destroystokyo.paper" % "paper-api" % "1.16.1-R0.1-SNAPSHOT" % Provided,
+    "com.destroystokyo.paper" % "paper-api" % "1.16.5-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.2" % Provided,
     "net.dv8tion" % "JDA" % "4.2.0_228" exclude("club.minnced", "opus-java")
 )
 
-scalacOptions += "-target:11"
-javacOptions ++= Seq("-source", "11", "-target", "11")
+scalacOptions += "-target:16"
+javacOptions ++= Seq("-source", "16", "-target", "16")
 
 Compile / resourceGenerators += Def.task {
     val file = (Compile / resourceManaged).value / "plugin.yml"
@@ -25,23 +25,21 @@ Compile / resourceGenerators += Def.task {
     Seq(file)
 }.taskValue
 
-assemblyMergeStrategy in assembly := {
+assembly / assemblyMergeStrategy := {
     case "module-info.class" => MergeStrategy.first
     case x =>
-        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        val oldStrategy = (assembly / assemblyMergeStrategy).value
         oldStrategy(x)
 }
 
 val sbtDefaultTarget = System.getProperty("sbtDefaultTarget", "false")
 val sbtOutputDirectory = System.getProperty("sbtOutputDirectory", "testserver/plugins")
 
-assemblyOutputPath in assembly := {
-    val default = (assemblyOutputPath in assembly).value
+assembly / assemblyOutputPath := {
+    val default = (assembly / assemblyOutputPath).value
     if (sbtDefaultTarget == "true") {
-        println("default")
         default
     } else {
-        println("notdefault")
         file(sbtOutputDirectory + "/" + name.value + "-" + version.value + ".jar")
     }
 }
