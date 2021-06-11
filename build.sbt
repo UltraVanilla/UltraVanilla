@@ -10,8 +10,8 @@ resolvers ++= List(
 )
 libraryDependencies ++= List(
     "com.destroystokyo.paper" % "paper-api" % "1.16.5-R0.1-SNAPSHOT" % Provided,
-    "net.luckperms" % "api" % "5.2" % Provided,
-    "net.dv8tion" % "JDA" % "4.2.0_228" exclude("club.minnced", "opus-java")
+    "net.luckperms" % "api" % "5.3" % Provided,
+    "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 
 scalacOptions += "-target:16"
