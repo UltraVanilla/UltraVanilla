@@ -54,7 +54,10 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
     def sendLastSeen(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
         val lastSeen = player.getLastPlayed
         sender.sendMessage(
-            Palette.NOUN + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(lastSeen, timeZone)
+            Palette.NOUN + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(
+                lastSeen,
+                timeZone
+            )
         )
         if (UltraVanilla.isStaff(sender)) {
             sendPromotionInfo(sender, player, timeZone)
@@ -125,16 +128,15 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         )
     }
 
-    override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]) = {
-        val suggestions = new java.util.ArrayList[String]
+    override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]): List[String] = {
         if (args.length == 1)
-            java.util.Arrays
-                .stream(plugin.getServer.getOfflinePlayers)
-                .forEach((p) => suggestions.add(p.getName))
+            return getSuggestions(plugin.offlineAutocompleteList, args)
         else if (command.getName == "seen") {
+            val suggestions = new ArrayList[String]
             suggestions.add("first")
             suggestions.add("last")
+            return getSuggestions(suggestions, args)
         }
-        getSuggestions(suggestions, args)
+        null
     }
 }

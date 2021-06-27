@@ -4,7 +4,7 @@ player:
     - /s alias for /spawn
   removed: [ ]
   fixed:
-    - cache not being hit when using /playtime
+    - cache not being hit when using /playtime, allowing a DoS attack
   changed: [ ]
   broke: [ ]
 staff:

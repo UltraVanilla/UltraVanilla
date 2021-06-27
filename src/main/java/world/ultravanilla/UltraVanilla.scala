@@ -441,7 +441,6 @@ class UltraVanilla extends JavaPlugin {
         autocompleteLastUpdated = new Date
 
         for (player <- getServer.getOfflinePlayers) {
-            System.out.println(player.getName)
             val name = player.getName
             if (!cachedAutocompleteList.contains(name))
                 cachedAutocompleteList.add(player.getName)

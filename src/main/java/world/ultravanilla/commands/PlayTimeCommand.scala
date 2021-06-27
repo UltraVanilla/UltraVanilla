@@ -11,17 +11,17 @@ import org.bukkit.entity.Player
 import world.ultravanilla.UltraVanilla
 import world.ultravanilla.reference.Palette
 import world.ultravanilla.stuff.StringUtil
-import java.util
 
 object PlayTimeCommand {
     val COLOR = ChatColor.of("#8DF6C8")
-
-    private def getPlayTime(player: OfflinePlayer) =
-        StringUtil.getTimeString(player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20L * 1000L)
 }
 
 class PlayTimeCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor with TabExecutor {
     this.color = PlayTimeCommand.COLOR
+
+    def getPlayTime(player: OfflinePlayer) = {
+        StringUtil.getTimeString(player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20L * 1000L)
+    }
 
     override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]): Boolean = {
         var player = if (args.length == 0) {
@@ -40,15 +40,12 @@ class PlayTimeCommand(val instance: UltraVanilla) extends UltraCommand(instance)
         }
 
         sender.sendMessage(
-          Palette.NOUN + player.getName + PlayTimeCommand.COLOR + " has played for " + Palette.NUMBER + PlayTimeCommand
-              .getPlayTime(player)
+            Palette.NOUN + player.getName + PlayTimeCommand.COLOR + " has played for " + Palette.NUMBER + getPlayTime(player)
         )
         true
     }
 
     override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]) = {
-        val suggestions = new util.ArrayList[String]
-        util.Arrays.stream(plugin.getServer.getOfflinePlayers).forEach((p) => suggestions.add(p.getName))
-        getSuggestions(suggestions, args)
+        getSuggestions(plugin.offlineAutocompleteList, args)
     }
 }
