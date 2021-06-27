@@ -31,7 +31,7 @@ class PlayTimeCommand(val instance: UltraVanilla) extends UltraCommand(instance)
             }
             sender.asInstanceOf[Player]
         } else if (args.length == 1) {
-            plugin.getServer.getOfflinePlayerIfCached(args(0))
+            plugin.getServer.getOfflinePlayer(args(0))
         } else return false
 
         if (player == null || !(player.hasPlayedBefore || player.isOnline)) {
