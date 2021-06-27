@@ -79,7 +79,7 @@ class UltraVanilla extends JavaPlugin {
     def getString(key: String, format: String*) = {
         var message = getConfig.getString("strings." + key)
         var i = 0
-        while ( {
+        while ({
             i < format.length
         }) {
             message = message.replace(format(i), format(i + 1))
@@ -99,7 +99,7 @@ class UltraVanilla extends JavaPlugin {
         val list = getConfig.getStringList("strings." + key)
         var message = list.get(random.nextInt(list.size - 1))
         var i = 0
-        while ( {
+        while ({
             i < format.length
         }) {
             message = message.replace(format(i), format(i + 1))
@@ -234,7 +234,6 @@ class UltraVanilla extends JavaPlugin {
             UltraVanilla.instance
         )
 
-
         getCommand("nick").setExecutor(new NickCommand(UltraVanilla.instance))
         getCommand("suicide").setExecutor(new SuicideCommand(UltraVanilla.instance))
         getCommand("make").setExecutor(new MakeCommand(UltraVanilla.instance))
@@ -314,7 +313,7 @@ class UltraVanilla extends JavaPlugin {
         init(name, overwrite)
         try config.load(configFile)
         catch {
-            case e@(_: IOException | _: InvalidConfigurationException) =>
+            case e @ (_: IOException | _: InvalidConfigurationException) =>
                 e.printStackTrace()
         }
         config
@@ -329,7 +328,7 @@ class UltraVanilla extends JavaPlugin {
                 fos = new FileOutputStream(file)
                 val buf = new Array[Byte](1024)
                 var i = 0
-                while ( {
+                while ({
                     i = fis.read(buf)
                     i != -1
                 }) {
@@ -352,7 +351,7 @@ class UltraVanilla extends JavaPlugin {
         val configFile = new File(getDataFolder, file)
         try config.load(configFile)
         catch {
-            case exception@(_: IOException | _: InvalidConfigurationException) =>
+            case exception @ (_: IOException | _: InvalidConfigurationException) =>
                 exception.printStackTrace()
         }
     }
@@ -381,8 +380,7 @@ class UltraVanilla extends JavaPlugin {
             //                false,
             //                false,
             //                ChatSource.InGame)
-        }
-        else {
+        } else {
             Users.afk.add(player.getUniqueId)
             getServer.broadcastMessage(player.getDisplayName + AfkCommand.COLOR + " is now AFK")
         }
@@ -432,6 +430,24 @@ class UltraVanilla extends JavaPlugin {
             }
         }
         runnable.runTaskLater(this, delay)
+    }
+
+    val cachedAutocompleteList = new ArrayList[String]
+    var autocompleteLastUpdated = new Date(0)
+
+    def offlineAutocompleteList(): ArrayList[String] = {
+        if ((new Date().getTime - autocompleteLastUpdated.getTime) < 90 * 60 * 1000)
+            return cachedAutocompleteList
+        autocompleteLastUpdated = new Date
+
+        for (player <- getServer.getOfflinePlayers) {
+            System.out.println(player.getName)
+            val name = player.getName
+            if (!cachedAutocompleteList.contains(name))
+                cachedAutocompleteList.add(player.getName)
+        }
+
+        cachedAutocompleteList
     }
 }
 
@@ -483,8 +499,8 @@ object UltraVanilla {
         player.setDisplayName(displayName)
         player.setPlayerListName(
             (if (displayName != null) displayName
-            else player.getName) + (if (Users.isAFK(player)) " §7§o(AFK)"
-            else "")
+             else player.getName) + (if (Users.isAFK(player)) " §7§o(AFK)"
+                                     else "")
         )
     }
 
@@ -503,7 +519,7 @@ object UltraVanilla {
         val config = new YamlConfiguration
         try config.load(getUserFile(uid))
         catch {
-            case e@(_: IOException | _: InvalidConfigurationException) =>
+            case e @ (_: IOException | _: InvalidConfigurationException) =>
                 return null
         }
         config
