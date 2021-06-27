@@ -3,7 +3,8 @@ player:
     - /oldspawn command with /os, /s2 and /spawn2 aliases.
     - /s alias for /spawn
   removed: [ ]
-  fixed: [ ]
+  fixed:
+    - cache not being hit when using /playtime
   changed: [ ]
   broke: [ ]
 staff:

@@ -1,12 +1,13 @@
 scalaVersion := "2.13.5"
 organization := "world.ultravanilla"
-version := "1.22"
+version := "1.30"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
     "papermc" at "https://papermc.io/repo/repository/maven-public/",
     "dmulloy2-repo" at "https://repo.dmulloy2.net/nexus/repository/public/",
-    "jcenter" at "https://jcenter.bintray.com"
+    "jcenter" at "https://jcenter.bintray.com",
+    "m2-dv8tion" at "https://m2.dv8tion.net/releases"
 )
 libraryDependencies ++= List(
     "com.destroystokyo.paper" % "paper-api" % "1.16.5-R0.1-SNAPSHOT" % Provided,
