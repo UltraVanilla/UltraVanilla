@@ -81,7 +81,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         val staffColor = ChatColor.of(plugin.getConfig.getString("color.rank.staff")) + ""
 
 
-        val donatorSymbol = plugin.getConfig.getString("rename-groups.staff", "D")
+        val donatorSymbol = plugin.getConfig.getString("rename-groups.donator", "D")
         val staffSymbol = plugin.getConfig.getString("rename-groups.staff", "S")
 
         val format = String.format(
