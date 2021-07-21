@@ -23,7 +23,7 @@ import scala.jdk.CollectionConverters._
 class EventListener(val plugin: UltraVanilla) extends Listener {
     val eventBus: EventBus = plugin.luckPerms.getEventBus
     eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
-    val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH)
+    val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.WALL_TORCH, Material.TORCH)
 
     def onUserPromote(event: UserPromoteEvent): Unit =
         UltraVanilla.set(event.getUser.getUniqueId, "last-promotion", System.currentTimeMillis)

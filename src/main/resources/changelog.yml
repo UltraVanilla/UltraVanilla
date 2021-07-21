@@ -1,10 +1,8 @@
 player:
   added:    
-    - /oldspawn command with /os, /s2 and /spawn2 aliases.
-    - /s alias for /spawn
+    - lore saving for toches
   removed: [ ]
-  fixed:
-    - cache not being hit when using /playtime, allowing a DoS attack
+  fixed: [  ]
   changed: [ ]
   broke: [ ]
 staff:
