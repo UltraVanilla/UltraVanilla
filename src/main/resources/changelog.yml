@@ -2,7 +2,8 @@ player:
   added:    
     - lore saving for toches
   removed: [ ]
-  fixed: [  ]
+  fixed:
+    - nested /afk weirdness
   changed: [ ]
   broke: [ ]
 staff:

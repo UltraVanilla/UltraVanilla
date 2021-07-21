@@ -19,7 +19,7 @@ public class Users {
 
 
     public static final Map<String, String> replies = new HashMap<>();
-    public static final List<UUID> afk = new ArrayList<>();
+    public static final HashSet<UUID> afk = new HashSet<>();
     public static final HashSet<UUID> spectators = new HashSet<>();
 
     public static boolean isAFK(Player player) {
