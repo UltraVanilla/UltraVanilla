@@ -19,6 +19,7 @@ import java.io.IOException
 import java.util
 import java.util.regex.Pattern
 import scala.jdk.CollectionConverters._
+import scala.math.Integral.Implicits._
 
 class EventListener(val plugin: UltraVanilla) extends Listener {
     val eventBus: EventBus = plugin.luckPerms.getEventBus
@@ -164,7 +165,25 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 event.getJoinMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
             )
         }
-        if (!player.hasPlayedBefore) {
+        val channel = plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
+        if (player.hasPlayedBefore) {
+            val lastPlayed = player.getLastPlayed
+            val delta = System.currentTimeMillis - lastPlayed
+
+            val day = 1000L * 60L * 60L * 24L
+            val month = day * 30L
+
+            if (delta > 3 * month) {
+                val helperRole = plugin.getConfig.getLong("discord.old-player-helper-role")
+
+                val (months, remainder) = delta /% month
+                val days = remainder / day
+
+                channel
+                    .sendMessage(s"<@&$helperRole> ${player.getName} hasn't logged in for $months months $days days. They logged in just now!")
+                    .queue();
+            }
+        } else {
             val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position]
             if (spawn != null) player.teleport(spawn.getLocation)
             UltraVanilla.set(player, Users.FIRST_LOGIN, System.currentTimeMillis)
@@ -175,9 +194,8 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             }
 
             val helperRole = plugin.getConfig.getLong("discord.helper-role")
-            val channel = plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.private-reports-channel"))
             channel
-                .sendMessage("<@&" + helperRole + "> " + player.getName() + " has logged in for the first time")
+                .sendMessage("<@&$helperRole> ${player.getName} has logged in for the first time")
                 .queue();
         }
 

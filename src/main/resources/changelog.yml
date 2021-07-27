@@ -1,9 +1,8 @@
 player:
-  added:    
-    - lore saving for toches
+  added:
+    - old player ping in discord bot
   removed: [ ]
-  fixed:
-    - nested /afk weirdness
+  fixed: [  ]
   changed: [ ]
   broke: [ ]
 staff:
