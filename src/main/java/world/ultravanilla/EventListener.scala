@@ -195,7 +195,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
 
             val helperRole = plugin.getConfig.getLong("discord.helper-role")
             channel
-                .sendMessage("<@&$helperRole> ${player.getName} has logged in for the first time")
+                .sendMessage(s"<@&$helperRole> ${player.getName} has logged in for the first time")
                 .queue();
         }
 
