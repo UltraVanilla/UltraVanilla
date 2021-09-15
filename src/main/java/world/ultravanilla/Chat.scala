@@ -75,6 +75,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             group.substring(0, 1).toUpperCase + group.substring(1)
         )
         val donatorBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.donator")) + ""
+        val staffBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.staff")) + ""
         val rankBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.rank")) + ""
         val nameBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.name")) + ""
         val defaultNameColor = ChatColor.of(plugin.getConfig.getString("color.chat.default-name-color")) + ""
@@ -95,7 +96,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                     donatorBracketsColor
                 )
             else "",
-            if (staff) String.format("%s[%s%s%s] ", rankBracketsColor, staffColor, staffSymbol, rankBracketsColor)
+            if (staff) String.format("%s[%s%s%s] ", staffBracketsColor, staffColor, staffSymbol, staffBracketsColor)
             else "",
             rankBracketsColor,
             rankColor,

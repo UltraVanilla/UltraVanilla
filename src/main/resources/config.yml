@@ -24,7 +24,8 @@ color:
       everyone: '#6a7fdb'
       user: '#3772ff'
     brackets:
-      donator: gray
+      donator: '#ceafd3'
+      staff: '#cf776a'
       rank: gray
       name: gray
   rank:
