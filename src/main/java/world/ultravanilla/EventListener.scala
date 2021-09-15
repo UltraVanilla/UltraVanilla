@@ -240,50 +240,50 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         }
     }
 
-    @EventHandler def onBlockBreak(event: BlockBreakEvent): Unit = {
-        val block = event.getBlock
-        val location = block.getLocation
-        val loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
-        if (loreWhitelist contains block.getState.getType) if (loreItems != null && !loreItems.isEmpty) {
-            for (loreItem <- loreItems.asScala) {
-                // TODO: figure out why rewriting in scala necessitated this jank
-                // TODO: maybe just rework the serialization
-                val loreItemPosition = loreItem.getPosition
-                if (
-                    loreItemPosition.getX == location.getX
-                        && loreItemPosition.getY == location.getY
-                        && loreItemPosition.getZ == location.getZ
-                        && loreItemPosition.getWorld == location.getWorld.getUID
-                ) {
-                    event.setDropItems(false)
-                    val itemStack = block.getDrops.iterator.next
-                    val meta = itemStack.getItemMeta
-                    val name = loreItem.getName
-                    if (name.nonEmpty) meta.setDisplayName(name)
-                    val lore = loreItem.getLore
-                    if (lore != null) meta.setLore(lore)
-                    itemStack.setItemMeta(meta)
-                    block.getWorld.dropItem(event.getBlock.getLocation, itemStack)
-                    loreItems.remove(loreItem)
-                    plugin.store("lore-items", loreItems)
-                    return
-                }
-            }
-        }
-    }
+    // @EventHandler def onBlockBreak(event: BlockBreakEvent): Unit = {
+    //     val block = event.getBlock
+    //     val location = block.getLocation
+    //     val loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
+    //     if (loreWhitelist contains block.getState.getType) if (loreItems != null && !loreItems.isEmpty) {
+    //         for (loreItem <- loreItems.asScala) {
+    //             // TODO: figure out why rewriting in scala necessitated this jank
+    //             // TODO: maybe just rework the serialization
+    //             val loreItemPosition = loreItem.getPosition
+    //             if (
+    //                 loreItemPosition.getX == location.getX
+    //                     && loreItemPosition.getY == location.getY
+    //                     && loreItemPosition.getZ == location.getZ
+    //                     && loreItemPosition.getWorld == location.getWorld.getUID
+    //             ) {
+    //                 event.setDropItems(false)
+    //                 val itemStack = block.getDrops.iterator.next
+    //                 val meta = itemStack.getItemMeta
+    //                 val name = loreItem.getName
+    //                 if (name.nonEmpty) meta.setDisplayName(name)
+    //                 val lore = loreItem.getLore
+    //                 if (lore != null) meta.setLore(lore)
+    //                 itemStack.setItemMeta(meta)
+    //                 block.getWorld.dropItem(event.getBlock.getLocation, itemStack)
+    //                 loreItems.remove(loreItem)
+    //                 plugin.store("lore-items", loreItems)
+    //                 return
+    //             }
+    //         }
+    //     }
+    // }
 
-    @EventHandler def onBlockPlace(event: BlockPlaceEvent) = {
-        val meta = event.getItemInHand.getItemMeta
-        if (loreWhitelist contains event.getItemInHand.getType)
-            if (meta != null && !(meta.getDisplayName.isEmpty && (meta.getLore != null && meta.getLore.isEmpty))) {
-                val item =
-                    new LoreItem(meta.getDisplayName, meta.getLore, new Position(event.getBlockPlaced.getLocation))
-                var loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
-                if (loreItems == null) loreItems = new util.ArrayList[LoreItem]
-                loreItems.add(item)
-                plugin.store("lore-items", loreItems)
-            }
-    }
+    // @EventHandler def onBlockPlace(event: BlockPlaceEvent) = {
+    //     val meta = event.getItemInHand.getItemMeta
+    //     if (loreWhitelist contains event.getItemInHand.getType)
+    //         if (meta != null && !(meta.getDisplayName.isEmpty && (meta.getLore != null && meta.getLore.isEmpty))) {
+    //             val item =
+    //                 new LoreItem(meta.getDisplayName, meta.getLore, new Position(event.getBlockPlaced.getLocation))
+    //             var loreItems = plugin.storage.getList("lore-items").asInstanceOf[util.List[LoreItem]]
+    //             if (loreItems == null) loreItems = new util.ArrayList[LoreItem]
+    //             loreItems.add(item)
+    //             plugin.store("lore-items", loreItems)
+    //         }
+    // }
 
     @EventHandler def onPortalCreate(event: PortalCreateEvent) = {
         if (event.getReason == PortalCreateEvent.CreateReason.END_PLATFORM) {
