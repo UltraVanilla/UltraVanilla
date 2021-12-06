@@ -1,6 +1,6 @@
 scalaVersion := "2.13.5"
 organization := "world.ultravanilla"
-version := "1.34"
+version := "1.35"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
@@ -10,13 +10,13 @@ resolvers ++= List(
     "m2-dv8tion" at "https://m2.dv8tion.net/releases"
 )
 libraryDependencies ++= List(
-    "com.destroystokyo.paper" % "paper-api" % "1.16.5-R0.1-SNAPSHOT" % Provided,
+    "io.papermc.paper" % "paper-api" % "1.18-rc3-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 
-scalacOptions += "-target:16"
-javacOptions ++= Seq("-source", "16", "-target", "16")
+scalacOptions += "-target:17"
+javacOptions ++= Seq("-source", "17", "-target", "17")
 
 Compile / resourceGenerators += Def.task {
     val file = (Compile / resourceManaged).value / "plugin.yml"
