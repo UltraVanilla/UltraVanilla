@@ -107,8 +107,8 @@ public class UltraCommand {
         return players;
     }
 
-    protected String format(Command command, String key) {
-        String message = plugin.getCommandString(command.getName() + "." + key);
+    protected String format(String command, String key) {
+        String message = plugin.getCommandString(command + "." + key);
         if (message != null) {
             message = message.replace("$color", color + "");
         } else {
@@ -117,8 +117,25 @@ public class UltraCommand {
         return color + Palette.translate(message);
     }
 
+    protected String format(Command command, String key) {
+        return format(command.getName(), key);
+    }
+
     protected String format(Command command, String key, String... format) {
         String message = plugin.getCommandString(command.getName() + "." + key);
+        if (message != null) {
+            for (int i = 0; i < format.length; i += 2) {
+                message = message.replace(format[i], format[i + 1]);
+            }
+            message = message.replace("$color", color + "");
+        } else {
+            message = key;
+        }
+        return color + Palette.translate(message);
+    }
+
+    protected String format(String command, String key, String... format) {
+        String message = plugin.getCommandString(command + "." + key);
         if (message != null) {
             for (int i = 0; i < format.length; i += 2) {
                 message = message.replace(format[i], format[i + 1]);

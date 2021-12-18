@@ -162,15 +162,15 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         // If a player has a "default" home called "home", teleport to it
                         if (home.getName().equals("home")) {
                             player.teleport(home.getLocation());
-                            sender.sendMessage(format(command, "message.teleport.home"));
+                            sender.sendMessage(format("home", "message.teleport.home"));
                             return true;
                         }
                     }
 
                     // Send specify home message
-                    sender.sendMessage(format(command, "error.not-found.home"));
+                    sender.sendMessage(format("home", "error.not-found.home"));
                 } else {
-                    sender.sendMessage(format(command, "error.not-found.any"));
+                    sender.sendMessage(format("home", "error.not-found.any"));
                     return true;
                 }
             }
@@ -184,7 +184,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     if (canSetAnotherHome(player, homes, "home")) {
                         // Create a new "default" home with the name "home"
                         setHome(player, homes, "home");
-                        sender.sendMessage(format(command, "message.set.home"));
+                        sender.sendMessage(format("home", "message.set.home"));
 
                     } else {
                         sender.sendMessage(error(command, "limited-homes"));
@@ -213,9 +213,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                     // Check if a home named "home" was found earlier
                     if (removed) {
-                        sender.sendMessage(format(command, "message.remove.home"));
+                        sender.sendMessage(format("home", "message.remove.home"));
                     } else {
-                        sender.sendMessage(format(command, "error.not-found.any"));
+                        sender.sendMessage(format("home", "error.not-found.any"));
                         return true;
                     }
                 }
@@ -228,9 +228,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                         // Setting the homes to null will remove the path from config entirely
                         homes = null;
-                        sender.sendMessage(format(command, "message.remove.all"));
+                        sender.sendMessage(format("home", "message.remove.all"));
                     } else {
-                        sender.sendMessage(format(command, "error.not-found.any"));
+                        sender.sendMessage(format("home", "error.not-found.any"));
                         return true;
                     }
                 }
@@ -244,15 +244,15 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     if (!homes.isEmpty() || bed != null) {
 
                         // Print out all of the home names
-                        sender.sendMessage(plugin.getTitle(format(command, "format.list.title"), color));
+                        sender.sendMessage(plugin.getTitle(format("home", "format.list.title"), color));
                         if (bed != null) {
-                            sender.sendMessage(format(command, "format.list.item", "{name}", "bed"));
+                            sender.sendMessage(format("home", "format.list.item", "{name}", "bed"));
                         }
                         for (Position home : homes) {
-                            sender.sendMessage(format(command, "format.list.item", "{name}", home.getName()));
+                            sender.sendMessage(format("home", "format.list.item", "{name}", home.getName()));
                         }
                     } else {
-                        sender.sendMessage(format(command, "error.not-found.any"));
+                        sender.sendMessage(format("home", "error.not-found.any"));
                     }
                     return true;
                 }
@@ -267,7 +267,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                         Location bed = player.getBedSpawnLocation();
                         if (bed != null) {
                             player.teleport(bed);
-                            sender.sendMessage(format(command, "message.teleport.bed"));
+                            sender.sendMessage(format("home", "message.teleport.bed"));
                             return true;
                         }
                     }
@@ -280,11 +280,11 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                             // Teleport to the home
                             player.teleport(home.getLocation());
-                            sender.sendMessage(format(command, "message.teleport.misc", "{name}", home.getName()));
+                            sender.sendMessage(format("home", "message.teleport.misc", "{name}", home.getName()));
                             return true;
                         }
                     }
-                    sender.sendMessage(format(command, "error.not-found.home", "{name}", args[0]));
+                    sender.sendMessage(format("home", "error.not-found.home", "{name}", args[0]));
                 }
             }
             // /home set|remove <name>
@@ -313,7 +313,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                     if (canSetAnotherHome(player, homes, homeName)) {
                         // Use the static method as it's easier
                         setHome(player, homes, homeName);
-                        sender.sendMessage(format(command, "message.set.misc", "{name}", homeName));
+                        sender.sendMessage(format("home", "message.set.misc", "{name}", homeName));
                     } else {
                         sender.sendMessage(error(command, "limited-homes"));
                     }
@@ -325,9 +325,9 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
 
                     // Use the static method as it's easier. If succeeded, send message
                     if (removeHome(player, homes, homeName)) {
-                        sender.sendMessage(format(command, "message.remove.misc", "{name}", homeName));
+                        sender.sendMessage(format("home", "message.remove.misc", "{name}", homeName));
                     } else {
-                        sender.sendMessage(format(command, "message.error.not-found.misc", "{name}", homeName));
+                        sender.sendMessage(format("home", "message.error.not-found.misc", "{name}", homeName));
                     }
                     return true;
                 }

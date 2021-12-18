@@ -82,6 +82,13 @@ commands:
     aliases: [s]
     description: Teleport to spawn
     usage: /spawn
+  warp:
+    aliases: [ w, teleport ]
+    description: Teleport to a warp location
+    usage: /warp
+  setwarp:
+    description: Set a global warp location
+    usage: /setwarp
   oldspawn:
     aliases: [os, spawn2, s2]
     description: Teleport to old spawn

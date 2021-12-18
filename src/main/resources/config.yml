@@ -212,6 +212,12 @@ strings:
         set: Spawn set to your location
       error:
         not-set: $wrongSpawn is not set!
+    warp:
+      message:
+        set: Warp $object{name}$color set to your location
+      error:
+        not-set: Warp $object{name}$color does not exist!
+        not-specified: You did not specify a warp destination!
     suicide:
       message:
         kill-self: You died!

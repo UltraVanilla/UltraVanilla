@@ -22,13 +22,13 @@ class OldSpawnCommand(val instance: UltraVanilla) extends UltraCommand(instance)
             if (!AnarchyRegion.allowTeleport && AnarchyRegion.inside(player.getLocation)) return true
             val oldspawn = plugin.getConfig.get("oldspawn").asInstanceOf[Position]
             if (oldspawn != null) player.teleport(oldspawn.getLocation)
-            else sender.sendMessage(format(command, "error.not-set"))
+            else sender.sendMessage(format("spawn", "error.not-set"))
         } else sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the oldspawn"))
         else if (args.length == 1)
             if (args(0).equalsIgnoreCase("set")) if (sender.isInstanceOf[Player]) {
                 val player = sender.asInstanceOf[Player]
                 if (player.hasPermission("ultravanilla.command.oldspawn.set")) {
-                    player.sendMessage(format(command, "Old spawn has been set"))
+                    player.sendMessage(format("spawn", "Old spawn has been set"))
                     plugin.getConfig.set("oldspawn", new Position(player.getLocation))
                     plugin.saveConfig()
                 } else sender.sendMessage(plugin.getString("no-permission", "{action}", "set Old Spawn"))
@@ -43,7 +43,7 @@ class OldSpawnCommand(val instance: UltraVanilla) extends UltraCommand(instance)
                 if (oldspawn != null)
                     if (sender.hasPermission("ultravanilla.command.oldspawn.player")) player.teleport(oldspawn.getLocation)
                     else sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to Old Spawn.")
-                else sender.sendMessage(format(command, "error.not-set"))
+                else sender.sendMessage(format("spawn", "error.not-set"))
             }
         else return false
         true

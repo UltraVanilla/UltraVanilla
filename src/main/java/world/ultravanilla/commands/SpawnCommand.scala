@@ -22,13 +22,13 @@ class SpawnCommand(val instance: UltraVanilla) extends UltraCommand(instance) wi
             if (!AnarchyRegion.allowTeleport && AnarchyRegion.inside(player.getLocation)) return true
             val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position]
             if (spawn != null) player.teleport(spawn.getLocation)
-            else sender.sendMessage(format(command, "error.not-set"))
+            else sender.sendMessage(format("spawn", "error.not-set"))
         } else sender.sendMessage(plugin.getString("player-only", "{action}", "set or go to the spawn"))
         else if (args.length == 1)
             if (args(0).equalsIgnoreCase("set")) if (sender.isInstanceOf[Player]) {
                 val player = sender.asInstanceOf[Player]
                 if (player.hasPermission("ultravanilla.command.spawn.set")) {
-                    player.sendMessage(format(command, "message.set"))
+                    player.sendMessage(format("spawn", "message.set"))
                     plugin.getConfig.set("spawn", new Position(player.getLocation))
                     plugin.saveConfig()
                 } else sender.sendMessage(plugin.getString("no-permission", "{action}", "set spawn"))
@@ -43,7 +43,7 @@ class SpawnCommand(val instance: UltraVanilla) extends UltraCommand(instance) wi
                 if (spawn != null)
                     if (sender.hasPermission("ultravanilla.command.spawn.player")) player.teleport(spawn.getLocation)
                     else sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to spawn.")
-                else sender.sendMessage(format(command, "error.not-set"))
+                else sender.sendMessage(format("spawn", "error.not-set"))
             }
         else return false
         true
