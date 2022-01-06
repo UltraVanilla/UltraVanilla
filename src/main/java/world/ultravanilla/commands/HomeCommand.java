@@ -333,7 +333,7 @@ public class HomeCommand extends UltraCommand implements CommandExecutor, TabCom
                 }
                 // /home list Mplayer>
                 else if (args[0].equalsIgnoreCase("list")) {
-                    if (sender.hasPermission("ultravanilla.permission.admin")) {
+                    if (sender.hasPermission("ultravanilla.command.home.list")) {
                         OfflinePlayer target = plugin.getServer().getOfflinePlayer(args[1]);
                         if (target.hasPlayedBefore() || target.isOnline()) {
                             homes = getHomes(target);

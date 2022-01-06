@@ -83,7 +83,7 @@ commands:
     description: Teleport to spawn
     usage: /spawn
   warp:
-    aliases: [ w, teleport ]
+    aliases: [ wa, teleport ]
     description: Teleport to a warp location
     usage: /warp
   setwarp:
