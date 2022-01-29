@@ -1,13 +1,10 @@
 player:
-  added:
-    - warp command for `/warp outpost`
-    - support for 1.18 Paper API (we are on 1.18 now!)
-    - support for Java 17
+  added: [  ]
   removed: [ ]
   fixed:
-    - issue with localization on aliased commands
-  changed:
-    - ViaVersion config to support connecting from 1.17 (will be removed)
+    - issue with /lastseen autocomplete due to deleted Mojang accounts
+    - rare bug where discord bridge being down could cause first-join code to not run
+  changed: [  ]
   broke: [ ]
 staff:
   added: [ ]

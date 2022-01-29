@@ -165,7 +165,11 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 event.getJoinMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
             )
         }
-        val channel = plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
+        val channel = if (plugin.jda != null)
+            plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
+        else
+            null
+
         if (player.hasPlayedBefore) {
             val lastPlayed = player.getLastPlayed
             val delta = System.currentTimeMillis - lastPlayed
@@ -179,7 +183,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 val (months, remainder) = delta /% month
                 val days = remainder / day
 
-                channel
+                if (plugin.jda != null) channel
                     .sendMessage(s"<@&$helperRole> ${player.getName} hasn't logged in for $months months $days days. They logged in just now!")
                     .queue();
             }
@@ -194,7 +198,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             }
 
             val helperRole = plugin.getConfig.getLong("discord.helper-role")
-            channel
+            if (plugin.jda != null) channel
                 .sendMessage(s"<@&$helperRole> ${player.getName} has logged in for the first time")
                 .queue();
         }

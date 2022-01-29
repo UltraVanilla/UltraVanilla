@@ -444,7 +444,7 @@ class UltraVanilla extends JavaPlugin {
 
         for (player <- getServer.getOfflinePlayers) {
             val name = player.getName
-            if (!cachedAutocompleteList.contains(name))
+            if (name != null && !cachedAutocompleteList.contains(name))
                 cachedAutocompleteList.add(player.getName)
         }
 
