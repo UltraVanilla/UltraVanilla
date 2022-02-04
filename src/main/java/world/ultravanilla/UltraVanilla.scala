@@ -236,7 +236,7 @@ class UltraVanilla extends JavaPlugin {
 
         getCommand("nick").setExecutor(new NickCommand(UltraVanilla.instance))
         getCommand("suicide").setExecutor(new SuicideCommand(UltraVanilla.instance))
-        getCommand("make").setExecutor(new MakeCommand(UltraVanilla.instance))
+        // getCommand("make").setExecutor(new MakeCommand(UltraVanilla.instance))
         getCommand("gm").setExecutor(new GmCommand(UltraVanilla.instance))
         getCommand("title").setExecutor(new TitleCommand(UltraVanilla.instance))
         getCommand("reload").setExecutor(new ReloadCommand(UltraVanilla.instance))
