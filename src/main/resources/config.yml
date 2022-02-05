@@ -215,6 +215,7 @@ strings:
     warp:
       message:
         set: Warp $object{name}$color set to your location
+        del: Warp $object{name}$color has been removed
       error:
         not-set: Warp $object{name}$color does not exist!
         not-specified: You did not specify a warp destination!

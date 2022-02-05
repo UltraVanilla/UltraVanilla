@@ -254,6 +254,7 @@ class UltraVanilla extends JavaPlugin {
         getCommand("oldspawn").setExecutor(new OldSpawnCommand(UltraVanilla.instance))
         getCommand("warp").setExecutor(new WarpCommand(UltraVanilla.instance))
         getCommand("setwarp").setExecutor(new SetWarpCommand(UltraVanilla.instance))
+        getCommand("delwarp").setExecutor(new DelWarpCommand(UltraVanilla.instance))
         getCommand("print").setExecutor(new PrintCommand(UltraVanilla.instance))
         getCommand("do").setExecutor(new DoCommand(UltraVanilla.instance))
         getCommand("afk").setExecutor(new AfkCommand(UltraVanilla.instance))

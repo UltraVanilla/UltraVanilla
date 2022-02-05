@@ -1,9 +1,8 @@
 player:
-  added: [  ]
+  added:
+    - /setwarp and /delwarp command (for temporary warps — used for tours)
   removed: [ ]
-  fixed:
-    - issue with /lastseen autocomplete due to deleted Mojang accounts
-    - rare bug where discord bridge being down could cause first-join code to not run
+  fixed: [ ]
   changed: [  ]
   broke: [ ]
 staff:

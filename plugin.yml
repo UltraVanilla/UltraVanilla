@@ -89,6 +89,9 @@ commands:
   setwarp:
     description: Set a global warp location
     usage: /setwarp
+  delwarp:
+    description: Set a global warp location
+    usage: /delwarp
   oldspawn:
     aliases: [os, spawn2, s2]
     description: Teleport to old spawn
