@@ -156,7 +156,7 @@ public class Position implements ConfigurationSerializable {
                 worldName = "the_end";
                 break;
         }
-        return String.format("/execute in %s run tp %s %s %s", worldName, x, y, z);
+        return String.format("/co tp %s %s %s %s", worldName, x, y, z);
     }
 
     public String toStringTrimmed() {
