@@ -165,6 +165,9 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 event.getJoinMessage.replace(player.getName, player.getDisplayName + ChatColor.YELLOW)
             )
         }
+
+        player.sendMessage(plugin.getString("motd"))
+
         val channel = if (plugin.jda != null)
             plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
         else

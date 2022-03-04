@@ -83,6 +83,7 @@ format:
   default: '&r<{name-color}{name}&r> {text-color}{message}'
   prefixed: '&7[{custom-capitalized-rank}&r&7]&r &7<&r{name-color}{name}&r&7> &r{text-color}{message}'
 strings:
+  motd: ""
   title: $color------ &r{title} $color------
   command:
     promote:
