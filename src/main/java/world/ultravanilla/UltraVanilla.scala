@@ -25,6 +25,9 @@ import java.util._
 import scala.annotation.varargs
 import scala.collection.JavaConverters._
 import scala.io.Source;
+import org.bukkit.scoreboard.Scoreboard
+import org.bukkit.scoreboard.Team
+import org.bukkit
 
 class UltraVanilla extends JavaPlugin {
     var luckPerms: LuckPerms = null
@@ -36,6 +39,9 @@ class UltraVanilla extends JavaPlugin {
     var configFile: File = null
     var random = new Random
     var staffActionsRecord: StaffActionsRecord = null
+
+    var keepinvScoreboard: Scoreboard = null
+    var keepinvOffTeam: Team = null
 
     var jda: JDA = null
 
@@ -252,6 +258,7 @@ class UltraVanilla extends JavaPlugin {
         getCommand("lastseen").setExecutor(seenCommand)
         getCommand("spawn").setExecutor(new SpawnCommand(UltraVanilla.instance))
         getCommand("oldspawn").setExecutor(new OldSpawnCommand(UltraVanilla.instance))
+        getCommand("keepinv").setExecutor(new KeepInvCommand(UltraVanilla.instance))
         getCommand("warp").setExecutor(new WarpCommand(UltraVanilla.instance))
         getCommand("setwarp").setExecutor(new SetWarpCommand(UltraVanilla.instance))
         getCommand("delwarp").setExecutor(new DelWarpCommand(UltraVanilla.instance))
@@ -298,6 +305,13 @@ class UltraVanilla extends JavaPlugin {
         getCommand("rtp").setExecutor(new RtpCommand(UltraVanilla.instance))
         getCommand("setgroup").setExecutor(new SetGroupCommand(UltraVanilla.instance))
         getCommand("spectate").setExecutor(new SpectateCommand(UltraVanilla.instance))
+
+        val scoreboardManager = Bukkit.getScoreboardManager
+        keepinvScoreboard = scoreboardManager.getNewScoreboard
+        keepinvOffTeam = keepinvScoreboard.registerNewTeam("KeepInventoryOFF")
+        keepinvOffTeam.setPrefix("KeepInventory OFF ")
+        keepinvOffTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS)
+        keepinvOffTeam.setColor(bukkit.ChatColor.RED)
     }
 
     def setMOTD(motd: String) = this.motd = Palette.translate(motd)

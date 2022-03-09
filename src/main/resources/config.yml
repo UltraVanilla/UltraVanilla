@@ -120,6 +120,10 @@ strings:
         already-in-gamemode:
           self: You are already in $object{gamemode} $colormode!
           other: $noun{player} $coloris already in $object{gamemode} $colormode!
+    keepinv:
+      message:
+        'true': KeepInventory is now $object{on}
+        'false': KeepInventory is now $object{off}
     home:
       format:
         list:

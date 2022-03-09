@@ -1,6 +1,6 @@
 player:
   added:
-    - /setwarp and /delwarp command (for temporary warps — used for tours)
+    - new /keepinv command for turning off keepInventory per-player
   removed: [ ]
   fixed: [ ]
   changed: [  ]

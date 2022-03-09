@@ -24,7 +24,8 @@ import scala.math.Integral.Implicits._
 class EventListener(val plugin: UltraVanilla) extends Listener {
     val eventBus: EventBus = plugin.luckPerms.getEventBus
     eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
-    val loreWhitelist = Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.WALL_TORCH, Material.TORCH)
+    val loreWhitelist =
+        Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.WALL_TORCH, Material.TORCH)
 
     def onUserPromote(event: UserPromoteEvent): Unit =
         UltraVanilla.set(event.getUser.getUniqueId, "last-promotion", System.currentTimeMillis)
@@ -66,14 +67,14 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         var message = e.getMessage
         var pattern = Pattern.compile("\\$\\{([\\w]+)\\.([\\w-.]+)}")
         var matcher = pattern.matcher(message)
-        while ( {
+        while ({
             matcher.find
         })
             message = message.replace(matcher.group, getValue(matcher.group(1), matcher.group(2).toLowerCase.split("\\.")))
         // !<command>[(<args>)]
         pattern = Pattern.compile("!([\\w]+)(?:\\(([^)]+)\\))?")
         matcher = pattern.matcher(message)
-        while ( {
+        while ({
             matcher.find
         })
             message = message.replaceFirst(Pattern.quote(matcher.group), `macro`(matcher.group(1), matcher.group(2)) + "")
@@ -158,7 +159,8 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
 
     @EventHandler def onPlayerJoin(event: PlayerJoinEvent): Unit = {
         val player = event.getPlayer
-        val nick = UltraVanilla.getPlayerConfig(player.getUniqueId).getString("display-name")
+        val config = UltraVanilla.getPlayerConfig(player.getUniqueId)
+        val nick = config.getString("display-name")
         if (nick != null) {
             UltraVanilla.updateDisplayName(player)
             event.setJoinMessage(
@@ -168,10 +170,11 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
 
         player.sendMessage(plugin.getString("motd"))
 
-        val channel = if (plugin.jda != null)
-            plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
-        else
-            null
+        val channel =
+            if (plugin.jda != null)
+                plugin.jda.getTextChannelById(plugin.getConfig.getLong("discord.welcome-channel"))
+            else
+                null
 
         if (player.hasPlayedBefore) {
             val lastPlayed = player.getLastPlayed
@@ -186,9 +189,12 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                 val (months, remainder) = delta /% month
                 val days = remainder / day
 
-                if (plugin.jda != null) channel
-                    .sendMessage(s"<@&$helperRole> ${player.getName} hasn't logged in for $months months $days days. They logged in just now!")
-                    .queue();
+                if (plugin.jda != null)
+                    channel
+                        .sendMessage(
+                            s"<@&$helperRole> ${player.getName} hasn't logged in for $months months $days days. They logged in just now!"
+                        )
+                        .queue();
             }
         } else {
             val spawn = plugin.getConfig.get("spawn").asInstanceOf[Position]
@@ -201,9 +207,10 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             }
 
             val helperRole = plugin.getConfig.getLong("discord.helper-role")
-            if (plugin.jda != null) channel
-                .sendMessage(s"<@&$helperRole> ${player.getName} has logged in for the first time")
-                .queue();
+            if (plugin.jda != null)
+                channel
+                    .sendMessage(s"<@&$helperRole> ${player.getName} has logged in for the first time")
+                    .queue();
         }
 
         val thisVersion = plugin.getDescription.getVersion
@@ -216,6 +223,11 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             player.setGameMode(GameMode.SURVIVAL)
             Users.spectators.remove(player.getUniqueId)
             UltraVanilla.set(player, "spectator", false)
+        }
+
+        if (!config.getBoolean("keepinv", true)) {
+            plugin.keepinvOffTeam.addPlayer(player)
+            player.setScoreboard(plugin.keepinvScoreboard)
         }
     }
 
@@ -230,16 +242,19 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
 
     @EventHandler def onPlayerDeath(event: PlayerDeathEvent) = {
         val player = event.getEntity
+        val config = UltraVanilla.getPlayerConfig(player.getUniqueId)
         if (player.hasPermission("ultravanilla.command.suicide")) {
             val message = event.getDeathMessage
             if (message != null && message.endsWith(" died"))
-                event.setDeathMessage(UltraVanilla.getPlayerConfig(player.getUniqueId).getString("death-message"))
+                event.setDeathMessage(config.getString("death-message"))
         }
+
+        if (!config.contains("keepinv")) config.set("keepinv", true)
 
         if (AnarchyRegion.inside(player.getLocation) && player.getGameMode() == GameMode.SURVIVAL) {
             event.setKeepInventory(false)
             event.setKeepLevel(false)
-        } else {
+        } else if (config.getBoolean("keepinv", true)) {
             event.setKeepInventory(true)
             event.setKeepLevel(true)
             event.getDrops().clear()
@@ -297,14 +312,15 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             val world = event.getWorld
 
             // create a 2nd end platform suitable for farming
-            val square = (y: Int, material: Material) => for (x <- 198 to 202) for (z <- -2 to 2) {
-                val location = new Location(world, x, y, z)
-                if (!location.getChunk.isLoaded)
-                    location.getChunk.load()
+            val square = (y: Int, material: Material) =>
+                for (x <- 198 to 202) for (z <- -2 to 2) {
+                    val location = new Location(world, x, y, z)
+                    if (!location.getChunk.isLoaded)
+                        location.getChunk.load()
 
-                val block = world.getBlockAt(location)
-                block setType material
-            }
+                    val block = world.getBlockAt(location)
+                    block setType material
+                }
 
             square(48, Material.OBSIDIAN)
             square(49, Material.AIR)

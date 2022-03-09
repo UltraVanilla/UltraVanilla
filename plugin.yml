@@ -96,6 +96,10 @@ commands:
     aliases: [os, spawn2, s2]
     description: Teleport to old spawn
     usage: /oldspawn
+  keepinv:
+    aliases: [togglekeepinv]
+    description: Toggle keep inventory
+    usage: /keepinv
   print:
     description: Print a message
     usage: /print <message> [\n<new line>]
