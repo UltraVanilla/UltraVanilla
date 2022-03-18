@@ -225,9 +225,9 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             UltraVanilla.set(player, "spectator", false)
         }
 
+        player.setScoreboard(plugin.keepinvScoreboard)
         if (!config.getBoolean("keepinv", true)) {
             plugin.keepinvOffTeam.addPlayer(player)
-            player.setScoreboard(plugin.keepinvScoreboard)
         }
     }
 
