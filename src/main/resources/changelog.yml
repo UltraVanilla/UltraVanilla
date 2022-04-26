@@ -1,10 +1,13 @@
 player:
   added:
-    - new /keepinv command for turning off keepInventory per-player
+    - proper coreprotect saving for `/sign edit` commands
+    - new `/chunkversion` command for determining terrain version
   removed: [ ]
   fixed: [ ]
-  changed: [  ]
-  broke: [ ]
+  changed:
+    - coreprotect database to save strings in UTF-8
+  broke:
+    - well, in order to add coreprotect saving for signs, I added a potentially broken `BlockPlaceEvent.callEvent()` :D but I think it'll be fine ❤
 staff:
   added: [ ]
   removed: [ ]

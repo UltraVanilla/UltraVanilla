@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -14,6 +15,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.reference.LegacyColors;
 import world.ultravanilla.reference.Palette;
@@ -45,7 +49,7 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
         return size > 0 && size <= 4;
     }
 
-    public static void rewriteSign(Sign sign, Player player, String arg) {
+    public static void rewriteSign(Block block, Sign sign, Player player, String arg) {
         String[] lines = new String[4];
         String[] gotLines = arg.replaceAll("\\\\\\|", "\n").split("\\|");
         for (int i = 0; i < lines.length; i++) {
@@ -59,7 +63,19 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                 sign.setLine(i, "");
             }
         }
+        fakeBreakEvent(block, player);
         sign.update();
+        fakePlaceEvent(block, player);
+    }
+
+    public static void fakePlaceEvent(Block block, Player player) {
+        BlockState blockState = block.getState();
+        new BlockPlaceEvent(block, blockState, block, player.getItemInHand(), player, true, EquipmentSlot.HAND)
+            .callEvent();
+    }
+    public static void fakeBreakEvent(Block block, Player player) {
+        new BlockBreakEvent(block, player)
+            .callEvent();
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -94,7 +110,9 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                     for (int i = 0; i < sign.getLines().length; i++) {
                         sign.setLine(i, "");
                     }
+                    fakeBreakEvent(block, player);
                     sign.update();
+                    fakePlaceEvent(block, player);
                     sender.sendMessage(RIGHT_COLOR + "Cleared" + COLOR + " this sign.");
                     return true;
                 } else if (arg1.equalsIgnoreCase("edit")) {
@@ -129,7 +147,9 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                                     sign.setLine(i, color + ChatColor.stripColor(line));
                                 }
                             }
+                            fakeBreakEvent(block, player);
                             sign.update();
+                            fakePlaceEvent(block, player);
                             sender.sendMessage(RIGHT_COLOR + "Colored" + COLOR + " this sign " + color + arg2 + COLOR + ".");
                         } catch (IllegalArgumentException e) {
                             sender.sendMessage(WRONG_COLOR + arg2 + COLOR + " is not a valid color.");
@@ -140,7 +160,7 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                     return true;
                 } else if (arg1.equals("rewrite")) {
                     if (isValid(arg2)) {
-                        rewriteSign(sign, player, arg2);
+                        rewriteSign(block, sign, player, arg2);
                         sender.sendMessage(RIGHT_COLOR + "Successfully " + COLOR + "rewrote this sign!");
                     } else {
                         sender.sendMessage(WRONG_COLOR + "Invalid number of lines.");
@@ -154,7 +174,7 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                     if (arg1.equals("rewrite")) {
                         arg = getArg(args, 2);
                         if (isValid(arg)) {
-                            rewriteSign(sign, player, arg);
+                            rewriteSign(block, sign, player, arg);
                             sender.sendMessage(RIGHT_COLOR + "Successfully " + COLOR + "rewrote this sign!");
                         } else {
                             sender.sendMessage(WRONG_COLOR + "Invalid number of lines.");
@@ -171,7 +191,9 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                             if (lineNumber > 0 && lineNumber <= 4) {
                                 String lastLine = sign.getLine(lineNumber - 1);
                                 sign.setLine(lineNumber - 1, arg);
+                                fakeBreakEvent(block, player);
                                 sign.update();
+                                fakePlaceEvent(block, player);
                                 if (lastLine.isEmpty()) {
                                     sender.sendMessage(String.format("%sSet %sline %d %sto %s%s", COLOR, RIGHT_COLOR, lineNumber, COLOR, ChatColor.RESET, arg));
                                 } else {
@@ -194,7 +216,9 @@ public class SignCommand extends UltraCommand implements TabExecutor, Listener {
                                 int lineNumber = Integer.parseInt(arg2);
                                 if (lineNumber > 0 && lineNumber <= 4) {
                                     sign.setLine(lineNumber - 1, color + ChatColor.stripColor(sign.getLine(lineNumber - 1)));
+                                    fakeBreakEvent(block, player);
                                     sign.update();
+                                    fakePlaceEvent(block, player);
                                     sender.sendMessage(RIGHT_COLOR + "Colored" + COLOR + " line " + RIGHT_COLOR + lineNumber + " " + color + arg3 + COLOR + ".");
                                 } else {
                                     sender.sendMessage(WRONG_COLOR + arg2 + COLOR + " needs to be a number " + RIGHT_COLOR + "between 1 and 4");

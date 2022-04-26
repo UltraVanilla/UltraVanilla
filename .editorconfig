@@ -8,14 +8,14 @@ charset = utf-8
 indent_style = space
 indent_size = 4
 
-[*.{java, xml}]
+[*.{java,xml}]
 indent_style = space
 indent_size = 4
 
-[*.{scala, sbt}]
+[*.{scala,sbt}]
 indent_style = space
 indent_size = 4
 
-[*.{yml, yaml, json}]
+[*.{yml,yaml,json}]
 indent_style = space
 indent_size = 2
