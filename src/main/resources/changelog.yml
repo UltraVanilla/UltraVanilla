@@ -1,13 +1,12 @@
 player:
   added:
-    - proper coreprotect saving for `/sign edit` commands
-    - new `/chunkversion` command for determining terrain version
+    - terracotta screwdriver — try right clicking blocks with a brick in your hand
+    - phantoms no longer attack players that have slept
+    - all mobs now drop heads when killed with a charged creeper (ask Beeper about the special new challenge!)
   removed: [ ]
   fixed: [ ]
-  changed:
-    - coreprotect database to save strings in UTF-8
-  broke:
-    - well, in order to add coreprotect saving for signs, I added a potentially broken `BlockPlaceEvent.callEvent()` :D but I think it'll be fine ❤
+  changed: [ ]
+  broke: [ ]
 staff:
   added: [ ]
   removed: [ ]
