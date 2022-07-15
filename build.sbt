@@ -1,6 +1,6 @@
 scalaVersion := "2.13.5"
 organization := "world.ultravanilla"
-version := "1.43"
+version := "1.45"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
@@ -10,7 +10,7 @@ resolvers ++= List(
     "m2-dv8tion" at "https://m2.dv8tion.net/releases"
 )
 libraryDependencies ++= List(
-    "io.papermc.paper" % "paper-api" % "1.18-rc3-R0.1-SNAPSHOT" % Provided,
+    "io.papermc.paper" % "paper-api" % "1.19-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )

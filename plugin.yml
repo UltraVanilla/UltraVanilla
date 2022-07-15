@@ -1,7 +1,7 @@
 name: UltraVanilla
 version: @VERSION@
 main: world.ultravanilla.UltraVanilla
-api-version: 1.16
+api-version: 1.19
 prefix: UV
 authors: [ Akoot_, lordpipe ]
 description: Official plugin for UltraVanilla Minecraft server

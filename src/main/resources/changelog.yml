@@ -1,11 +1,9 @@
 player:
-  added:
-    - terracotta screwdriver — try right clicking blocks with a brick in your hand
-    - phantoms no longer attack players that have slept
-    - all mobs now drop heads when killed with a charged creeper (ask Beeper about the special new challenge!)
+  added: [ ]
   removed: [ ]
   fixed: [ ]
-  changed: [ ]
+  changed: 
+    - "/plugins command to give a wiki link"
   broke: [ ]
 staff:
   added: [ ]
