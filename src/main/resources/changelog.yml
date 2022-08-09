@@ -1,9 +1,9 @@
 player:
-  added: [ ]
+  added:
+    - "support for 1.19.2 (you should update)"
   removed: [ ]
   fixed: [ ]
-  changed: 
-    - "/plugins command to give a wiki link"
+  changed: [  ]
   broke: [ ]
 staff:
   added: [ ]

@@ -150,6 +150,13 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
     @EventHandler def onServerListPing(event: ServerListPingEvent): Unit = {
         var version = plugin.getServer.getVersion
         version = version.substring(version.indexOf("MC: ") + 4, version.length - 1)
+
+        val versionOverride = plugin.getConfig.getString("motd.version-override")
+
+        if (versionOverride != null) {
+            version = versionOverride
+        }
+
         event.setMotd(
             Palette.translate(plugin.getConfig.getString("motd.server-name")) + " " + ChatColor.of(
                 plugin.getConfig.getString("motd.version-color")
