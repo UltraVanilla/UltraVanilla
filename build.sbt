@@ -35,14 +35,3 @@ assembly / assemblyMergeStrategy := {
         oldStrategy(x)
 }
 
-val sbtDefaultTarget = System.getProperty("sbtDefaultTarget", "false")
-val sbtOutputDirectory = System.getProperty("sbtOutputDirectory", "testserver/plugins")
-
-assembly / assemblyOutputPath := {
-    val default = (assembly / assemblyOutputPath).value
-    if (sbtDefaultTarget == "true") {
-        default
-    } else {
-        file(sbtOutputDirectory + "/" + name.value + "-" + version.value + ".jar")
-    }
-}
