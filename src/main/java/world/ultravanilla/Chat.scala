@@ -9,6 +9,10 @@ import world.ultravanilla.reference.Palette
 import java.util.regex.Pattern
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.CollectionConverters._
+import org.bukkit.Bukkit
+import org.bukkit.event.EventPriority
+import github.scarsz.discordsrv.DiscordSRV
+import org.bukkit.scheduler.BukkitRunnable
 
 class Chat(val plugin: UltraVanilla) extends Listener {
     var history = ArrayBuffer[ChatEvent]()
@@ -32,7 +36,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         if (message.contains("@")) {
             val p = Pattern.compile("@([a-zA-Z0-9_]{2,})")
             val m = p.matcher(message)
-            while ( {
+            while ({
                 m.find
             }) {
                 val `match` = m.group(0)
@@ -81,7 +85,6 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         val defaultNameColor = ChatColor.of(plugin.getConfig.getString("color.chat.default-name-color")) + ""
         val staffColor = ChatColor.of(plugin.getConfig.getString("color.rank.staff")) + ""
 
-
         val donatorSymbol = plugin.getConfig.getString("rename-groups.donator", "D")
         val staffSymbol = plugin.getConfig.getString("rename-groups.staff", "S")
 
@@ -103,15 +106,44 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             rank,
             rankBracketsColor,
             nameBracketsColor,
-            defaultNameColor + "%1$s",
+            defaultNameColor + player.getDisplayName(),
             nameBracketsColor,
             textPrefix,
-            "%2$s"
+            ""
         )
-        val formatted = Palette.translate(format)
-        event.setFormat(formatted)
 
-        if (false) sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
+        val formatted = Palette.translate(format)
+
+        Bukkit.getServer.broadcastMessage(formatted + message);
+
+        val runnable = new BukkitRunnable {
+            override def run(): Unit = {
+                DiscordSRV
+                    .getPlugin()
+                    .processChatMessage(
+                        event.getPlayer(),
+                        event.getMessage(),
+                        DiscordSRV.getPlugin().getOptionalChannel("global"),
+                        false
+                    )
+            }
+        }
+        runnable.runTaskAsynchronously(plugin)
+
+        if (false)
+            sink(
+                ChatEvent(
+                    channel = 0,
+                    sender = player.getUniqueId(),
+                    source = ChatSource.InGame,
+                    staff = staff,
+                    donator = donator
+                )
+            )
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR) def chatCanceller(event: AsyncPlayerChatEvent): Unit = {
+        event.setCancelled(true)
     }
 
     def sink(chatEvent: ChatEvent) = {

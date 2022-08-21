@@ -7,11 +7,13 @@ resolvers ++= List(
     "papermc" at "https://papermc.io/repo/repository/maven-public/",
     "dmulloy2-repo" at "https://repo.dmulloy2.net/nexus/repository/public/",
     "jcenter" at "https://jcenter.bintray.com",
-    "m2-dv8tion" at "https://m2.dv8tion.net/releases"
+    "m2-dv8tion" at "https://m2.dv8tion.net/releases",
+    "Scarsz-Nexus" at "https://nexus.scarsz.me/content/groups/public/",
 )
 libraryDependencies ++= List(
     "io.papermc.paper" % "paper-api" % "1.19-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
+    "com.discordsrv" % "discordsrv" % "1.25.1" % Provided,
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 

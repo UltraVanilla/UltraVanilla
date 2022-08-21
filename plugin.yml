@@ -8,6 +8,7 @@ description: Official plugin for UltraVanilla Minecraft server
 website: https://ultravanilla.world
 depend:
   - LuckPerms
+  - DiscordSRV
 commands:
   suicide:
     description: Kill yourself!
