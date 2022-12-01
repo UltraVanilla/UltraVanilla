@@ -1,6 +1,6 @@
 scalaVersion := "2.13.5"
 organization := "world.ultravanilla"
-version := "1.46"
+version := "1.47"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
@@ -14,6 +14,7 @@ libraryDependencies ++= List(
     "io.papermc.paper" % "paper-api" % "1.19-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "com.discordsrv" % "discordsrv" % "1.25.1" % Provided,
+    "com.zaxxer" % "HikariCP" % "5.0.1",
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 

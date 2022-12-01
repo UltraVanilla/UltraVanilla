@@ -1,6 +1,6 @@
 player:
   added:
-    - "support for 1.19.2 (you should update)"
+    - "all papermc chunk patches"
   removed: [ ]
   fixed: [ ]
   changed: [  ]
