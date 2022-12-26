@@ -1,6 +1,6 @@
 player:
   added:
-    - "two extra end platforms suitable for making obsidian farms, one at -200, 0 and another at 400, 0"
+    - "support for 1.19.3"
   removed: [ ]
   fixed: [ ]
   changed: [  ]

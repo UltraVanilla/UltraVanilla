@@ -9,10 +9,6 @@ import world.ultravanilla.reference.Palette
 import java.util.regex.Pattern
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.CollectionConverters._
-import org.bukkit.Bukkit
-import org.bukkit.event.EventPriority
-import github.scarsz.discordsrv.DiscordSRV
-import org.bukkit.scheduler.BukkitRunnable
 
 class Chat(val plugin: UltraVanilla) extends Listener {
     var history = ArrayBuffer[ChatEvent]()
@@ -106,44 +102,16 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             rank,
             rankBracketsColor,
             nameBracketsColor,
-            defaultNameColor + player.getDisplayName(),
+            defaultNameColor + "%1$s",
             nameBracketsColor,
             textPrefix,
-            ""
+            "%2$s"
         )
 
         val formatted = Palette.translate(format)
+        event.setFormat(formatted)
 
-        Bukkit.getServer.broadcastMessage(formatted + message);
-
-        val runnable = new BukkitRunnable {
-            override def run(): Unit = {
-                DiscordSRV
-                    .getPlugin()
-                    .processChatMessage(
-                        event.getPlayer(),
-                        event.getMessage(),
-                        DiscordSRV.getPlugin().getOptionalChannel("global"),
-                        false
-                    )
-            }
-        }
-        runnable.runTaskAsynchronously(plugin)
-
-        if (false)
-            sink(
-                ChatEvent(
-                    channel = 0,
-                    sender = player.getUniqueId(),
-                    source = ChatSource.InGame,
-                    staff = staff,
-                    donator = donator
-                )
-            )
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR) def chatCanceller(event: AsyncPlayerChatEvent): Unit = {
-        event.setCancelled(true)
+        // sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
     }
 
     def sink(chatEvent: ChatEvent) = {
