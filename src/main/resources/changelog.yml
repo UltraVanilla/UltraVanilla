@@ -1,6 +1,5 @@
 player:
-  added:
-    - "support for 1.19.3"
+  added: [ ]
   removed: [ ]
   fixed: [ ]
   changed: [  ]
@@ -9,5 +8,6 @@ staff:
   added: [ ]
   removed: [ ]
   fixed: [ ]
-  changed: [ ]
+  changed:
+    - "/permaban command to instead be named /banrollback"
   broke: [ ]

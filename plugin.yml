@@ -241,10 +241,10 @@ commands:
     description: Ban a player
     permission: ultravanilla.command.ban
     usage: /ban <player> <reason>
-  permaban:
-    description: Permanently ban a player
+  banrollback:
+    description: Permanently ban a player and rollback all activity
     permission: ultravanilla.command.permaban
-    usage: /permaban <player> <reason>
+    usage: /banrollback <player> <reason>
   ban-ip:
     description: Ban a player's IP
     permission: ultravanilla.command.ban-ip

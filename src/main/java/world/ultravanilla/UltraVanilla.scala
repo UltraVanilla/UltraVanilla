@@ -298,7 +298,7 @@ class UltraVanilla extends JavaPlugin {
         getCommand("ban").setExecutor(new BanCommand(UltraVanilla.instance))
         getCommand("ban-ip").setExecutor(new BanIpCommand(UltraVanilla.instance))
         getCommand("kick").setExecutor(new KickCommand(UltraVanilla.instance))
-        getCommand("permaban").setExecutor(new PermabanCommand(UltraVanilla.instance))
+        getCommand("banrollback").setExecutor(new PermabanCommand(UltraVanilla.instance))
         getCommand("pardon").setExecutor(new PardonCommand(UltraVanilla.instance))
         getCommand("warn").setExecutor(new WarnCommand(UltraVanilla.instance))
         getCommand("pardon-ip").setExecutor(new PardonIpCommand(UltraVanilla.instance))
