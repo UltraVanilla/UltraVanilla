@@ -70,10 +70,18 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         val textPrefix = config.getString("text-prefix", ChatColor.RESET + "")
         val group = plugin.getRole(player)
         val rankColor = plugin.getRoleColor(group) + ""
-        val rank = plugin.getConfig.getString(
-            "rename-groups." + group,
-            group.substring(0, 1).toUpperCase + group.substring(1)
-        )
+        val renames = plugin.getConfig.getStringList("rename-groups." + group)
+
+        var rank = if (renames.size == 0) {
+            plugin.getConfig.getString(
+                "rename-groups." + group,
+                group.substring(0, 1).toUpperCase + group.substring(1)
+            )
+        } else {
+            val variant =  UltraVanilla.getPlayerConfig(player).getInt("role-variant", 0)
+            renames.get(variant)
+        }
+
         val donatorBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.donator")) + ""
         val staffBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.staff")) + ""
         val rankBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.rank")) + ""

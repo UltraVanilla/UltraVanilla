@@ -1,5 +1,6 @@
 player:
-  added: [ ]
+  added:
+    - /rolevariant command for Ascendant and Veteran
   removed: [ ]
   fixed: [ ]
   changed: [  ]
@@ -8,6 +9,5 @@ staff:
   added: [ ]
   removed: [ ]
   fixed: [ ]
-  changed:
-    - "/permaban command to instead be named /banrollback"
+  changed: [ ]
   broke: [ ]

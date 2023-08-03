@@ -178,6 +178,10 @@ commands:
     description: Set your name color
     permission: ultravanilla.command.namecolor
     usage: /namecolor <color>
+  rolevariant:
+    description: Set your role variant
+    permission: ultravanilla.command.rolevariant
+    usage: /rolevariant <variant id>
   playtime:
     aliases: [ pt ]
     description: Get the playtime in hours, minutes, and seconds of a player

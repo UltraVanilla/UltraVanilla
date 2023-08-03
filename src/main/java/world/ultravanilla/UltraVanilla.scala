@@ -49,10 +49,7 @@ class UltraVanilla extends JavaPlugin {
         getConfig.getString("color.rank." + role, "#ffffff")
     ) + getRoleCapitalized(role)
 
-    def getRoleCapitalized(role: String) = getConfig.getString(
-        "rename-groups." + role,
-        role.substring(0, 1).toUpperCase + role.substring(1)
-    )
+     def getRoleCapitalized(role: String) = role.substring(0, 1).toUpperCase + role.substring(1)
 
     @throws[IOException]
     def firstJoin(name: String) = {
@@ -281,6 +278,7 @@ class UltraVanilla extends JavaPlugin {
         getCommand("smite").setExecutor(new SmiteCommand(UltraVanilla.instance))
         getCommand("back").setExecutor(new BackCommand(UltraVanilla.instance))
         getCommand("namecolor").setExecutor(new NameColorCommand(UltraVanilla.instance))
+        getCommand("rolevariant").setExecutor(new RoleVariantCommand(UltraVanilla.instance))
         getCommand("playtime").setExecutor(new PlayTimeCommand(UltraVanilla.instance))
         getCommand("whois").setExecutor(new WhoIsCommand(UltraVanilla.instance))
         val muteCommand = new MuteCommand(UltraVanilla.instance)
