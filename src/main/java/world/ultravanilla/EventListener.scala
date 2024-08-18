@@ -24,7 +24,7 @@ import scala.math.Integral.Implicits._
 class EventListener(val plugin: UltraVanilla) extends Listener {
     val eventBus: EventBus = plugin.luckPerms.getEventBus
     eventBus.subscribe(classOf[UserPromoteEvent], this.onUserPromote)
-    val loreWhitelist =
+    val loreWhitelist: Set[Material] =
         Set(Material.PLAYER_HEAD, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.WALL_TORCH, Material.TORCH)
 
     def onUserPromote(event: UserPromoteEvent): Unit =
@@ -112,7 +112,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
                     else stuff.Range.of(args)
                 if (range == null) return null
                 val random = range.getRandom
-                if (command.endsWith("f")) return random + ""
+                if (command.endsWith("f")) return "" + random + ""
                 else return String.format("%.0f", random)
             }
         null
@@ -132,11 +132,11 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
             val theClass = children(0)
             if (theClass.matches("rank|role|group")) {
                 val roleColor = plugin.getRoleColor(children(1))
-                if (roleColor != null) return Palette.untranslate(roleColor + "")
+                if (roleColor != null) return Palette.untranslate(String.valueOf(roleColor) + "")
             }
         } else if (children.length == 1) {
             val color = ChatColor.of(children(0))
-            if (color != null) return Palette.untranslate(color + "")
+            if (color != null) return Palette.untranslate(String.valueOf(color) + "")
         }
         parent + "." + children.mkString(",")
     }
@@ -238,7 +238,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         }
     }
 
-    @EventHandler def onPlayerLeave(event: PlayerQuitEvent) = {
+    @EventHandler def onPlayerLeave(event: PlayerQuitEvent): Unit = {
         val player = event.getPlayer
         UltraVanilla.set(player.getUniqueId, Users.LOGOUT_LOCATION, new Position(event.getPlayer.getLocation))
         UltraVanilla.updatePlaytime(player)
@@ -247,7 +247,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
         )
     }
 
-    @EventHandler def onPlayerDeath(event: PlayerDeathEvent) = {
+    @EventHandler def onPlayerDeath(event: PlayerDeathEvent): Unit = {
         val player = event.getEntity
         val config = UltraVanilla.getPlayerConfig(player.getUniqueId)
         if (player.hasPermission("ultravanilla.command.suicide")) {
@@ -314,7 +314,7 @@ class EventListener(val plugin: UltraVanilla) extends Listener {
     //         }
     // }
 
-    @EventHandler def onPortalCreate(event: PortalCreateEvent) = {
+    @EventHandler def onPortalCreate(event: PortalCreateEvent): Unit = {
         if (event.getReason == PortalCreateEvent.CreateReason.END_PLATFORM) {
             val world = event.getWorld
 

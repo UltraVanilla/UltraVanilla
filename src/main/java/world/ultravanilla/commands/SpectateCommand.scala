@@ -15,7 +15,7 @@ object SpectateCommand {
 class SpectateCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor {
     this.color = SpectateCommand.COLOR
 
-    override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]) = {
+    override def onCommand(sender: CommandSender, command: Command, label: String, args: Array[String]): Boolean = {
         if (sender.isInstanceOf[Player]) {
             val player = sender.asInstanceOf[Player]
             val uuid = player.getUniqueId

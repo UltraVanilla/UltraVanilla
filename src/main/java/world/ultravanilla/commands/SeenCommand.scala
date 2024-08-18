@@ -11,9 +11,10 @@ import world.ultravanilla.serializable.Position
 
 import java.text.SimpleDateFormat
 import java.util._
+import org.bukkit.scheduler.BukkitTask
 
 object SeenCommand {
-    val COLOR = ChatColor.of("#fce192")
+    val COLOR: ChatColor = ChatColor.of("#fce192")
 }
 
 class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor with TabExecutor {
@@ -28,7 +29,7 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         }
         val player = plugin.getServer.getOfflinePlayer(args(0))
         if (!player.hasPlayedBefore) {
-            sender.sendMessage(Palette.NOUN + player.getName + SeenCommand.COLOR + " has not played here before.")
+            sender.sendMessage(String.valueOf(Palette.NOUN) + player.getName + SeenCommand.COLOR + " has not played here before.")
             return true
         }
         command.getName match {
@@ -51,10 +52,10 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         false
     }
 
-    def sendLastSeen(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
+    def sendLastSeen(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone): Unit = {
         val lastSeen = player.getLastPlayed
         sender.sendMessage(
-            Palette.NOUN + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(
+            String.valueOf(Palette.NOUN) + player.getName + SeenCommand.COLOR + " was last seen on " + Palette.OBJECT + getDate(
                 lastSeen,
                 timeZone
             )
@@ -65,9 +66,9 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         }
     }
 
-    def sendPromotionInfo(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = plugin.async(() => {
+    def sendPromotionInfo(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone): BukkitTask = plugin.async(() => {
         sender.sendMessage(
-            SeenCommand.COLOR + "Last promoted: " + Palette.OBJECT + getDate(
+            String.valueOf(SeenCommand.COLOR) + "Last promoted: " + Palette.OBJECT + getDate(
                 UltraVanilla.getPlayerConfig(player).getLong("last-promotion"),
                 timeZone
             )
@@ -95,7 +96,7 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         }
     })
 
-    def getDate(time: Long, timezone: TimeZone) = if (time == 0) {
+    def getDate(time: Long, timezone: TimeZone): String = if (time == 0) {
         "a long time ago"
     } else {
         val date = new Date(time)
@@ -104,7 +105,7 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         df.format(date)
     }
 
-    def sendLocationInfo(sender: CommandSender, player: OfflinePlayer) = {
+    def sendLocationInfo(sender: CommandSender, player: OfflinePlayer): Unit = {
         val position = UltraVanilla.getPlayerConfig(player).get(Users.LOGOUT_LOCATION).asInstanceOf[Position]
         if (position != null) {
             val textComponent = new TextComponent("Last logout location: ")
@@ -118,10 +119,10 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
         }
     }
 
-    def sendFirstJoined(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone) = {
+    def sendFirstJoined(sender: CommandSender, player: OfflinePlayer, timeZone: TimeZone): Unit = {
         val firstJoined = player.getFirstPlayed
         sender.sendMessage(
-            Palette.NOUN + player.getName + SeenCommand.COLOR + " first joined on " + Palette.OBJECT + getDate(
+            String.valueOf(Palette.NOUN) + player.getName + SeenCommand.COLOR + " first joined on " + Palette.OBJECT + getDate(
                 firstJoined,
                 timeZone
             )
@@ -130,7 +131,7 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
 
     override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]): List[String] = {
         if (args.length == 1)
-            return getSuggestions(plugin.offlineAutocompleteList, args)
+            return getSuggestions(plugin.offlineAutocompleteList(), args)
         else if (command.getName == "seen") {
             val suggestions = new ArrayList[String]
             suggestions.add("first")

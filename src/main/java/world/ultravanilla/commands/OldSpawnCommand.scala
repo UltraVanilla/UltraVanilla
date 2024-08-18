@@ -42,7 +42,7 @@ class OldSpawnCommand(val instance: UltraVanilla) extends UltraCommand(instance)
                 }
                 if (oldspawn != null)
                     if (sender.hasPermission("ultravanilla.command.oldspawn.player")) player.teleport(oldspawn.getLocation)
-                    else sender.sendMessage(ChatColor.RED + "You do not have permission to teleport players to Old Spawn.")
+                    else sender.sendMessage(String.valueOf(ChatColor.RED) + "You do not have permission to teleport players to Old Spawn.")
                 else sender.sendMessage(format("spawn", "error.not-set"))
             }
         else return false

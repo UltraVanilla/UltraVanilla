@@ -1,4 +1,4 @@
-scalaVersion := "2.13.14"
+scalaVersion := "3.4.2"
 organization := "world.ultravanilla"
 version := "1.51"
 name := "UltraVanilla"
@@ -16,7 +16,6 @@ libraryDependencies ++= List(
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 
-scalacOptions += "-target:21"
 javacOptions ++= Seq("-source", "21", "-target", "21")
 
 Compile / resourceGenerators += Def.task {

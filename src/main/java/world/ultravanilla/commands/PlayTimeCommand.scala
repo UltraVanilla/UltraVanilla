@@ -11,15 +11,16 @@ import org.bukkit.entity.Player
 import world.ultravanilla.UltraVanilla
 import world.ultravanilla.reference.Palette
 import world.ultravanilla.stuff.StringUtil
+import java.{util => ju}
 
 object PlayTimeCommand {
-    val COLOR = ChatColor.of("#8DF6C8")
+    val COLOR: ChatColor = ChatColor.of("#8DF6C8")
 }
 
 class PlayTimeCommand(val instance: UltraVanilla) extends UltraCommand(instance) with CommandExecutor with TabExecutor {
     this.color = PlayTimeCommand.COLOR
 
-    def getPlayTime(player: OfflinePlayer) = {
+    def getPlayTime(player: OfflinePlayer): String = {
         StringUtil.getTimeString(player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20L * 1000L)
     }
 
@@ -40,12 +41,12 @@ class PlayTimeCommand(val instance: UltraVanilla) extends UltraCommand(instance)
         }
 
         sender.sendMessage(
-            Palette.NOUN + player.getName + PlayTimeCommand.COLOR + " has played for " + Palette.NUMBER + getPlayTime(player)
+            String.valueOf(Palette.NOUN) + player.getName + PlayTimeCommand.COLOR + " has played for " + Palette.NUMBER + getPlayTime(player)
         )
         true
     }
 
-    override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]) = {
-        getSuggestions(plugin.offlineAutocompleteList, args)
+    override def onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array[String]): ju.List[String] = {
+        getSuggestions(plugin.offlineAutocompleteList(), args)
     }
 }

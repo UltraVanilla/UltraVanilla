@@ -11,11 +11,11 @@ object AnarchyRegion {
 
     var allowTeleport = true
 
-    def inside(location: Location) =
+    def inside(location: Location): Boolean =
         location.getX > xMin && location.getX < xMax && location.getZ > zMin && location.getZ < zMax &&
             (location.getWorld.getUID eq center.getWorld.getUID)
 
-    def configure(plugin: UltraVanilla) = {
+    def configure(plugin: UltraVanilla): Unit = {
         val config = plugin.getConfig
         val xRange = config.getDoubleList("spectate-box.x")
         val zRange = config.getDoubleList("spectate-box.z")

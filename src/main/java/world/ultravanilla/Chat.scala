@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.jdk.CollectionConverters._
 
 class Chat(val plugin: UltraVanilla) extends Listener {
-    var history = ArrayBuffer[ChatEvent]()
+    var history: ArrayBuffer[ChatEvent] = ArrayBuffer[ChatEvent]()
 
     @EventHandler def onAsyncPlayerChat(event: AsyncPlayerChatEvent): Unit = {
         val player = event.getPlayer
@@ -21,7 +21,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
 
         // Mute
         if (config.getBoolean("muted", false)) {
-            player.sendMessage(MuteCommand.COLOR + "You are muted.")
+            player.sendMessage(String.valueOf(MuteCommand.COLOR) + "You are muted.")
             event.setCancelled(true)
             plugin.getLogger.info(player.getName + " tried to say: " + message)
             return
@@ -41,7 +41,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                     for (recipient <- event.getRecipients.asScala) {
                         message = message.replace(
                             `match`,
-                            ChatColor.of(plugin.getConfig.getString("color.chat.ping.everyone")) + `match` + ChatColor.RESET
+                            String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.ping.everyone"))) + `match` + ChatColor.RESET
                         )
                         plugin.ping(recipient)
                     }
@@ -55,7 +55,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                         ) {
                             message = message.replace(
                                 `match`,
-                                ChatColor.of(plugin.getConfig.getString("color.chat.ping.user")) + name + ChatColor.RESET
+                                String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.ping.user"))) + name + ChatColor.RESET
                             )
                             plugin.ping(player, recipient)
                         }
@@ -67,9 +67,9 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         // Chat formatter
         val donator = player.hasPermission("ultravanilla.donator")
         val staff = player.hasPermission("ultravanilla.staff-custom")
-        val textPrefix = config.getString("text-prefix", ChatColor.RESET + "")
+        val textPrefix = config.getString("text-prefix", String.valueOf(ChatColor.RESET) + "")
         val group = plugin.getRole(player)
-        val rankColor = plugin.getRoleColor(group) + ""
+        val rankColor = String.valueOf(plugin.getRoleColor(group)) + ""
         val renames = plugin.getConfig.getStringList("rename-groups." + group)
 
         var rank = if (renames.size == 0) {
@@ -82,12 +82,12 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             renames.get(variant)
         }
 
-        val donatorBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.donator")) + ""
-        val staffBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.staff")) + ""
-        val rankBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.rank")) + ""
-        val nameBracketsColor = ChatColor.of(plugin.getConfig.getString("color.chat.brackets.name")) + ""
-        val defaultNameColor = ChatColor.of(plugin.getConfig.getString("color.chat.default-name-color")) + ""
-        val staffColor = ChatColor.of(plugin.getConfig.getString("color.rank.staff")) + ""
+        val donatorBracketsColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.brackets.donator"))) + ""
+        val staffBracketsColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.brackets.staff"))) + ""
+        val rankBracketsColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.brackets.rank"))) + ""
+        val nameBracketsColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.brackets.name"))) + ""
+        val defaultNameColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.chat.default-name-color"))) + ""
+        val staffColor = String.valueOf(ChatColor.of(plugin.getConfig.getString("color.rank.staff"))) + ""
 
         val donatorSymbol = plugin.getConfig.getString("rename-groups.donator", "D")
         val staffSymbol = plugin.getConfig.getString("rename-groups.staff", "S")
@@ -122,7 +122,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         // sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
     }
 
-    def sink(chatEvent: ChatEvent) = {
+    def sink(chatEvent: ChatEvent): Nothing = {
         history.addOne(chatEvent)
         // unimplemented
         ???
