@@ -1,4 +1,4 @@
-scalaVersion := "2.13.5"
+scalaVersion := "2.13.14"
 organization := "world.ultravanilla"
 version := "1.51"
 name := "UltraVanilla"
@@ -10,14 +10,14 @@ resolvers ++= List(
     "m2-dv8tion" at "https://m2.dv8tion.net/releases",
 )
 libraryDependencies ++= List(
-    "io.papermc.paper" % "paper-api" % "1.19-R0.1-SNAPSHOT" % Provided,
+    "io.papermc.paper" % "paper-api" % "1.21.1-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "com.zaxxer" % "HikariCP" % "5.0.1",
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
 )
 
-scalacOptions += "-target:17"
-javacOptions ++= Seq("-source", "17", "-target", "17")
+scalacOptions += "-target:21"
+javacOptions ++= Seq("-source", "21", "-target", "21")
 
 Compile / resourceGenerators += Def.task {
     val file = (Compile / resourceManaged).value / "plugin.yml"
