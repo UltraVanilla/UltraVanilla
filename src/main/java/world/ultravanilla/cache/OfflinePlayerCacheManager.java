@@ -3,7 +3,6 @@ package world.ultravanilla.cache;
 import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.cache.data.PlayerCacheEntry;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.OfflinePlayer;
 
 import com.google.gson.reflect.TypeToken;
@@ -11,21 +10,18 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.HashMap;
 
 public class OfflinePlayerCacheManager {
     private final UltraVanilla plugin;
-    private final Object2ObjectOpenHashMap<UUID, PlayerCacheEntry> playerCache = new Object2ObjectOpenHashMap<>();
+    private final HashMap<UUID, PlayerCacheEntry> playerCache = new HashMap<>();
     private final File cacheFile;
     private long lastLoaded = 0L;
 
@@ -34,7 +30,7 @@ public class OfflinePlayerCacheManager {
         this.cacheFile = new File(plugin.getDataFolder(), "offline-players.json");
     }
 
-    public Object2ObjectOpenHashMap<UUID, PlayerCacheEntry> getOfflinePlayers() {
+    public HashMap<UUID, PlayerCacheEntry> getOfflinePlayers() {
         if (playerCache.isEmpty()) {
             try {
                 loadCache();
@@ -96,8 +92,8 @@ public class OfflinePlayerCacheManager {
         if (!cacheFile.exists()) return;
         Gson gson = new Gson();
         try (FileReader reader = new FileReader(cacheFile)) {
-            Type type = new TypeToken<Object2ObjectOpenHashMap<UUID, PlayerCacheEntry>>(){}.getType();
-            Object2ObjectOpenHashMap<UUID, PlayerCacheEntry> loaded = gson.fromJson(reader, type);
+            Type type = new TypeToken<HashMap<UUID, PlayerCacheEntry>>(){}.getType();
+            HashMap<UUID, PlayerCacheEntry> loaded = gson.fromJson(reader, type);
             if (loaded != null) {
                 playerCache.clear();
                 playerCache.putAll(loaded);
