@@ -55,7 +55,10 @@ public class OfflinePlayerCacheManager {
                         PlayerCacheEntry entry = playerCache.get(uuid);
                         if (entry == null || entry.lastModified != lastModified) {
                             String name = getPlayerNameSync(uuid);
-                            playerCache.put(uuid, new PlayerCacheEntry(uuid, name, lastModified));
+                            if (name != null) {
+                                playerCache.put(uuid, new PlayerCacheEntry(uuid, name, lastModified));
+                            }
+
                         }
                     } catch (IllegalArgumentException ignored) {
                         // Ignore files that don't match UUID format
