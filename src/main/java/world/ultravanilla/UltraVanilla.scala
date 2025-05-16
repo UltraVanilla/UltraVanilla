@@ -455,11 +455,10 @@ class UltraVanilla extends JavaPlugin {
     var autocompleteLastUpdated = new Date(0)
     
     def offlineAutocompleteList(): ArrayList[String] = {
-        val now = new Date()
-        if ((now.getTime - autocompleteLastUpdated.getTime) < 90 * 60 * 1000)
+        if ((new Date().getTime - autocompleteLastUpdated.getTime) < 90 * 60 * 1000)
             return cachedAutocompleteList
-    
-        autocompleteLastUpdated = now
+
+        autocompleteLastUpdated = new Date()
         cachedAutocompleteList.clear()
     
         val cache = offlinePlayerCacheManager.getOfflinePlayers()
