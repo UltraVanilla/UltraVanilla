@@ -4,7 +4,7 @@ version := "1.51"
 name := "UltraVanilla"
 resolvers ++= List(
     "jitpack.io" at "https://jitpack.io",
-    "papermc" at "https://papermc.io/repo/repository/maven-public/",
+    "papermc" at "https://repo.papermc.io/repository/maven-public/",
     "dmulloy2-repo" at "https://repo.dmulloy2.net/nexus/repository/public/",
     "jcenter" at "https://jcenter.bintray.com",
     "m2-dv8tion" at "https://m2.dv8tion.net/releases",

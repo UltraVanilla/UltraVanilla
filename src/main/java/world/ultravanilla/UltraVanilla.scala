@@ -19,6 +19,7 @@ import world.ultravanilla.commands._
 import world.ultravanilla.reference.{Palette, Users}
 import world.ultravanilla.serializable.{LoreItem, Position, Powertool, Title}
 import world.ultravanilla.stuff.Range
+import world.ultravanilla.cache.OfflinePlayerCacheManager
 
 import java.io.{File, FileOutputStream, IOException}
 import java.util._
@@ -31,6 +32,8 @@ import org.bukkit
 
 class UltraVanilla extends JavaPlugin {
     var luckPerms: LuckPerms = null
+
+    val offlinePlayerCacheManager = new OfflinePlayerCacheManager(this)
 
     var changelog: YamlConfiguration = null
     var storage: YamlConfiguration = null
@@ -405,6 +408,7 @@ class UltraVanilla extends JavaPlugin {
 
     def saveStorage() = {
         saveConfig(storage, "storage.yml")
+        offlinePlayerCacheManager.saveCache();
     }
 
     def saveConfig(config: YamlConfiguration, fileName: String) =
@@ -449,18 +453,22 @@ class UltraVanilla extends JavaPlugin {
 
     val cachedAutocompleteList = new ArrayList[String]
     var autocompleteLastUpdated = new Date(0)
-
+    
     def offlineAutocompleteList(): ArrayList[String] = {
-        if ((new Date().getTime - autocompleteLastUpdated.getTime) < 90 * 60 * 1000)
+        val now = new Date()
+        if ((now.getTime - autocompleteLastUpdated.getTime) < 90 * 60 * 1000)
             return cachedAutocompleteList
-        autocompleteLastUpdated = new Date
-
-        for (player <- getServer.getOfflinePlayers) {
-            val name = player.getName
+    
+        autocompleteLastUpdated = now
+        cachedAutocompleteList.clear()
+    
+        val cache = offlinePlayerCacheManager.getOfflinePlayers()
+        for (entry <- cache.values().asScala) {
+            val name = entry.name
             if (name != null && !cachedAutocompleteList.contains(name))
-                cachedAutocompleteList.add(player.getName)
+                cachedAutocompleteList.add(name)
         }
-
+    
         cachedAutocompleteList
     }
 }
