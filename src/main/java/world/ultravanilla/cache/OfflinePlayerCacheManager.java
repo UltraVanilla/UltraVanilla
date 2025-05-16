@@ -82,11 +82,13 @@ public class OfflinePlayerCacheManager {
     }
 
     public void saveCache() throws IOException {
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter(cacheFile)) {
-            gson.toJson(playerCache, writer);
+            Gson gson = new Gson();
+            synchronized (playerCache) {
+                try (FileWriter writer = new FileWriter(cacheFile)) {
+                    gson.toJson(new HashMap<>(playerCache), writer);
+                }
+            }
         }
-    }
 
     public void loadCache() throws IOException {
         if (!cacheFile.exists()) return;
