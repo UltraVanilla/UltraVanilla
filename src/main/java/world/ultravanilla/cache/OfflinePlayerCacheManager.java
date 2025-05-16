@@ -6,10 +6,15 @@ import world.ultravanilla.cache.data.PlayerCacheEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.OfflinePlayer;
 
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,7 +31,7 @@ public class OfflinePlayerCacheManager {
 
     public OfflinePlayerCacheManager(UltraVanilla instance) {
         this.plugin = instance;
-        this.cacheFile = new File(plugin.getDataFolder(), "offline-players.ser");
+        this.cacheFile = new File(plugin.getDataFolder(), "offline-players.json");
     }
 
     public Object2ObjectOpenHashMap<UUID, PlayerCacheEntry> getOfflinePlayers() {
@@ -81,18 +86,21 @@ public class OfflinePlayerCacheManager {
     }
 
     public void saveCache() throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(cacheFile))) {
-            oos.writeObject(playerCache);
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(cacheFile)) {
+            gson.toJson(playerCache, writer);
         }
     }
 
-    private void loadCache() throws IOException, ClassNotFoundException {
+    public void loadCache() throws IOException {
         if (!cacheFile.exists()) return;
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(cacheFile))) {
-            Object obj = ois.readObject();
-            if (obj instanceof Object2ObjectOpenHashMap) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(cacheFile)) {
+            Type type = new TypeToken<Object2ObjectOpenHashMap<UUID, PlayerCacheEntry>>(){}.getType();
+            Object2ObjectOpenHashMap<UUID, PlayerCacheEntry> loaded = gson.fromJson(reader, type);
+            if (loaded != null) {
                 playerCache.clear();
-                playerCache.putAll((Object2ObjectOpenHashMap<UUID, PlayerCacheEntry>) obj);
+                playerCache.putAll(loaded);
             }
         }
     }
