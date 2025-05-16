@@ -44,24 +44,26 @@ public class OfflinePlayerCacheManager {
             
             lastLoaded = System.currentTimeMillis();
             File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
-            File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
-            if (files != null) {
-                for (File file : files) {
-                    String fileName = file.getName();
-                    String uuidPart = fileName.substring(0, fileName.length() - 4);
-                    try {
-                        UUID uuid = UUID.fromString(uuidPart);
-                        long lastModified = file.lastModified();
-                        PlayerCacheEntry entry = playerCache.get(uuid);
-                        if (entry == null || entry.lastModified != lastModified) {
-                            String name = getPlayerNameSync(uuid);
-                            if (name != null) {
-                                playerCache.put(uuid, new PlayerCacheEntry(uuid, name, lastModified));
-                            }
+            if (playerDataFolder.exists()) {
+                File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
+                if (files != null) {
+                    for (File file : files) {
+                        String fileName = file.getName();
+                        String uuidPart = fileName.substring(0, fileName.length() - 4);
+                        try {
+                            UUID uuid = UUID.fromString(uuidPart);
+                            long lastModified = file.lastModified();
+                            PlayerCacheEntry entry = playerCache.get(uuid);
+                            if (entry == null || entry.lastModified != lastModified) {
+                                String name = getPlayerNameSync(uuid);
+                                if (name != null) {
+                                    playerCache.put(uuid, new PlayerCacheEntry(uuid, name, lastModified));
+                                }
 
+                            }
+                        } catch (IllegalArgumentException ignored) {
+                            // Ignore files that don't match UUID format
                         }
-                    } catch (IllegalArgumentException ignored) {
-                        // Ignore files that don't match UUID format
                     }
                 }
             }
