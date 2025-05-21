@@ -414,7 +414,7 @@ class UltraVanilla extends JavaPlugin {
 
     def saveStorage() = {
         saveConfig(storage, "storage.yml")
-        offlinePlayerCacheManager.saveCache();
+        offlinePlayerCacheManager.saveCache()
     }
 
     def saveConfig(config: YamlConfiguration, fileName: String) =
