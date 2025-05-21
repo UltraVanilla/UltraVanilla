@@ -3,7 +3,7 @@ package world.ultravanilla.cache;
 import world.ultravanilla.UltraVanilla;
 import world.ultravanilla.cache.data.PlayerCacheEntry;
 
-import org.bukkit.Bukkit; // <-- Needed for Bukkit.isPrimaryThread() and Bukkit.getScheduler()
+import org.bukkit.Bukkit;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -72,23 +72,22 @@ public class OfflinePlayerCacheManager {
     }
 
     public List<UUID> getAllPlayerUUIDs() {
-        synchronized (playerCache) {
-            List<UUID> uuids = new ArrayList<>();
-            File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
-            File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
-            if (files != null) {
-                for (File file : files) {
-                    String name = file.getName();
-                    String uuidPart = name.substring(0, name.length() - 4); // Remove ".dat"
-                    try {
-                        uuids.add(UUID.fromString(uuidPart));
-                    } catch (IllegalArgumentException ignored) {
-                        // Ignore files that don't match UUID format
-                    }
+        List<UUID> uuids = new ArrayList<>();
+        File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
+        File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
+        if (files != null) {
+            for (File file : files) {
+                String name = file.getName();
+                String uuidPart = name.substring(0, name.length() - 4); // Remove ".dat"
+                try {
+                    uuids.add(UUID.fromString(uuidPart));
+                } catch (IllegalArgumentException ignored) {
+                    // Ignore files that don't match UUID format
                 }
             }
-            return uuids;
         }
+        return uuids;
+        
     }
 
     public void saveCache() throws IOException {
@@ -103,11 +102,11 @@ public class OfflinePlayerCacheManager {
     public void loadCache() throws IOException {
         if (!cacheFile.exists()) return;
         Gson gson = new Gson();
-        synchronized (playerCache) {
-            try (FileReader reader = new FileReader(cacheFile)) {
-                Type type = new TypeToken<HashMap<UUID, PlayerCacheEntry>>(){}.getType();
-                HashMap<UUID, PlayerCacheEntry> loaded = gson.fromJson(reader, type);
-                if (loaded != null) {
+        try (FileReader reader = new FileReader(cacheFile)) {
+            Type type = new TypeToken<HashMap<UUID, PlayerCacheEntry>>(){}.getType();
+            HashMap<UUID, PlayerCacheEntry> loaded = gson.fromJson(reader, type);
+            if (loaded != null) {
+                synchronized (playerCache) {
                     playerCache.clear();
                     playerCache.putAll(loaded);
                 }

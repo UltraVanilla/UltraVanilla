@@ -313,6 +313,12 @@ class UltraVanilla extends JavaPlugin {
         keepinvOffTeam.setPrefix("KeepInventory OFF ")
         keepinvOffTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS)
         keepinvOffTeam.setColor(bukkit.ChatColor.RED)
+
+        
+
+        offlinePlayerCacheManager.loadCache();
+
+
     }
 
     def setMOTD(motd: String) = this.motd = Palette.translate(motd)
