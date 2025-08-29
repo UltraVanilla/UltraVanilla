@@ -190,6 +190,12 @@ class UltraVanilla extends JavaPlugin {
 
         staffActionsRecord = new StaffActionsRecord(this)
 
+        // PlaholderAPI
+        if (Bukkit.getPluginManager.getPlugin("PlaceholderAPI") != null) {
+            new world.ultravanilla.papi.Placeholders(this).register()
+            getLogger.info("Linked to PlaceholderAPI.")
+        }
+
         // Add luckperms API
         val luckPermsProvider =
             Bukkit.getServicesManager.getRegistration(classOf[LuckPerms])
