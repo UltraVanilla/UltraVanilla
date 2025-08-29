@@ -6,6 +6,8 @@ prefix: UV
 authors: [ Akoot_, lordpipe ]
 description: Official plugin for UltraVanilla Minecraft server
 website: https://ultravanilla.world
+softdepend:
+  - PlaceholderAPI
 depend:
   - LuckPerms
 commands:

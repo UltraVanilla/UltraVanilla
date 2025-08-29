@@ -8,12 +8,14 @@ resolvers ++= List(
     "dmulloy2-repo" at "https://repo.dmulloy2.net/nexus/repository/public/",
     "jcenter" at "https://jcenter.bintray.com",
     "m2-dv8tion" at "https://m2.dv8tion.net/releases",
+    "placeholderapi" at "https://repo.extendedclip.com/content/repositories/placeholderapi/"
 )
 libraryDependencies ++= List(
     "io.papermc.paper" % "paper-api" % "1.21.1-R0.1-SNAPSHOT" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "com.zaxxer" % "HikariCP" % "5.0.1",
-    "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java")
+    "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java"),
+    "me.clip" % "placeholderapi" % "2.11.6" % "provided"
 )
 
 scalacOptions += "-target:21"
