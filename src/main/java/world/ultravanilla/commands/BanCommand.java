@@ -26,6 +26,15 @@ public class BanCommand extends AdminCommand implements CommandExecutor, TabExec
                     target.banPlayer(ChatColor.DARK_RED + reason + ChatColor.RESET, source);
                     StaffAction staffAction = new StaffAction(StaffAction.Type.BAN, reason, source, target.getName());
                     announce(staffAction);
+
+                    // public ban message
+                    plugin.getServer().broadcastMessage(
+                        target.getName() +
+                        COLOR + " has been banned: " +
+                        ChatColor.RESET + reason +
+                        COLOR + "."
+                    );
+
                 } else {
                     sender.sendMessage(PLAYER + target.getName() + COLOR + " is already banned!");
                 }
