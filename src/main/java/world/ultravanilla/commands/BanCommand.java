@@ -27,12 +27,13 @@ public class BanCommand extends AdminCommand implements CommandExecutor, TabExec
                     StaffAction staffAction = new StaffAction(StaffAction.Type.BAN, reason, source, target.getName());
                     announce(staffAction);
 
-                    // public ban message
-                    plugin.getServer().broadcastMessage(
+                    // ban message for players with "ultravanilla.seebans" node
+                    plugin.getServer().broadcast(
                         target.getName() +
                         COLOR + " has been banned: " +
                         ChatColor.RESET + reason +
-                        COLOR + "."
+                        COLOR + ".",
+                        "ultravanilla.seebans"
                     );
 
                 } else {
