@@ -33,6 +33,14 @@ public class TempBanCommand extends AdminCommand implements CommandExecutor {
                     target.banPlayer(ChatColor.DARK_RED + Palette.translate(reason) + ChatColor.RESET + ChatColor.RED, new Date(expires), sender.getName());
                     StaffAction staffAction = new StaffAction(StaffAction.Type.TEMP_BAN, reason, sender.getName(), target.getName(), now, expires);
                     announce(staffAction);
+
+                    // ban message for players with "ultravanilla.seebans" node
+                    plugin.getServer().broadcast(
+                        target.getName() +
+                        COLOR + " has been temporarily banned for " + TIME + StringUtil.getTimeString(time) + ": " +
+                        ChatColor.RESET + reason + COLOR + ".",
+                        "ultravanilla.seebans"
+                    );
                 } else {
                     sender.sendMessage(PLAYER + target.getName() + COLOR + " is already banned!");
                 }

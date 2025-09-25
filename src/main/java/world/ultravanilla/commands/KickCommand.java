@@ -25,6 +25,14 @@ public class KickCommand extends AdminCommand implements CommandExecutor, TabExe
                 target.kickPlayer(ChatColor.RED + reason + ChatColor.RESET);
                 StaffAction staffAction = new StaffAction(StaffAction.Type.KICK, reason, source, target.getName());
                 announce(staffAction);
+
+                plugin.getServer().broadcast(
+                    target.getName() +
+                    COLOR + " has been kicked: " +
+                    ChatColor.RESET + reason +
+                    COLOR + ".",
+                    "ultravanilla.seebans"
+                );
             } else {
                 sender.sendMessage(PLAYER + args[0] + COLOR + " is not online.");
             }

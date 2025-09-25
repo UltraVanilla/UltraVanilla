@@ -45,6 +45,7 @@ public class StringUtil {
         if (hours != 0) strings.add(plural(hours, "hour"));
         if (minutes != 0) strings.add(plural(minutes, "minute"));
         if (seconds != 0) strings.add(plural(seconds, "second"));
+        if (strings.size() == 0) strings.add("0 seconds"); // fallback for unsanitised use
 
         return join(" ", strings);
     }
