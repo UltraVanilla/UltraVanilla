@@ -47,6 +47,23 @@ public class AdminCommand extends UltraCommand implements TabExecutor {
                 player.sendMessage(message);
             }
         }
+
+        // Broadcast ban/kick messages to players with "ultravanilla.seebans" node
+        if(staffAction.getType() == StaffAction.Type.BAN
+                || staffAction.getType() == StaffAction.Type.TEMP_BAN
+                || staffAction.getType() == StaffAction.Type.PERMA_BAN
+                || staffAction.getType() == StaffAction.Type.KICK) {
+
+            plugin.getServer().broadcast(
+                PLAYER + staffAction.getTarget() + " has been " +
+                COLOR + staffAction.getType().getVerb() + 
+                COLOR + (expires > 0 ? " for " + TIME + StringUtil.getTimeString(expires - staffAction.getCreated()) : "") +
+                (!description.isEmpty() ? ": " + ChatColor.RESET + description : "") +
+                COLOR + ".",
+                "ultravanilla.seebans"
+            );
+        }
+
         plugin.getLogger().info(ChatColor.stripColor(message));
     }
 
