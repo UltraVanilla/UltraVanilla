@@ -26,7 +26,16 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
             val zone = UltraVanilla.getPlayerConfig(player.getUniqueId).getString("timezone")
             if (!(zone == null || zone.isEmpty)) timeZone = TimeZone.getTimeZone(zone)
         }
-        val player = plugin.getServer.getOfflinePlayer(args(0))
+
+        val player =
+            if (args.length==0) {
+                if (sender.isInstanceOf[Player]) sender.asInstanceOf[Player]
+                else {
+                    sender.sendMessage(ChatColor.RED + "Usage: /" + command.getName + " <playername>")
+                    return true
+                }
+            } else plugin.getSErver.getOfflinePlayer(args(0))
+        
         if (!player.hasPlayedBefore) {
             sender.sendMessage(Palette.NOUN + player.getName + SeenCommand.COLOR + " has not played here before.")
             return true
