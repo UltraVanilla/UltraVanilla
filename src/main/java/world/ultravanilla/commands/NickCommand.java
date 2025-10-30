@@ -68,9 +68,23 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1 || args.length == 2) {
-            return null;
+        List<String> suggestions = new ArrayList<>();
+
+        if (args.length == 1) {
+            if (sender.hasPermission("ultravanilla.command.nick.others")) {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        suggestions.add(player.getName());
+                    }
+                }
+            }
+            return suggestions;
         }
-        return new ArrayList<>();
+
+        if (args.length == 2) {
+            return suggestions;
+        }
+
+        return suggestions;
     }
 }
