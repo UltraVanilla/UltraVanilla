@@ -40,7 +40,7 @@ public class NickCommand extends UltraCommand implements CommandExecutor, TabExe
                 } else {
                     sender.sendMessage(plugin.getString("player-only", "{action}", "have a nickname"));
                 }
-            } else if (args.length == 2) {
+            } else if (args.length >= 2) {
                 if (sender.hasPermission("ultravanilla.command.nick.others")) {
                     Player target = plugin.getServer().getPlayer(args[0]);
                     String newName = Palette.translate(args[1]);
