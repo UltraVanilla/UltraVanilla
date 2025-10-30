@@ -26,7 +26,6 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
             val zone = UltraVanilla.getPlayerConfig(player.getUniqueId).getString("timezone")
             if (!(zone == null || zone.isEmpty)) timeZone = TimeZone.getTimeZone(zone)
         }
-
         val player =
             if (args.length==0) {
                 if (sender.isInstanceOf[Player]) sender.asInstanceOf[Player]
