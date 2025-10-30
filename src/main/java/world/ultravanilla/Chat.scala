@@ -1,6 +1,8 @@
 package world.ultravanilla
 
 import net.md_5.bungee.api.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.key.Key
 import org.bukkit.event.player._
 import org.bukkit.event.{EventHandler, Listener}
 import world.ultravanilla.commands.MuteCommand
@@ -9,6 +11,7 @@ import world.ultravanilla.reference.Palette
 import java.util.regex.Pattern
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.CollectionConverters._
+import scala.util.matching.Regex
 
 class Chat(val plugin: UltraVanilla) extends Listener {
     var history = ArrayBuffer[ChatEvent]()
@@ -26,8 +29,10 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             plugin.getLogger.info(player.getName + " tried to say: " + message)
             return
         }
+
         // Chat color
         if (player.hasPermission("ultravanilla.chat.color")) message = Palette.translate(message)
+
         // Pings
         if (message.contains("@")) {
             val p = Pattern.compile("@([a-zA-Z0-9_]{2,})")
@@ -63,7 +68,11 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                 }
             }
         }
-        event.setMessage(message)
+
+        // --- Sprite shortcodes (:token:) ---
+        val spriteComponent = applySpriteShortcodes(message)
+        event.message(spriteComponent)
+
         // Chat formatter
         val donator = player.hasPermission("ultravanilla.donator")
         val staff = player.hasPermission("ultravanilla.staff-custom")
@@ -78,7 +87,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                 group.substring(0, 1).toUpperCase + group.substring(1)
             )
         } else {
-            val variant =  UltraVanilla.getPlayerConfig(player).getInt("role-variant", 0)
+            val variant = UltraVanilla.getPlayerConfig(player).getInt("role-variant", 0)
             renames.get(variant)
         }
 
@@ -118,8 +127,45 @@ class Chat(val plugin: UltraVanilla) extends Listener {
 
         val formatted = Palette.translate(format)
         event.setFormat(formatted)
+    }
 
-        // sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
+    // --- Sprite Parser ---
+    private def applySpriteShortcodes(message: String): Component = {
+        val tokenPattern: Regex = """:([a-zA-Z0-9_]+):""".r
+        var base: Component = Component.empty()
+        var lastEnd = 0
+        val matches = tokenPattern.findAllMatchIn(message).toList
+
+        if (matches.isEmpty) return Component.text(message)
+
+        for (m <- matches) {
+            base = base.append(Component.text(message.substring(lastEnd, m.start)))
+            val key = m.group(1).toLowerCase
+            base = base.append(spriteFor(key))
+            lastEnd = m.end
+        }
+        base.append(Component.text(message.substring(lastEnd)))
+    }
+
+    private def spriteFor(key: String): Component = {
+        // Built-in items
+        try {
+            return Component.sprite(Key.key("minecraft", s"item/$key"))
+        } catch {
+            case _: Exception => // ignore and fall back
+        }
+
+        // Custom head sprites (defined in UltraVanilla.spriteConfig)
+        val defnOpt = Option(plugin.spriteConfig.get(key))
+        if (defnOpt.isDefined && defnOpt.get.`type`.equalsIgnoreCase("head")) {
+            val defn = defnOpt.get
+            val name = Option(defn.name).getOrElse(key)
+            val uuid = Option(defn.uuid).getOrElse(name)
+            return Component.sprite(Key.key("minecraft", s"player/$uuid"))
+        }
+
+        // Fallback text
+        Component.text(s":$key:")
     }
 
     def sink(chatEvent: ChatEvent) = {
@@ -127,5 +173,4 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         // unimplemented
         ???
     }
-
 }
