@@ -33,7 +33,7 @@ class SeenCommand(val instance: UltraVanilla) extends UltraCommand(instance) wit
                     sender.sendMessage(ChatColor.RED + "Usage: /" + command.getName + " <playername>")
                     return true
                 }
-            } else plugin.getSErver.getOfflinePlayer(args(0))
+            } else plugin.getServer.getOfflinePlayer(args(0))
         
         if (!player.hasPlayedBefore) {
             sender.sendMessage(Palette.NOUN + player.getName + SeenCommand.COLOR + " has not played here before.")
