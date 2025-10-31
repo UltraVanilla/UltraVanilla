@@ -3,12 +3,14 @@ package world.ultravanilla
 import net.md_5.bungee.api.ChatColor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.`object`.ObjectContents
 import org.bukkit.event.player._
 import org.bukkit.event.{EventHandler, Listener}
 import world.ultravanilla.commands.MuteCommand
 import world.ultravanilla.reference.Palette
 
 import java.io.{File, FileReader}
+import java.util.UUID
 import java.util.regex.Pattern
 import scala.collection.mutable.{ArrayBuffer, Map => MutableMap}
 import scala.jdk.CollectionConverters._
@@ -73,7 +75,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             }
         }
 
-        // --- Sprite shortcodes (:token:) ---
+        // --- Sprite shortcodes ---
         val spriteComponent = applySpriteShortcodes(message)
         event.message(spriteComponent)
 
@@ -135,26 +137,25 @@ class Chat(val plugin: UltraVanilla) extends Listener {
 
     // --- Sprite Parser ---
     private def applySpriteShortcodes(message: String): Component = {
-        val tokenPattern: Regex = """:([a-zA-Z0-9_]+):""".r
+        val tokenPattern: Regex = """:minecraft:([a-z0-9_\-/]+):""".r
         var base: Component = Component.empty()
         var lastEnd = 0
         val matches = tokenPattern.findAllMatchIn(message).toList
-
+    
         if (matches.isEmpty) return Component.text(message)
-
+    
         for (m <- matches) {
             base = base.append(Component.text(message.substring(lastEnd, m.start)))
-            val key = m.group(1).toLowerCase
-            base = base.append(spriteFor(key))
+            val itemKey = m.group(1).toLowerCase
+            base = base.append(spriteFor(itemKey))
             lastEnd = m.end
         }
         base.append(Component.text(message.substring(lastEnd)))
     }
 
     private def spriteFor(key: String): Component = {
-        // Built-in items
         try {
-            return Component.sprite(Key.key("minecraft", s"item/$key"))
+            return Component.`object`(ObjectContents.sprite(Key.key(s"minecraft:item/$key")))
         } catch {
             case _: Exception => // ignore and fall back
         }
@@ -165,7 +166,11 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             val defn = defnOpt.get
             val name = Option(defn.name).getOrElse(key)
             val uuid = Option(defn.uuid).getOrElse(name)
-            return Component.sprite(Key.key("minecraft", s"player/$uuid"))
+            if (uuid.matches("^[0-9a-fA-F-]{36}$")) {
+                return Component.`object`(ObjectContents.playerHead(UUID.fromString(uuid)))
+            } else {
+                return Component.`object`(ObjectContents.playerHead(name))
+            }
         }
 
         // Fallback text
