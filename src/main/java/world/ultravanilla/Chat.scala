@@ -137,7 +137,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
 
     // --- Sprite Parser ---
     private def applySpriteShortcodes(message: String): Component = {
-        val tokenPattern: Regex = """:minecraft:([a-z0-9_\-/]+):""".r
+        val tokenPattern: Regex = """:(minecraft|head):([a-z0-9_\-/]+):""".r
         var base: Component = Component.empty()
         var lastEnd = 0
         val matches = tokenPattern.findAllMatchIn(message).toList
@@ -146,37 +146,50 @@ class Chat(val plugin: UltraVanilla) extends Listener {
     
         for (m <- matches) {
             base = base.append(Component.text(message.substring(lastEnd, m.start)))
-            val itemKey = m.group(1).toLowerCase
-            base = base.append(spriteFor(itemKey))
+            val spriteType = m.group(1)
+            val key = m.group(2)
+            base = base.append(spriteFor(spriteType, key))
             lastEnd = m.end
         }
         base.append(Component.text(message.substring(lastEnd)))
     }
 
-    private def spriteFor(key: String): Component = {
-        try {
-            return Component.`object`(ObjectContents.sprite(Key.key(s"minecraft:item/$key")))
-        } catch {
-            case _: Exception => // ignore and fall back
-        }
+    private def spriteFor(spriteType: String, key: String): Component = {
+        def safeText() = Component.text(s":$spriteType:$key:")
 
-        // Custom head sprites from local JSON
-        val defnOpt = Option(emojiConfig.get(key))
-        if (defnOpt.isDefined && defnOpt.get.`type`.equalsIgnoreCase("head")) {
-            val defn = defnOpt.get
-            val name = Option(defn.name).getOrElse(key)
-            val uuid = Option(defn.uuid).getOrElse(name)
-            if (uuid.matches("^[0-9a-fA-F-]{36}$")) {
-                return Component.`object`(ObjectContents.playerHead(UUID.fromString(uuid)))
-            } else {
-                return Component.`object`(ObjectContents.playerHead(name))
+        def safe[T](op: => Component): Component = {
+            try op
+            catch {
+                case e: Exception =>
+                    plugin.getLogger.fine(s"Invalid sprite for $spriteType:$key -> ${e.getClass.getSimpleName}: ${e.getMessage}")
+                    safeText()
             }
         }
 
-        // Fallback text
-        Component.text(s":$key:")
-    }
+        spriteType.toLowerCase match {
+            case "minecraft" =>
+                safe {
+                    Component.`object`(ObjectContents.sprite(Key.key(s"minecraft:$key")))
+                }
 
+            // Player head support (UUID or name)
+            case "head" =>
+                if (key.matches("^[0-9a-fA-F-]{8}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{12}$"))
+                    safe {
+                        Component.`object`(ObjectContents.playerHead(UUID.fromString(key)))
+                    }
+                else
+                    safe {
+                        Component.`object`(ObjectContents.playerHead(key))
+                    }
+    
+            // Placeholder for other future atlases or sprite domains
+            case other =>
+                plugin.getLogger.fine(s"Unknown sprite type: $other (key=$key)")
+                safeText()
+        }
+    }
+    
     // --- JSON Loader ---
     private def loadEmojiJson(): MutableMap[String, SpriteDef] = {
         val map = MutableMap[String, SpriteDef]()
