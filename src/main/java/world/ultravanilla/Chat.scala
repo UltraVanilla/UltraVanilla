@@ -8,13 +8,17 @@ import org.bukkit.event.{EventHandler, Listener}
 import world.ultravanilla.commands.MuteCommand
 import world.ultravanilla.reference.Palette
 
+import java.io.{File, FileReader}
 import java.util.regex.Pattern
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, Map => MutableMap}
 import scala.jdk.CollectionConverters._
 import scala.util.matching.Regex
+import org.json.simple.parser.JSONParser
 
 class Chat(val plugin: UltraVanilla) extends Listener {
     var history = ArrayBuffer[ChatEvent]()
+    private val emojiPath = new File("src/main/java/world/ultravanilla/emojis.json")
+    private val emojiConfig: MutableMap[String, SpriteDef] = loadEmojiJson()
 
     @EventHandler def onAsyncPlayerChat(event: AsyncPlayerChatEvent): Unit = {
         val player = event.getPlayer
@@ -155,8 +159,8 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             case _: Exception => // ignore and fall back
         }
 
-        // Custom head sprites (defined in UltraVanilla.spriteConfig)
-        val defnOpt = Option(plugin.spriteConfig.get(key))
+        // Custom head sprites from local JSON
+        val defnOpt = Option(emojiConfig.get(key))
         if (defnOpt.isDefined && defnOpt.get.`type`.equalsIgnoreCase("head")) {
             val defn = defnOpt.get
             val name = Option(defn.name).getOrElse(key)
@@ -168,9 +172,37 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         Component.text(s":$key:")
     }
 
+    // --- JSON Loader ---
+    private def loadEmojiJson(): MutableMap[String, SpriteDef] = {
+        val map = MutableMap[String, SpriteDef]()
+        if (!emojiPath.exists()) {
+            plugin.getLogger.warning(s"emojis.json not found at ${emojiPath.getPath}")
+            return map
+        }
+
+        try {
+            val parser = new JSONParser()
+            val obj = parser.parse(new FileReader(emojiPath)).asInstanceOf[java.util.Map[String, java.util.Map[String, String]]]
+            obj.asScala.foreach { case (key, v) =>
+                val t = v.getOrDefault("type", "item")
+                val id = v.getOrDefault("id", null)
+                val name = v.getOrDefault("name", null)
+                val uuid = v.getOrDefault("uuid", null)
+                map.put(key, SpriteDef(t, id, name, uuid))
+            }
+        } catch {
+            case e: Exception =>
+                plugin.getLogger.warning(s"Failed to load emojis.json: ${e.getMessage}")
+        }
+        map
+    }
+
     def sink(chatEvent: ChatEvent) = {
         history.addOne(chatEvent)
         // unimplemented
         ???
     }
+
+    // --- Data Class ---
+    case class SpriteDef(`type`: String, id: String = null, name: String = null, uuid: String = null)
 }
