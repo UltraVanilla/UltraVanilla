@@ -1,17 +1,26 @@
 package world.ultravanilla
 
 import net.md_5.bungee.api.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.`object`.ObjectContents
 import org.bukkit.event.player._
 import org.bukkit.event.{EventHandler, Listener}
 import world.ultravanilla.commands.MuteCommand
 import world.ultravanilla.reference.Palette
 
+import java.io.{File, FileReader}
+import java.util.UUID
 import java.util.regex.Pattern
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, Map => MutableMap}
 import scala.jdk.CollectionConverters._
+import scala.util.matching.Regex
+import org.json.simple.parser.JSONParser
 
 class Chat(val plugin: UltraVanilla) extends Listener {
     var history = ArrayBuffer[ChatEvent]()
+    private val emojiPath = new File("src/main/java/world/ultravanilla/emojis.json")
+    private val emojiConfig: MutableMap[String, SpriteDef] = loadEmojiJson()
 
     @EventHandler def onAsyncPlayerChat(event: AsyncPlayerChatEvent): Unit = {
         val player = event.getPlayer
@@ -26,8 +35,10 @@ class Chat(val plugin: UltraVanilla) extends Listener {
             plugin.getLogger.info(player.getName + " tried to say: " + message)
             return
         }
+
         // Chat color
         if (player.hasPermission("ultravanilla.chat.color")) message = Palette.translate(message)
+
         // Pings
         if (message.contains("@")) {
             val p = Pattern.compile("@([a-zA-Z0-9_]{2,})")
@@ -63,7 +74,11 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                 }
             }
         }
-        event.setMessage(message)
+
+        // --- Sprite shortcodes ---
+        val spriteComponent = applySpriteShortcodes(message)
+        event.message(spriteComponent)
+
         // Chat formatter
         val donator = player.hasPermission("ultravanilla.donator")
         val staff = player.hasPermission("ultravanilla.staff-custom")
@@ -78,7 +93,7 @@ class Chat(val plugin: UltraVanilla) extends Listener {
                 group.substring(0, 1).toUpperCase + group.substring(1)
             )
         } else {
-            val variant =  UltraVanilla.getPlayerConfig(player).getInt("role-variant", 0)
+            val variant = UltraVanilla.getPlayerConfig(player).getInt("role-variant", 0)
             renames.get(variant)
         }
 
@@ -118,8 +133,86 @@ class Chat(val plugin: UltraVanilla) extends Listener {
 
         val formatted = Palette.translate(format)
         event.setFormat(formatted)
+    }
 
-        // sink(ChatEvent(channel = 0, sender = player.getUniqueId(), source = ChatSource.InGame, staff = staff, donator = donator))
+    // --- Sprite Parser ---
+    private def applySpriteShortcodes(message: String): Component = {
+        val tokenPattern: Regex = """:(minecraft|head):([a-z0-9_\-/]+):""".r
+        var base: Component = Component.empty()
+        var lastEnd = 0
+        val matches = tokenPattern.findAllMatchIn(message).toList
+    
+        if (matches.isEmpty) return Component.text(message)
+    
+        for (m <- matches) {
+            base = base.append(Component.text(message.substring(lastEnd, m.start)))
+            val spriteType = m.group(1)
+            val key = m.group(2)
+            base = base.append(spriteFor(spriteType, key))
+            lastEnd = m.end
+        }
+        base.append(Component.text(message.substring(lastEnd)))
+    }
+
+    private def spriteFor(spriteType: String, key: String): Component = {
+        def safeText() = Component.text(s":$spriteType:$key:")
+
+        def safe[T](op: => Component): Component = {
+            try op
+            catch {
+                case e: Exception =>
+                    plugin.getLogger.fine(s"Invalid sprite for $spriteType:$key -> ${e.getClass.getSimpleName}: ${e.getMessage}")
+                    safeText()
+            }
+        }
+
+        spriteType.toLowerCase match {
+            case "minecraft" =>
+                safe {
+                    Component.`object`(ObjectContents.sprite(Key.key(s"minecraft:$key")))
+                }
+
+            // Player head support (UUID or name)
+            case "head" =>
+                if (key.matches("^[0-9a-fA-F-]{8}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{12}$"))
+                    safe {
+                        Component.`object`(ObjectContents.playerHead(UUID.fromString(key)))
+                    }
+                else
+                    safe {
+                        Component.`object`(ObjectContents.playerHead(key))
+                    }
+    
+            // Placeholder for other future atlases or sprite domains
+            case other =>
+                plugin.getLogger.fine(s"Unknown sprite type: $other (key=$key)")
+                safeText()
+        }
+    }
+    
+    // --- JSON Loader ---
+    private def loadEmojiJson(): MutableMap[String, SpriteDef] = {
+        val map = MutableMap[String, SpriteDef]()
+        if (!emojiPath.exists()) {
+            plugin.getLogger.warning(s"emojis.json not found at ${emojiPath.getPath}")
+            return map
+        }
+
+        try {
+            val parser = new JSONParser()
+            val obj = parser.parse(new FileReader(emojiPath)).asInstanceOf[java.util.Map[String, java.util.Map[String, String]]]
+            obj.asScala.foreach { case (key, v) =>
+                val t = v.getOrDefault("type", "item")
+                val id = v.getOrDefault("id", null)
+                val name = v.getOrDefault("name", null)
+                val uuid = v.getOrDefault("uuid", null)
+                map.put(key, SpriteDef(t, id, name, uuid))
+            }
+        } catch {
+            case e: Exception =>
+                plugin.getLogger.warning(s"Failed to load emojis.json: ${e.getMessage}")
+        }
+        map
     }
 
     def sink(chatEvent: ChatEvent) = {
@@ -128,4 +221,6 @@ class Chat(val plugin: UltraVanilla) extends Listener {
         ???
     }
 
+    // --- Data Class ---
+    case class SpriteDef(`type`: String, id: String = null, name: String = null, uuid: String = null)
 }
