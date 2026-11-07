@@ -43,7 +43,7 @@ public class OfflinePlayerCacheManager {
             }
             
             lastLoaded = System.currentTimeMillis();
-            File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
+            File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players/data");
             if (playerDataFolder.exists()) {
                 File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
                 if (files != null) {
