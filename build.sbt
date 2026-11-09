@@ -11,7 +11,7 @@ resolvers ++= List(
     "placeholderapi" at "https://repo.extendedclip.com/content/repositories/placeholderapi/"
 )
 libraryDependencies ++= List(
-    "io.papermc.paper" % "paper-api" % "1.21.1-R0.1-SNAPSHOT" % Provided,
+    "io.papermc.paper" % "paper-api" % "26.3.build.242-stable" % Provided,
     "net.luckperms" % "api" % "5.3" % Provided,
     "com.zaxxer" % "HikariCP" % "5.0.1",
     "net.dv8tion" % "JDA" % "4.3.0_277" exclude("club.minnced", "opus-java"),
@@ -19,7 +19,7 @@ libraryDependencies ++= List(
 )
 
 scalacOptions += "-target:21"
-javacOptions ++= Seq("-source", "21", "-target", "21")
+javacOptions ++= Seq("-source", "25", "-target", "25")
 
 Compile / resourceGenerators += Def.task {
     val file = (Compile / resourceManaged).value / "plugin.yml"
