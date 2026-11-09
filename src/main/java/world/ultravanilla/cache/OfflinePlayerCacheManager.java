@@ -73,7 +73,7 @@ public class OfflinePlayerCacheManager {
 
     public List<UUID> getAllPlayerUUIDs() {
         List<UUID> uuids = new ArrayList<>();
-        File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "playerdata");
+        File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players/data");
         File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
         if (files != null) {
             for (File file : files) {
