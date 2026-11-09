@@ -41,9 +41,9 @@ public class OfflinePlayerCacheManager {
                     plugin.getLogger().log(Level.WARNING, "Failed to load offline player cache", e);
                 }
             }
-            
+
             lastLoaded = System.currentTimeMillis();
-            File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players/data");
+            File playerDataFolder = getPlayerDataFolder();
             if (playerDataFolder.exists()) {
                 File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
                 if (files != null) {
@@ -73,7 +73,7 @@ public class OfflinePlayerCacheManager {
 
     public List<UUID> getAllPlayerUUIDs() {
         List<UUID> uuids = new ArrayList<>();
-        File playerDataFolder = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players/data");
+        File playerDataFolder = getPlayerDataFolder();
         File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".dat"));
         if (files != null) {
             for (File file : files) {
@@ -87,7 +87,7 @@ public class OfflinePlayerCacheManager {
             }
         }
         return uuids;
-        
+
     }
 
     public void saveCache() throws IOException {
@@ -129,4 +129,13 @@ public class OfflinePlayerCacheManager {
             }
         }
     }
+
+    private File getPlayerDataFolder() {
+        return plugin.getServer()
+            .getLevelDirectory()
+            .resolve("players")
+            .resolve("data")
+            .toFile();
+    }
+
 }
